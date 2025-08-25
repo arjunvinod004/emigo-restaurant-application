@@ -1,0 +1,433 @@
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="">
+    <div class="page-content p-2">
+
+
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                <div class="add-new-dish-list-combo">
+                <a  href="#" data-bs-toggle="modal" data-bs-original-title="Add Country" data-bs-target="#add-country" class="add-new-dish-btn btn1">
+                    <img src="<?php echo base_url('assets/admin/images/add-new-dish-icon.svg'); ?>
+                    " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
+                    Add Country
+                </a>
+
+                <a href="<?php echo base_url('admin/settings'); ?>"   class="add-new-dish-btn btn1">
+                        <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
+                        " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
+                      Back
+                    </a>
+            </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+
+            <!-- Displaying Date and Time -->
+            <!-- <?php $time=strtotime(date("Y/m/d"));
+ $month=date("F",$time);
+ $year=date("Y",$time);
+ $date=date("d",$time);  ?>
+                          <h2 class="f-w-400"> <span><?php echo $month; ?> <?php echo $date; ?> <?php echo $year; ?><sup><i class="fa fa-circle-o f-10"></i></sup></span></h2> -->
+            <!-- Displaying Date and Time -->
+            <?php 
+                if(isset($countryDet[0]['country_id'])) {
+                    $path=base_url().'admin/country/edit';
+                    $button_text='Update';
+                    $button_name='edit';
+                }else{
+                    $path= base_url().'admin/country/add';
+                    $button_text='Save';
+                    $button_name='add';
+                }?>
+
+            <!-- <form method="post" action="<?php echo $path; ?>" enctype="multipart/form-data">
+                <input type="hidden" name="id"
+                    value="<?php  if(isset($countryDet[0]['country_id'])){echo $countryDet[0]['country_id'];}?>">
+                <div class="row bg-soft-light mb-3 border1 pt-2">
+
+                    <div class="col-md-2">
+                        <div class="mb-2 focus">
+                            <label class="form-label" for="default-input">Country Name</label>
+                            <input class="form-control"
+                                value="<?php if(isset($countryDet[0]['name'])){echo $countryDet[0]['name']; }else{ echo set_value('country_name'); } ?>"
+                                type="text" name="country_name">
+                            <?php if(form_error('country_name')){ ?>
+                            <div class="errormsg mt-2" role="alert"><?php echo form_error('country_name'); ?></div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="mb-2 focus">
+                            <label class="form-label" for="default-input">Currency</label>
+                            <input class="form-control"
+                                value="<?php if(isset($countryDet[0]['currency'])){echo $countryDet[0]['currency']; }else{ echo set_value('currency'); } ?>"
+                                type="text" name="currency">
+                            <?php if(form_error('currency')){ ?>
+                            <div class="errormsg mt-2" role="alert"><?php echo form_error('currency'); ?></div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="mb-2 focus">
+                            <label class="form-label" for="default-input">Support No</label>
+                            <input class="form-control"
+                                value="<?php if(isset($countryDet[0]['support_no'])){echo $countryDet[0]['support_no']; }else{ echo set_value('support_no'); } ?>"
+                                type="text" name="supportno">
+                            <?php if(form_error('supportno')){ ?>
+                            <div class="errormsg mt-2" role="alert"><?php echo form_error('supportno'); ?></div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="mb-2 focus">
+                            <label class="form-label" for="default-input">
+                                Support Email
+                            </label>
+                            <input class="form-control"
+                                value="<?php if(isset($countryDet[0]['support_email'])){echo $countryDet[0]['support_email']; }else{ echo set_value('support_email'); } ?>"
+                                type="text" name="supportemail">
+                            <?php if(form_error('supportemail')){ ?>
+                            <div class="errormsg mt-2" role="alert"><?php echo form_error('supportemail'); ?></div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-2">
+                        <div class="mb-4">
+                            <label class="form-label" for="default-input">&nbsp;</label><br>
+                            <button class="btn btn-success w-md" type="submit"
+                                name="<?php echo $button_name; ?>"><?php echo $button_text; ?></button>
+                        </div>
+                    </div>
+
+            </form> -->
+
+            <!-- Section 2 -->
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+        <div class="row">
+
+
+
+
+
+            <?php if($this->session->flashdata('success')){ ?>
+            <div class="alert alert-success dark" role="alert">
+                <?php echo $this->session->flashdata('success');$this->session->unset_userdata('success'); ?>
+            </div><?php } ?>
+
+            <?php if($this->session->flashdata('error')){ ?>
+            <div class="alert alert-danger dark" role="alert">
+                <?php echo $this->session->flashdata('error');$this->session->unset_userdata('error'); ?>
+            </div><?php } ?>
+            <div class="container">
+                <div class="table-responsive-sm">
+                    <table id="example" class="table table-bordered mt-3" style="width:100%">
+                        <thead style="background: #e5e5e5;">
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Currency</th>
+                                <th>Support No</th>
+                                <th>Support Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <?php
+                       if(!empty($countries)){
+                       $count = 1;
+                       foreach($countries as $val){ ?>
+                            <tr>
+                                <td><?php echo $count;?></td>
+                                <td><?php echo $val['name'];?></td>
+                                <td><?php echo $val['code'];?></td>
+                                <td><?php echo $val['currency'];?></td>
+                                <td><?php echo $val['support_no'];?></td>
+                                <td><?php echo $val['support_email'];?></td>
+                                <td class="pb-0 pt-0 d-flex">
+                                    <!-- <form class="m-0"  method="post"> -->
+                                        <input type="hidden" name="id" value="<?php echo $val['country_id']; ?>">
+                                        <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
+                                            data-id="<?php echo $val['country_id']; ?>" data-bs-toggle="modal"  data-bs-target="#edit-country"><i class="fa fa-edit"></i></button>
+                                    <!-- </form> -->
+
+                                    <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button" data-bs-toggle="modal"
+                                        data-id="<?php echo $val['country_id']; ?>"
+                                        data-bs-original-title="Delete Country" data-bs-target="#exampleModal"><i
+                                            class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <?php $count++; }} ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for detailed view -->
+        <div class="modal fade" id="emp_informations" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Employee Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe src="emp-informations.html" style="width: 100%; height: 500px;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end -->
+
+
+
+
+
+
+        <!-- add country -->
+
+        <div class="modal fade" id="add-country" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLabel">Add Country</h2>
+                        <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="row bg-soft-light mb-3 border1 pt-2">
+                    <form class="row mt-0 mb-0" id="add-new-country" method="post" enctype="multipart/form-data">
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Name</label>
+                                <input class="form-control" value="" placeholder="Name" type="text"
+                                    name="country_name">
+                                <span class="error errormsg mt-2" id="country_name_error"></span>
+                                <div id="general_error" class="error errormsg"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Code</label>
+                                <input class="form-control" value="" placeholder="Name" type="text"
+                                    name="country_code" >
+                                <span class="error errormsg mt-2" id="country_code_error"></span>
+                                <div id="general_error" class="error errormsg"></div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Currency</label>
+                                <input class="form-control" value="" placeholder="Currency" type="text"
+                                    name="country_currency">
+                                <span class="error errormsg mt-2" id="country_currency_error"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Support No</label>
+                                <input class="form-control" value="" placeholder="Support No" type="text"
+                                name="country_support">
+                                <span class="error errormsg mt-2" id="country_support_error"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Support Email</label>
+                                <input class="form-control" value="" placeholder="Email" type="text"
+                                name="country_email">
+                                <span class="error errormsg mt-2" id="country_email_error"></span>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="col-md-12">
+                            <div class="justify-content-center" style="float: right;">
+                                <button class="btn btn-primary w-md" type="button" id="add_country">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- add country -->
+
+
+
+<!-- edit country -->
+    <div class="modal fade" id="edit-country" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLabel">Edit Country</h2>
+                        <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="row bg-soft-light mb-3 border1 pt-2">
+                    <form class="row mt-0 mb-0" id="edit_save_country" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="hidden_country_id" >
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Name</label>
+                                <input class="form-control" value="" placeholder="Name" type="text"
+                                    name="country_name" id="country_name">
+                                <span class="error errormsg mt-2" id="country_edit_name_error"></span>
+                                <div id="general_error" class="error errormsg"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Country Code</label>
+                                <input class="form-control" value="" placeholder="Country Code" type="text"
+                                    name="country_code" id="country_code">
+                                <span class="error errormsg mt-2" id="country_edit_code_error"></span>
+                                <div id="general_error" class="error errormsg"></div>
+                            </div>
+                        </div>
+
+                      
+
+
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Currency</label>
+                                <input class="form-control" value="" placeholder="Currency" type="text"
+                                    name="country_currency" id="country_currency">
+                                <span class="error errormsg mt-2" id="country_edit_currency_error"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Support No</label>
+                                <input class="form-control" value="" placeholder="Support No" type="text"
+                                name="country_support" id="country_support">
+                                <span class="error errormsg mt-2" id="country_edit_support_error"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="default-input">Support Email</label>
+                                <input class="form-control" id="country_email" value="" placeholder="Email" type="text"
+                                name="country_email">
+                                <span class="error errormsg mt-2" id="country_edit_email_error"></span>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="col-md-12">
+                            <div class="justify-content-center" style="float: right;">
+                                <button class="btn btn-primary w-md" type="button" id="save_country">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- edit country -->
+
+
+    <!-- delete user -->
+<div class="modal fade " id="delete-country" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- if response within jquery -->
+                <div class="message d-none" role="alert"></div>
+                <input type="hidden" name="id" id="delete_id" value="" />
+                <?php echo are_you_sure; ?>
+            </div>
+            <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
+                <button class="btn btn-secondary" id="yes_del_user" type="button" data-bs-dismiss="modal">Yes</button>
+            </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- delete user -->
+
+
+
+
+
+
+    <!-- success modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
+                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- success modal -->
+
+    <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
