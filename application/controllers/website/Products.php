@@ -9,10 +9,8 @@ class Products extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
     }
-
-    //Is whatsapp not enabled redirected to order listing page
-    //Order type delivery and pickup checkout
-    //Order type dining checkout
+    
+    //MARK:  - Current stock
 
     public function current_stock() {
         $date = date('Y-m-d');
@@ -25,7 +23,7 @@ class Products extends CI_Controller {
         echo json_encode(['success' => true,'current_stock' => $current_stock]);
     }
 
-    //Order type dining checkout
+     //MARK:  - Checkout
     public function checkout() {
         //echo "hre";exit;
         $cartData = $this->session->userdata('cart');
@@ -908,6 +906,8 @@ class Products extends CI_Controller {
                     
         
     }
+
+    //MARK: Get variants and addons for product
     
     public function getVariantsAndAddons() {
         $product = $this->input->post('prod'); //echo $product;
@@ -1000,7 +1000,7 @@ $addonIds = array_column($addons, 'product_id');
     <img src="<?php echo site_url() . "uploads/product/" . $product_image; ?>" class="img-fluid rounded w-100"
         alt="Food Imageee">
     <h6 id="product_name" class="mt-2 mb-1"><?php echo $product_details->$product_name_field; ?></h6>
-    <p class="mt-2 mb-1"><?php echo $product_details->$product_desc_field; ?></p>
+    <p class="mt-2 mb-1 product-desc"><?php echo $product_details->$product_desc_field; ?></p>
 </div>
 <style>
 .d-none {

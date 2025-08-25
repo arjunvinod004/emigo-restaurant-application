@@ -139,7 +139,7 @@
                     
                     <a class="btn tblDelBtn pl-0 pr-0 del_table" type="button" data-bs-toggle="modal" data-storeid="<?php echo $val['store_id']; ?>" data-id="<?php echo $val['table_id']; ?>" data-bs-original-title="Delete Table" data-bs-target="#exampleModal"><i class="fa fa-trash"></i></a>
 
-                    <?php if($val['store_table_token'] == '0'){ ?>
+                    <?php if($val['store_table_token'] == ''){ ?>
                     <form class="m-0 d-flex" action="<?php echo base_url();?>admin/qrcodes/generateTableQRCode" method="post">
                         <input type="hidden" name="table_id_hidden" value="<?php echo $val['table_id']; ?>">
                         <input type="hidden" name="store_name_hidden" value="<?php echo $store_name; ?>">

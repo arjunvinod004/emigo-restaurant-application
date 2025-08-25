@@ -783,6 +783,32 @@ $(document).ready(function() {
 <script>
 $(document).ready(function() {
 
+    /* reusable function for read more/less */
+    function initializeReadMoreLess() 
+    {
+        var maxLength = 150; 
+        $("#modalBodyContent .product-desc").each(function(){
+            var fullText = $(this).text().trim();
+
+            if(fullText.length > maxLength){
+                var shortText = fullText.substring(0, maxLength) + "...";
+                var html = '<span class="short-text">' + shortText + '</span>' +
+                        '<span class="full-text d-none">' + fullText + '</span>' +
+                        ' <a href="javascript:void(0)" class="read-more text-primary">Read More</a>';
+                $(this).html(html);
+            }
+        });
+    }
+
+    /* toggle handler */
+    $(document).on("click", ".read-more", function()
+    {
+        var $this = $(this);
+        var $parent = $this.closest(".product-desc");
+        $parent.find(".short-text, .full-text").toggleClass("d-none");
+        $this.text($this.text() === "Read More" ? "Read Less" : "Read More");
+    });
+
     function initializeButtonVisibility() {
         $('.add-btn').each(function() {
             const controlGroup = $(this).siblings('.quantity-group');
@@ -849,6 +875,7 @@ $(document).ready(function() {
                 // Populate the modal with the response data
                 $('#modalBodyContent').html(response);
                 initializeButtonVisibility();
+                initializeReadMoreLess();
             },
             error: function() {
                 $('#modalBodyContent').html(
