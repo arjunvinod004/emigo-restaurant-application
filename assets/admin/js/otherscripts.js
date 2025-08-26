@@ -1,36 +1,4 @@
-// ADMIN SCRIPTS
-//1. Delete country from admin dashboard
-//2. Delete store
-//3. Change tax value depends on country
-//4. Checkbox for store serving modes dining delivery and takeaway
-//5. Datepicker contract start end followup dates
-//6. Load tables within iframe from add store
-//7. Send Pickup,Delivery,Dining test message
-//8. Assigning Products from view stores page
-//9. Update category order index from list categories
-//10. Delete category
-//11.Image Cropping from Add Product page
-//12. Save product from Add Product page
-//13. Delete cookings from admin dashboard
-//..   Crop image when edit product from admin dashboard
-//14. Delete variants from admin dashboard
-//16. Is whatsapp enable in add store 
-//17. Add Store
 
-//19.Delete user
-//20.delete Package
-// 21. add country
-// 22. edit country
-// 23. update country
-// 24. delete country
-// 25. add tax
-// 26. edit tax
-// 27. update tax
-  // 28. delete tax
-  //29. store remove
-// 30. qr-code-modal
-// 31. add category
-//32. redirect to room page
 
 //OWNER SCRIPTS
 //15. Get current date and time in owner dashboard
@@ -53,13 +21,9 @@ $(document).ready(function () {
     });
 
 
-    // 21. add country
+    //#region add country
     $('#add_country').click(function (e) {
-        // alert(1);
-        let formData = new FormData($('#add-new-country')[0]); // Capture form data
-        console.log(formData);
-
-
+        let formData = new FormData($('#add-new-country')[0]);
         $.ajax({
             url: base_url + 'admin/Country/add',
             type: 'POST',
@@ -73,7 +37,7 @@ $(document).ready(function () {
                     setTimeout(function () {
                         // window.location.href = base_url + 'admin/Enquiry/success';
                         $('#add-country').modal('hide');
-                        $('#successModal .modal-body').text('country saved successfully');
+                        $('#successModal .modal-body').text('Country saved successfully');
                         $('#successModal').modal('show');
                      $('#add-new-country')[0].reset();
                         $('#other_textbox').hide();
@@ -123,8 +87,6 @@ $(document).ready(function () {
                         if (response.errors.country_email) {
                             $('#country_email_error').html(response.errors.country_email);
                         } 
-                        
-
 
                     }
                 }
