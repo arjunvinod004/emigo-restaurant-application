@@ -2273,6 +2273,7 @@ $(document).on('click', '.edit_product', function () {
             }
             else{
                 $('#Tax_label').addClass('d-none');
+                  $('.textbox').addClass('d-none');
             }
         });
     });
