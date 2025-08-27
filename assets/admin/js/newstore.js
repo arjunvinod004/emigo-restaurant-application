@@ -7,7 +7,7 @@
 
 
     $('#storeForm').on('submit', function (e) {
-        // alert(111); 
+     alert(111); 
         e.preventDefault();  // Prevent the default form submission
         // Clear previous error messages
         $('.errormsg').text('');
@@ -21,7 +21,7 @@
         }
 
         if ($('#sel_gst_or_tax').val() === '') {
-            $('#gst_or_tax_error').text('Please select value.');
+            $('#gst_or_tax_error').text('Please select Tax.');
             isValid = false;
         }
 
@@ -77,16 +77,7 @@
             isValid = false;
         }
 
-        if ($('#store_opening_time').val().trim() === '') {
-            $('#error_store_opening_time').text('Opening time is required.');
-            isValid = false;
-        }
-
-        if ($('#store_closing_time').val().trim() === '') {
-            $('#error_store_closing_time').text('Closing time is required.');
-            isValid = false;
-        }
-
+      
         // Validate 'Select Package'
         if ($('#no_of_tables').val() === '') {
             $('#error_no_of_tables').text('Please select a package.');
@@ -191,16 +182,25 @@
         });
     });
 
-    $('#sel_gst_or_tax').change(function () {
-            var taxRate = $(this).val();
+    //MARK:  - Select Gst or Tax change in New Store
 
-            // alert(taxRate);
-            if (taxRate !== '1') {
-                $('.textbox').removeClass('d-none'); // Show the textbox group
-            } else {
-                $('.textbox').addClass('d-none'); // Hide the textbox group
+        $('#sel_gst_or_tax').change(function () 
+        {
+            var taxRate = $(this).val();
+            var dataType = $(this).find('option:selected').data('type');
+            
+
+            if(dataType == 'vat'){
+               $('#Tax_label').text('VAT Number');
+               $('.textbox').removeClass('d-none');
+            }else if(dataType == 'gst'){
+                $('#Tax_label').text('GST Number');
+                $('.textbox').removeClass('d-none');
             }
-    });
+            else{
+                $('#Tax_label').addClass('d-none');
+            }
+        });
 
 
      //5. Datepicker contract start end followup dates

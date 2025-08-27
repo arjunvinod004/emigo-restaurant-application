@@ -40,32 +40,38 @@
                                     <?php echo form_error('country'); ?></div>
                                 <?php } ?>
                             </div>
+
+
                             <!--Gst Tax-->
+
+
                             <div class="form__field-container xs12 lg4">
-                                <label class="form__label">Gst/Vat</label>
+                                <label class="form__label">TAX</label>
                                 <select id="sel_gst_or_tax" class="form-select" name="gst_or_tax">
                                     <option value="1"
                                         <?php if(isset($storeDet[0]['gst_or_tax']) && ($storeDet[0]['gst_or_tax']==1)) echo 'selected';else echo set_select('gst_or_tax', 1)?>>
                                         Not Applicable</option>
-                                    <?php
-                                foreach($tax_rates as $tax)
-                                {
-                                ?>
-                                    <option value="<?=$tax['tax_id'];?>"
-                                        <?php if(isset($storeDet[0]['gst_or_tax']) && ($storeDet[0]['gst_or_tax']==$tax['tax_id'])) echo 'selected';else echo set_select('gst_or_tax', $tax['tax_id'])?>>
-                                        <?=$tax['tax_rate'];?></option>
-                                    <?php
-                                }
-                                ?>
+                                    <?php foreach($tax_rates as $tax) { ?>
+                                    <option value="<?=$tax['tax_id'];?>" data-type="<?=$tax['tax_type'];?>"
+                                        data-rate="<?=$tax['tax_rate'];?>"
+                                        <?php if(isset($storeDet[0]['gst_or_tax']) && ($storeDet[0]['gst_or_tax']==$tax['tax_id'])) echo 'selected'; else echo set_select('gst_or_tax', $tax['tax_id'])?>>
+                                        Applicable
+                                    </option>
+                                    <?php } ?>
                                 </select>
                                 <?php if(form_error('gst_or_tax')){ ?>
-                                <div class="errormsg mt-2" role="alert">
-                                    <?php echo form_error('gst_or_tax'); ?></div>
+                                <div class=" errormsg mt-2" role="alert">
+                                    <?php echo form_error('gst_or_tax'); ?>
+                                </div>
                                 <?php } ?>
                             </div>
+
+
                             <!--Registration Number-->
+
+
                             <div class="form__field-container textbox xs12 lg4 ">
-                                <label class="form__label">Registration Number</label>
+                                <label class="form__label" id="Tax_label">Gst/Vat</label>
                                 <input name="bill_no" class="form-control"
                                     value="<?php if(set_value('bill_no')){echo set_value('bill_no');}else if(isset($storeDet[0]['registration_no'])){echo $storeDet[0]['registration_no'];}?>"
                                     id="inputPassword" placeholder="">
@@ -79,18 +85,24 @@
                             $(document).ready(function() {
                                 function toggleTextbox() {
                                     var taxRate = $('#sel_gst_or_tax').val();
-                                    if (taxRate === "1") {
+                                    var dataType = $('#sel_gst_or_tax').find(':selected').attr('data-type');
+                                    if (dataType == "gst") {
+                                        $('#Tax_label').text('GST Number')
                                         // Hide the textbox if "Not Applicable" is selected
-                                        $('.form-group.textbox').addClass('d-none');
-                                    } else {
-                                        // Show the textbox otherwise
                                         $('.form-group.textbox').removeClass('d-none');
+                                    } else if (dataType == "vat") {
+                                        $('#Tax_label').text('VAT Number')
+                                        $('.form-group.textbox').removeClass('d-none');
+                                    } else {
+
+                                        $('.form-group.textbox').addClass('d-none');
                                     }
                                 }
 
                                 // Trigger the toggle function on page load
                                 toggleTextbox();
 
+                                ('#Tax_label').text(toggleTextbox);
                                 // Attach change event listener to dropdown
                                 $('#sel_gst_or_tax').on('change', function() {
                                     toggleTextbox();
@@ -100,31 +112,38 @@
 
                         </div>
 
-                        <!-- <div class="form__field-container-group gc">
-                            <div class="form__field-container xs12 lg2">
-                                <div class="form__input-group-checkbox">
-                                    <label class="form__label">Is Customizable</label>
-                                    <input type="hidden" name="iscustomizable_hidden" value="0"
-                                        id="iscustomizable_hidden">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="checkbox_is_customizable">
-                                </div>
-                            </div>
-                            <div class="form__field-container xs12 lg2">
-                                <div class="form__input-group-checkbox">
-                                    <label class="form__label">Is Addon</label>
-                                    <input type="hidden" name="isaddon_hidden" value="0" id="isaddon_hidden">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox_is_addon">
-                                </div>
-                            </div>
-                        </div> -->
 
 
-                        <!-- display name -->
 
 
                         <div class="form__field-container-group gc" id="product_rate_div">
-                            <div class="form__field-container xs12 lg3">
+
+                            <!-- Trade License -->
+                            <div class="form__field-container xs12 lg2">
+                                <label class="form__label">Trade License</label>
+                                <input class="form-control"
+                                    value="<?php if(set_value('store_trade_license')){echo set_value('store_trade_license');}else if(isset($storeDet[0]['store_trade_license'])){echo $storeDet[0]['store_trade_license'];}?>"
+                                    type="text" name="store_trade_license">
+                                <?php if(form_error('store_trade_license')){ ?>
+                                <div class="errormsg mt-2" role="alert">
+                                    <?php echo form_error('store_trade_license'); ?></div>
+                                <?php } ?>
+                            </div>
+
+
+                            <!-- Trade License -->
+
+                            <div class="form__field-container xs12 lg2">
+                                <label class="form__label">Location</label>
+                                <input name="store_location" class="form-control"
+                                    value="<?php if(set_value('store_location')){echo set_value('store_location');}else if(isset($storeDet[0]['store_location'])){echo $storeDet[0]['store_location'];}?>"
+                                    id="inputPassword" placeholder="">
+                            </div>
+
+
+                            <!-- display name -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Display Name</label>
                                 <input name="disp_name" class="form-control"
                                     value="<?php if(set_value('disp_name')){echo set_value('disp_name');}else if(isset($storeDet[0]['store_disp_name'])){echo $storeDet[0]['store_disp_name'];}?>"
@@ -134,7 +153,12 @@
                                     <?php echo form_error('disp_name'); ?></div>
                                 <?php } ?>
                             </div>
-                            <div class="form__field-container xs12 lg3">
+
+
+                            <!-- Registered Name -->
+
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Registered Name</label>
                                 <input class="form-control"
                                     value="<?php if(set_value('name')){echo set_value('name');}else if(isset($storeDet[0]['store_name'])){echo $storeDet[0]['store_name'];}?>"
@@ -145,7 +169,10 @@
                                 <?php } ?>
                             </div>
 
-                            <div class="form__field-container xs12 lg3">
+
+                            <!-- Email -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Email</label>
                                 <input class="form-control"
                                     value="<?php if(set_value('email')){echo set_value('email');}else if(isset($storeDet[0]['store_email'])){echo $storeDet[0]['store_email'];}?>"
@@ -155,7 +182,10 @@
                                     <?php echo form_error('email'); ?></div>
                                 <?php } ?>
                             </div>
-                            <div class="form__field-container xs12 lg3">
+
+                            <!-- Phone -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Phone</label>
                                 <input class="form-control"
                                     value="<?php if(set_value('phone')){echo set_value('phone');}else if(isset($storeDet[0]['store_phone'])){echo $storeDet[0]['store_phone'];}?>"
@@ -165,11 +195,14 @@
                                     <?php echo form_error('phone'); ?></div>
                                 <?php } ?>
                             </div>
+
                         </div>
 
-                        <!-- address -->
 
                         <div class="form__field-container-group gc" id="product_rate_div">
+
+                            <!-- Address -->
+
                             <div class="form__field-container xs12 lg6">
                                 <label class="form__label">Address</label>
                                 <textarea name="address" class="form-control" id="exampleFormControlTextarea4"
@@ -179,6 +212,9 @@
                                     <?php echo form_error('address'); ?></div>
                                 <?php } ?>
                             </div>
+
+                            <!-- Description -->
+
                             <div class="form__field-container xs12 lg6">
                                 <label class="form__label">Description</label>
                                 <textarea name="store_desc" class="form-control" id="exampleFormControlTextarea4"
@@ -186,7 +222,11 @@
 
                             </div>
 
-                            <div class="form__field-container xs12 lg4">
+
+
+                            <!-- Contract Start Date -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Contract Start Date</label>
                                 <div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
                                     <input name="contract_start_date" class="form-control"
@@ -199,7 +239,10 @@
                                     <?php echo form_error('contract_start_date'); ?></div>
                                 <?php } ?>
                             </div>
-                            <div class="form__field-container xs12 lg4">
+
+                            <!-- Contract End Date -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Contract End Date</label>
                                 <input type="text"
                                     value="<?php if(set_value('contract_end_date')){echo set_value('contract_end_date');}else if(isset($storeDet[0]['contract_end_date'])){echo $storeDet[0]['contract_end_date'];}?>"
@@ -211,7 +254,10 @@
                                 <?php } ?>
                             </div>
 
-                            <div class="form__field-container xs12 lg4">
+
+                            <!-- Next Follow Up Date -->
+
+                            <div class="form__field-container xs12 lg2">
                                 <label class="form__label">Next Follow Up Date</label>
                                 <input type="text"
                                     value="<?php if(set_value('next_followup_date')){echo set_value('next_followup_date');}else if(isset($storeDet[0]['next_followup_date'])){echo $storeDet[0]['next_followup_date'];}?>"
@@ -221,68 +267,9 @@
                                     <?php echo form_error('next_followup_date'); ?></div>
                                 <?php } ?>
                             </div>
-                        </div>
-
-                        <!-- follow up remark -->
-
-                        <div class="form__field-container-group gc" id="product_rate_div">
-                            <div class="form__field-container xs12 lg4">
-                                <label class="form__label">Followup Remark</label>
-                                <input name="followup_remarks" class="form-control"
-                                    value="<?php if(set_value('followup_remarks')){echo set_value('followup_remarks');}else if(isset($storeDet[0]['followup_remarks'])){echo $storeDet[0]['followup_remarks'];}?>"
-                                    id="inputPassword" placeholder="">
-                            </div>
-
-                            <div class="form__field-container xs12 lg4">
-                                <label class="form__label">Opening Time</label>
-                                <input class="form-control"
-                                    value="<?php if(set_value('store_opening_time')){echo set_value('store_opening_time');}else if(isset($storeDet[0]['store_opening_time'])){echo $storeDet[0]['store_opening_time'];}?>"
-                                    type="time" name="store_opening_time">
-                                <?php if(form_error('store_opening_time')){ ?>
-                                <div class="errormsg mt-2" role="alert">
-                                    <?php echo form_error('store_opening_time'); ?></div>
-                                <?php } ?>
-                            </div>
-
-                            <div class="form__field-container xs12 lg4">
-                                <label class="form__label">Closing Time</label>
-                                <input class="form-control"
-                                    value="<?php if(set_value('store_closing_time')){echo set_value('store_closing_time');}else if(isset($storeDet[0]['store_closing_time'])){echo $storeDet[0]['store_closing_time'];}?>"
-                                    type="time" name="store_closing_time">
-                                <?php if(form_error('store_closing_time')){ ?>
-                                <div class="errormsg mt-2" role="alert">
-                                    <?php echo form_error('store_closing_time'); ?></div>
-                                <?php } ?>
-                            </div>
 
 
-                        </div>
-
-
-                        <!--select package  -->
-
-                        <div class="form__field-container-group gc" id="product_rate_div">
-                            <input class="form-control"
-                                value="<?php if(set_value('no_of_tables')){echo set_value('no_of_tables');}else if(isset($storeDet[0]['no_of_tables'])){echo $storeDet[0]['no_of_tables'];}?>"
-                                type="hidden" name="no_of_tables">
-
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Trade License</label>
-                                <input class="form-control"
-                                    value="<?php if(set_value('store_trade_license')){echo set_value('store_trade_license');}else if(isset($storeDet[0]['store_trade_license'])){echo $storeDet[0]['store_trade_license'];}?>"
-                                    type="text" name="store_trade_license">
-                                <?php if(form_error('store_trade_license')){ ?>
-                                <div class="errormsg mt-2" role="alert">
-                                    <?php echo form_error('store_trade_license'); ?></div>
-                                <?php } ?>
-                            </div>
-
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Location</label>
-                                <input name="store_location" class="form-control"
-                                    value="<?php if(set_value('store_location')){echo set_value('store_location');}else if(isset($storeDet[0]['store_location'])){echo $storeDet[0]['store_location'];}?>"
-                                    id="inputPassword" placeholder="">
-                            </div>
+                            <!-- Default Language -->
 
                             <div class="form__field-container xs12 lg3">
                                 <label class="form__label">Default Language</label>
@@ -307,6 +294,9 @@
                                 <?php } ?>
                             </div>
 
+
+                            <!--Status -->
+
                             <div class="form__field-container xs12 lg3">
                                 <label class="form__label">Status</label>
                                 <select class="form-select btn-square" name="is_active">
@@ -319,6 +309,23 @@
                                         No</option>
                                 </select>
                             </div>
+                        </div>
+
+
+
+
+
+                        <!--select package  -->
+
+                        <div class="form__field-container-group gc" id="product_rate_div">
+                            <input class="form-control"
+                                value="<?php if(set_value('no_of_tables')){echo set_value('no_of_tables');}else if(isset($storeDet[0]['no_of_tables'])){echo $storeDet[0]['no_of_tables'];}?>"
+                                type="hidden" name="no_of_tables">
+
+
+
+
+
 
                         </div>
 
@@ -340,11 +347,11 @@
                                     <input type="checkbox" name="checkbox[]" value="ar"
                                         <?= in_array('ar', $saved_values) ? 'checked' : '' ?>>Arabic<br>
                                 </div>
-                                <!-- <div class="errormsg mt-2" id="error_language"></div> -->
                             </div>
                         </div>
 
 
+                        <!--Store Logo -->
 
                         <div class="form__field-container-group gc" id="product_rate_div">
                             <div class="form__field-container xs12 lg12">
@@ -361,6 +368,8 @@
                             </div>
 
                         </div>
+
+                        <!--Enable Order Monitor Tabs -->
 
                         <h2 class="add-new-dish-form__section-heading">Enable Order Monitor Tabs</h2>
                         <div class="form__field-container-group gc table_monitor">
@@ -404,121 +413,8 @@
                             </div>
 
                         </div>
-
-                        <!-- serving modes -->
-                        <!-- <h2 class=" add-new-dish-form__section-heading">Pickup/Take away</h2>
-                                <div class="form__field-container-group gc" id="product_rate_div">
-
-                                    <div class="form__field-container xs12 lg4">
-
-
-                                        <input class="form-check-input" type="checkbox"
-                                            <?php echo ($storeDet[0]['is_pickup'] == 1) ? 'checked' : ''; ?>
-                                            id="checkbox_pickup_or_take_away">
-                                        <input type="hidden" name="checkbox_pickup_or_take_away"
-                                            value="<?php echo ($storeDet[0]['is_pickup'] == 1) ? '1' : '0'; ?>"
-                                            id="pickup_hidden">
-
-
-
-                                    </div>
-
-
-
-                                    <div class="form__field-container xs12 lg4">
-                                        <input name="txt_pickup_or_take_away" class="form-control"
-                                            value="<?php if(set_value('txt_pickup_or_take_away')){echo set_value('txt_pickup_or_take_away');}else if(isset($storeDet[0]['pickup_number'])){echo $storeDet[0]['pickup_number'];}?>"
-                                            id="inputPassword" placeholder="">
-                                    </div>
-
-
-                                    <div class="form__field-container xs12 lg4">
-                                        <button type="button" class="btn btn-dark" style="width: 60%;"
-                                            id="send_pickup_test_message">Send Test Message</button>
-                                    </div>
-                                </div> -->
-
-
-
-                        <!-- dining -->
-
-                        <!-- <h2 class="add-new-dish-form__section-heading">Dining</h2>
-<div class="form__field-container-group gc" id="product_rate_div">
-           
-<div class="form__field-container xs12 lg4">
-    <input class="form-check-input" type="checkbox"
-    name="checkbox_dining"
-    <?php echo ($storeDet[0]['is_dining'] == 1) ? 'checked' : ''; ?>
-    id="checkbox_dining">
-<input type="hidden" name="checkbox_dining"
-    value="<?php echo ($storeDet[0]['is_dining'] == 1) ? '1' : '0'; ?>"
-    id="dining_hidden">                           
-</div>
-            
-<div class="form__field-container xs12 lg4">                                 
-    <input name="txt_dining" class="form-control"
-    value="<?php if(set_value('txt_dining')){echo set_value('txt_dining');}else if(isset($storeDet[0]['dining_number'])){echo $storeDet[0]['dining_number'];}?>"
-    id="inputPassword" placeholder="">
-</div> 
-            
-<div class="form__field-container xs12 lg4">
-<button type="button" class="btn btn-dark " style="width: 60%;" id="send_dining_test_message">Send Test Message</button>
-</div> 
-</div> -->
-
-                        <!-- delivery -->
-
-                        <!-- <h2 class="add-new-dish-form__section-heading">Delivery</h2>
-     <div class="form__field-container-group gc" id="product_rate_div">
-     <div class="form__field-container xs12 lg4">
-        <input class="form-check-input" type="checkbox"
-                             <?php echo ($storeDet[0]['is_delivery'] == 1) ? 'checked' : ''; ?>
-                            name="checkbox_delivery" id="checkbox_delivery">
-     <input type="hidden" name="checkbox_delivery"
-                            value="<?php echo ($storeDet[0]['is_delivery'] == 1) ? '1' : '0'; ?>"
-                          id="delivery_hidden">                           
-     </div>
-                
-
-                 
- <div class="form__field-container xs12 lg4">                                 
-    <input name="txt_delivery" class="form-control"
-    value="<?php if(set_value('txt_delivery')){echo set_value('txt_delivery');}else if(isset($storeDet[0]['delivery_number'])){echo $storeDet[0]['delivery_number'];}?>"
-    id="inputPassword" placeholder="">
- </div> 
-                 
-     <div class="form__field-container xs12 lg4">
- <button type="button" class="btn btn-dark " style="width: 60%;" id="send_delivery_test_message">Send Test Message</button>
- </div> 
-</div> -->
-
-                        <div class="form__field-container-group gc d-none" id="product_rate_div">
-                            <div class="form__field-container xs12 lg12">
-
-                                <!-- <label class="form__label">whatsapp</label> -->
-                                <div class="col-sm-10">
-                                    <input class="form-check-input" type="checkbox" value="" id="is_whatsapp"
-                                        <?php echo ($storeDet[0]['whatsapp_enable'] == 1) ? 'checked' : ''; ?>>whatsapp
-                                    enable
-                                    <input type="hidden" name="is_whatsapp_check" id="is_whatsapp_check" value="0">
-                                </div>
-                                <div class="errormsg mt-2" id="error_language"></div>
-                            </div>
-                        </div>
                     </div>
-
-
-
-
-
-
-                    <!-- whatsapp enable -->
-
-
                 </div>
-
-
-
         </div>
         <input type="hidden" name="hiddencountry"
             value="<?php if(isset($storeDet[0]['store_country'])){echo $storeDet[0]['store_country'];}?>">
@@ -796,48 +692,7 @@ $(document).ready(function() {
 })
 </script>
 
-<script>
-$(document).on('click', '#is_table_tab', function(e) {
 
-
-    if ($(this).is(':checked')) {
-        $(this).val(1); // set value to 1 if checked
-    } else {
-        $(this).val(0); // set value to 0 if unchecked
-
-    }
-});
-
-$(document).on('click', '#is_pickup_tab', function(e) {
-
-    if ($(this).is(':checked')) {
-        $(this).val(1); // set value to 1 if checked
-    } else {
-        $(this).val(0); // set value to 0 if unchecked
-
-    }
-});
-
-$(document).on('click', '#is_delivery_tab', function(e) {
-
-    if ($(this).is(':checked')) {
-        $(this).val(1); // set value to 1 if checked
-    } else {
-        $(this).val(0); // set value to 0 if unchecked
-
-    }
-});
-
-$(document).on('click', '#is_room_tab', function(e) {
-
-    if ($(this).is(':checked')) {
-        $(this).val(1); // set value to 1 if checked
-    } else {
-        $(this).val(0); // set value to 0 if unchecked
-
-    }
-});
-</script>
 </body>
 
 </html>

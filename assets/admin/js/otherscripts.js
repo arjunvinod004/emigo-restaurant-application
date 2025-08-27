@@ -41,19 +41,14 @@ $(document).ready(function () {
    var base_url = 'http://localhost/emigo-restaurant-application/';
     //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
 
-    //alert(base_url);
-    // $('.table-responsive-sm').click(function () {
-    //    setTimeout(function (){
-    //     location.reload();
-    //    },3000)
-    // });
-
     $(document).on('click', '.emigo-close-btn , .reload-close-btn, .emigo-btn', function () {
         location.reload();
     });
 
 
-    // 21. add country
+
+// MARK: - Add Country
+
     $('#add_country').click(function (e) {
         // alert(1);
         let formData = new FormData($('#add-new-country')[0]); // Capture form data
@@ -2135,11 +2130,9 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-    //17. Add Store
+//MARK:  - Add Store
     $('#storeForm').on('submit', function (e) {
-
-        e.preventDefault();  // Prevent the default form submission
-
+        e.preventDefault(); 
         // Clear previous error messages
         $('.errormsg').text('');
 
@@ -2178,15 +2171,7 @@ $(document).on('click', '.edit_product', function () {
             isValid = false;
         }
 
-        if ($('#address').val().trim() === '') {
-            $('#address_error').text('Address is required.');
-            isValid = false;
-        }
-
-        if ($('#store_desc').val().trim() === '') {
-            $('#store_desc_error').text('Description is required.');
-            isValid = false;
-        }
+    
 
         if ($('input[name="contract_start_date"]').val() === '') {
             $('#error_contract_start_date').text('Contract start date is required.');
@@ -2203,39 +2188,10 @@ $(document).on('click', '.edit_product', function () {
             isValid = false;
         }
 
-        if ($('input[name="followup_remarks"]').val() === '') {
-            $('#error_followup_remarks').text('Followup remark is required.');
-            isValid = false;
-        }
 
-        if ($('#store_opening_time').val().trim() === '') {
-            $('#error_store_opening_time').text('Opening time is required.');
-            isValid = false;
-        }
-
-        if ($('#store_closing_time').val().trim() === '') {
-            $('#error_store_closing_time').text('Closing time is required.');
-            isValid = false;
-        }
-
-        // Validate 'Select Package'
-        if ($('#no_of_tables').val() === '') {
-            $('#error_no_of_tables').text('Please select a package.');
-            isValid = false;
-        }
-
-        // Validate 'Trade License'
-        if ($('#trade_license').val().trim() === '') {
-            $('#error_trade_license').text('Trade license is required.');
-            isValid = false;
-        }
-
-        // Validate 'Location'
-        if ($('#location').val().trim() === '') {
-            $('#error_location').text('Location is required.');
-            isValid = false;
-        }
-
+        
+      
+       
         // Validate 'Default Language'
         if ($('#language').val() === '') {
             $('#error_language').text('Please select a default language.');
@@ -2298,30 +2254,6 @@ $(document).on('click', '.edit_product', function () {
     });
 
 
-
-
-
-
-
-
-
-    // //1.Delete country
-    // $(".del_country").click(function () {
-    //     $('#country_id1').val($(this).data('id'));
-    // });
-
-    // $('#yes_del_country').click(function () {
-    //     $.ajax({
-    //         method: "POST",
-    //         url: base_url + 'admin/country/delete',
-    //         data: { 'id': $('#country_id1').val() },
-    //         success: function (data) {
-    //             window.location.href = base_url + 'admin/country';
-    //         }
-    //     });
-    // });
-
-
     //16. Is whatsapp enable in add store
     $(document).on('click', '#is_whatsapp', function () {
         var isChecked = $(this).is(':checked') ? 1 : 0;
@@ -2361,14 +2293,24 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-        $('#sel_gst_or_tax').change(function () {
-            var taxRate = $(this).val();
 
-            // alert(taxRate);
-            if (taxRate !== '1') {
-                $('.textbox').removeClass('d-none'); // Show the textbox group
-            } else {
-                $('.textbox').addClass('d-none'); // Hide the textbox group
+// MARK: - Select Gst or Tax change 
+
+        $('#sel_gst_or_tax').change(function () 
+        {
+            var taxRate = $(this).val();
+            var dataType = $(this).find('option:selected').data('type');
+            // alert(dataType);
+
+            if(dataType == 'vat'){
+               $('#Tax_label').text('VAT Number');
+               $('.textbox').removeClass('d-none');
+            }else if(dataType == 'gst'){
+                $('#Tax_label').text('GST Number');
+                $('.textbox').removeClass('d-none');
+            }
+            else{
+                $('#Tax_label').addClass('d-none');
             }
         });
     });

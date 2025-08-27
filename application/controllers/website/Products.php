@@ -1000,7 +1000,8 @@ $addonIds = array_column($addons, 'product_id');
     <img src="<?php echo site_url() . "uploads/product/" . $product_image; ?>" class="img-fluid rounded w-100"
         alt="Food Imageee">
     <h6 id="product_name" class="mt-2 mb-1"><?php echo $product_details->$product_name_field; ?></h6>
-    <p class="mt-2 mb-1"><?php echo $product_details->$product_desc_field; ?></p>
+    <p class="mt-2 mb-1 product_desc"><?php echo $product_details->$product_desc_field; ?></p>
+    <button class="btn btn-link p-0" id="toggleBtn">Read More</button>
 </div>
 <style>
 .d-none {
@@ -1130,6 +1131,9 @@ $addonIds = array_column($addons, 'product_id');
                         </div>
                     </div>
 
+
+
+
                     <!-- Variant Total -->
                     <div class="col-2 text-center mt-3">
                         <span class="addon-total mt-1 variantName"></span>
@@ -1195,6 +1199,8 @@ $addonIds = array_column($addons, 'product_id');
 
         // Get product and translation data
         $product = $this->Productmodel->get_product($product_id, $language);
+
+        // print_r($product);
 
         // Pass data to view
         $this->load->view('product_view', ['product' => $product]);

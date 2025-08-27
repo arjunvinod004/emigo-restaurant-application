@@ -251,12 +251,11 @@ class Store extends CI_Controller {
 			        'store_email' => $this->input->post('email'),
 			        'store_phone' => $this->input->post('phone'),
                     'store_address' => $this->input->post('address'),
-                    'store_opening_time' => $this->input->post('store_opening_time'),
-					'store_closing_time' => $this->input->post('store_closing_time'),
+                    'store_opening_time' => 0,
+					'store_closing_time' =>0,
 					'contract_start_date' => $this->input->post('contract_start_date'),
 					'contract_end_date' => $this->input->post('contract_end_date'),
 					'next_followup_date' => $this->input->post('next_followup_date'),
-					'followup_remarks' => $this->input->post('followup_remarks'),
 					'no_of_tables' => $this->input->post('no_of_tables'),
 					'store_trade_license' => $this->input->post('trade_license'),
                     'store_location' => $this->input->post('location'),
@@ -265,14 +264,6 @@ class Store extends CI_Controller {
 					'registration_no' => $bill_no,
 					'store_language' => $this->input->post('language'),
 					'store_selected_languages' => $checkbox_string,
-					// 'is_pickup' => $checkbox_pickup_or_take_away,
-					// 'pickup_number' => $combinedPickupNumber,
-					// 'is_dining' => $checkbox_dining,
-					// 'dining_number' => $combinedDiningNumber,
-					// 'is_delivery' => $checkbox_delivery,
-					// 'delivery_number' => $combinedDeliveryNumber,
-					// 'store_logo_image' => $store_logo_image,
-					// 'whatsapp_enable' => $is_whatsapp,
 					'is_pickup' => 0,
 					'pickup_number' => 0,
 					'is_dining' => 0,
@@ -282,7 +273,7 @@ class Store extends CI_Controller {
 					'store_logo_image' => $store_logo_image,
 					'whatsapp_enable' => 0,
 			        'is_active' => 1,
-					'is_approve'=>1
+					'is_approve'=>0
 			        );
 
 				//  print_r($data);exit;
@@ -545,13 +536,15 @@ class Store extends CI_Controller {
 		}
 	}
 
+//MARK:  - Get Tax Rates
 	public function getTaxRates(){
 // 		echo "here";exit;
 		$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($this->input->post('country_id'));
+		// print_r($data['tax_rates']);exit;
 // 		echo '<option value="">Select</option>';
-		echo '<option value="1">Not Applicable</option>';
+		echo '<option value="0">Not Applicable</option>';
             foreach($data['tax_rates'] as $rate) { ?>
-<option value="<?php echo $rate['tax_id']; ?>"><?php echo $rate['tax_rate']; ?></option>
+<option value="<?php echo $rate['tax_id']; ?>" data-type="<?php echo $rate['tax_type']; ?>">Applicable</option>
 <?php }
 	}
 
