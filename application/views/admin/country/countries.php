@@ -1,11 +1,6 @@
-<!-- Start right Content here -->
-<!-- ============================================================== -->
+
 <div class="">
     <div class="page-content p-2">
-
-
-
-
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -18,22 +13,13 @@
 
                 <a href="<?php echo base_url('admin/settings'); ?>"   class="add-new-dish-btn btn1">
                         <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
-                        " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
-                      Back
-                    </a>
+                        " alt="add new dish" class="add-new-dish__icon" width="23" height="23">Back</a>
             </div>
                 </div>
             </div>
             <!-- end page title -->
 
 
-            <!-- Displaying Date and Time -->
-            <!-- <?php $time=strtotime(date("Y/m/d"));
- $month=date("F",$time);
- $year=date("Y",$time);
- $date=date("d",$time);  ?>
-                          <h2 class="f-w-400"> <span><?php echo $month; ?> <?php echo $date; ?> <?php echo $year; ?><sup><i class="fa fa-circle-o f-10"></i></sup></span></h2> -->
-            <!-- Displaying Date and Time -->
             <?php 
                 if(isset($countryDet[0]['country_id'])) {
                     $path=base_url().'admin/country/edit';
@@ -45,74 +31,7 @@
                     $button_name='add';
                 }?>
 
-            <!-- <form method="post" action="<?php echo $path; ?>" enctype="multipart/form-data">
-                <input type="hidden" name="id"
-                    value="<?php  if(isset($countryDet[0]['country_id'])){echo $countryDet[0]['country_id'];}?>">
-                <div class="row bg-soft-light mb-3 border1 pt-2">
-
-                    <div class="col-md-2">
-                        <div class="mb-2 focus">
-                            <label class="form-label" for="default-input">Country Name</label>
-                            <input class="form-control"
-                                value="<?php if(isset($countryDet[0]['name'])){echo $countryDet[0]['name']; }else{ echo set_value('country_name'); } ?>"
-                                type="text" name="country_name">
-                            <?php if(form_error('country_name')){ ?>
-                            <div class="errormsg mt-2" role="alert"><?php echo form_error('country_name'); ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="mb-2 focus">
-                            <label class="form-label" for="default-input">Currency</label>
-                            <input class="form-control"
-                                value="<?php if(isset($countryDet[0]['currency'])){echo $countryDet[0]['currency']; }else{ echo set_value('currency'); } ?>"
-                                type="text" name="currency">
-                            <?php if(form_error('currency')){ ?>
-                            <div class="errormsg mt-2" role="alert"><?php echo form_error('currency'); ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="mb-2 focus">
-                            <label class="form-label" for="default-input">Support No</label>
-                            <input class="form-control"
-                                value="<?php if(isset($countryDet[0]['support_no'])){echo $countryDet[0]['support_no']; }else{ echo set_value('support_no'); } ?>"
-                                type="text" name="supportno">
-                            <?php if(form_error('supportno')){ ?>
-                            <div class="errormsg mt-2" role="alert"><?php echo form_error('supportno'); ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="mb-2 focus">
-                            <label class="form-label" for="default-input">
-                                Support Email
-                            </label>
-                            <input class="form-control"
-                                value="<?php if(isset($countryDet[0]['support_email'])){echo $countryDet[0]['support_email']; }else{ echo set_value('support_email'); } ?>"
-                                type="text" name="supportemail">
-                            <?php if(form_error('supportemail')){ ?>
-                            <div class="errormsg mt-2" role="alert"><?php echo form_error('supportemail'); ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-
-
-                    <div class="col-md-2">
-                        <div class="mb-4">
-                            <label class="form-label" for="default-input">&nbsp;</label><br>
-                            <button class="btn btn-success w-md" type="submit"
-                                name="<?php echo $button_name; ?>"><?php echo $button_text; ?></button>
-                        </div>
-                    </div>
-
-            </form> -->
-
-            <!-- Section 2 -->
+          
 
 
 
@@ -120,8 +39,6 @@
 
 
         </div>
-
-
 
 
 
@@ -149,8 +66,6 @@
                                 <th>Name</th>
                                 <th>Code</th>
                                 <th>Currency</th>
-                                <th>Support No</th>
-                                <th>Support Email</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -165,8 +80,6 @@
                                 <td><?php echo $val['name'];?></td>
                                 <td><?php echo $val['code'];?></td>
                                 <td><?php echo $val['currency'];?></td>
-                                <td><?php echo $val['support_no'];?></td>
-                                <td><?php echo $val['support_email'];?></td>
                                 <td class="pb-0 pt-0 d-flex">
                                     <!-- <form class="m-0"  method="post"> -->
                                         <input type="hidden" name="id" value="<?php echo $val['country_id']; ?>">
@@ -182,7 +95,7 @@
                             </tr>
                             <?php $count++; }} ?>
                         </tbody>
-                    </table>
+                                    </table>
                 </div>
             </div>
         </div>
@@ -252,26 +165,6 @@
 
                             </div>
                         </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Support No</label>
-                                <input class="form-control" value="" placeholder="Support No" type="text"
-                                name="country_support">
-                                <span class="error errormsg mt-2" id="country_support_error"></span>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Support Email</label>
-                                <input class="form-control" value="" placeholder="Email" type="text"
-                                name="country_email">
-                                <span class="error errormsg mt-2" id="country_email_error"></span>
-                            </div>
-                        </div>
-
                         
 
                         <div class="col-md-12">
@@ -295,7 +188,7 @@
 
 
 
-<!-- edit country -->
+<!-- ! SECTION: HEADER -->
     <div class="modal fade" id="edit-country" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -341,26 +234,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Support No</label>
-                                <input class="form-control" value="" placeholder="Support No" type="text"
-                                name="country_support" id="country_support">
-                                <span class="error errormsg mt-2" id="country_edit_support_error"></span>
-                            </div>
-                        </div>
 
-
-                        <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Support Email</label>
-                                <input class="form-control" id="country_email" value="" placeholder="Email" type="text"
-                                name="country_email">
-                                <span class="error errormsg mt-2" id="country_edit_email_error"></span>
-                            </div>
-                        </div>
-
-                        
 
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
@@ -382,7 +256,7 @@
     <!-- edit country -->
 
 
-    <!-- delete user -->
+<!-- delete user -->
 <div class="modal fade " id="delete-country" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">

@@ -78,6 +78,7 @@ class Country extends CI_Controller {
 		$this->session->set_flashdata('error','Country deleted successfully');
 	}
 	
+	//MARK: Add country
 	public function add(){
         $data['countries']=$this->Countrymodel->listcountries();
 	    // if(isset($_POST['add']))
@@ -88,8 +89,6 @@ class Country extends CI_Controller {
 			$this->form_validation->set_rules('country_name', 'name', 'required');
 			$this->form_validation->set_rules('country_code', 'code', 'required');
 			$this->form_validation->set_rules('country_currency', 'Currency', 'required');
-			$this->form_validation->set_rules('country_support', 'Support', 'required');
-			$this->form_validation->set_rules('country_email', 'Email', 'required|valid_email');
 
 		
 			if($this->form_validation->run() == FALSE) 
@@ -97,17 +96,9 @@ class Country extends CI_Controller {
 				$response = [
 					'success' => false,
 					'errors' => [
-						// Uncomment the fields you want to validate
-						// 'user_name' => form_error('user_name'),
-						// 'user_email' => form_error('user_email'),
-						// 'user_address' => form_error('user_address'),
-						// 'user_phoneno' => form_error('user_phoneno'),
 						'country_name' => form_error('country_name'),
 						'country_code' => form_error('country_code'),
-						'country_currency' => form_error('country_currency'),
-						'country_support' => form_error('country_support'),
-						'country_email' => form_error('country_email'),
-						// 'role' => form_error('role'),
+						'country_currency' => form_error('country_currency')
 					]
 				];
 			
@@ -120,12 +111,10 @@ class Country extends CI_Controller {
 			        'name' => $this->input->post('country_name'),
 					'currency' => $this->input->post('country_currency'),
 					'code' => $this->input->post('country_code'),
-					'support_no' => $this->input->post('country_support'),
-                    'support_email' => $this->input->post('country_email'),
 			        'is_active' => 1,
 			        );
 
-					$this->db->where('name', $data['name']);
+			$this->db->where('name', $data['name']);
             $this->db->or_where('currency', $data['currency']);
             $query = $this->db->get('countries');
         
@@ -136,80 +125,11 @@ class Country extends CI_Controller {
                 $this->Countrymodel->insert($data);
                 echo json_encode(['success' => 'success']);
             }
-
-
-					//print_r($data);exit;
-				// $this->Countrymodel->insert($data);
-				// echo json_encode(['success' => 'success']);
-				// $this->session->set_flashdata('success','New record inserted...');
-				// redirect('admin/country');
 			}
 		// }
 		
 	}
-	
-	// public function edit(){
-    //     // $data['countries']=$this->Countrymodel->listcountries();
-	//     // if(isset($_POST['edit']))
-	// 	// {
-            
-	// 	    $id=$this->input->post('id'); //echo $id;die();
-	// 		$countryDet=$this->Countrymodel->get($id);
-	// 		//  print_r($countryDet);exit;
-	// 		$this->load->library('form_validation');
-	// 	    // $this->form_validation->set_error_delimiters('', ''); 
-	// 		$this->form_validation->set_rules('country_name', 'Country name', 'required');
-	// 		$this->form_validation->set_rules('country_currency', 'Currency', 'required');
-	// 		$this->form_validation->set_rules('country_support', 'Support', 'required');
-	// 		$this->form_validation->set_rules('country_email', 'Email', 'required');
-
-	// 		if (!$countryDet || !is_array($countryDet)) {
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'message' => 'Invalid countryDet data.'
-    //             ]);
-    //             return;
-    //         }
-		
-	// 		// if ($this->form_validation->run() == FALSE) 
-	// 		// {
-	// 		// 	$response = [
-	// 		// 		'success' => false,
-	// 		// 		'errors' => [
-	// 		// 			// Uncomment the fields you want to validate
-	// 		// 			// 'user_name' => form_error('user_name'),
-	// 		// 			// 'user_email' => form_error('user_email'),
-	// 		// 			// 'user_address' => form_error('user_address'),
-	// 		// 			// 'user_phoneno' => form_error('user_phoneno'),
-	// 		// 			'country_name' => form_error('country_name'),
-	// 		// 			'country_currency' => form_error('country_currency'),
-	// 		// 			'country_support' => form_error('country_support'),
-	// 		// 			'country_email' => form_error('country_email'),
-	// 		// 			// 'role' => form_error('role'),
-	// 		// 		]
-	// 		// 	];
-			
-	// 		// 	echo json_encode($response);
-	// 		// }
-	// 		// else
-	// 		{
-
-	// 			$data = array(
-	// 		        'name' => $countryDet['name'],
-	// 				'currency' => $countryDet['currency'],
-	// 				'support_no' => $countryDet['support_no'],
-    //                 'support_email' => $countryDet['country_email'],
-	// 		        'is_active' => 1,
-	// 		        );
-	// 				echo json_encode(['success' => 'success']);
-	// 				print_r($data);exit;
-	// 			// $this->session->set_flashdata('success','Country details updated...');
-	// 			// redirect('admin/country');
-	// 		}
-	// 	// }
-		
-	// }
-
+	//MARK: Edit country
 	public function edit(){
 		$id = $this->input->post('id');
         $edit_country = $this->Countrymodel->get($id); 
@@ -225,8 +145,6 @@ class Country extends CI_Controller {
                 'name' => $edit_country['name'] ?? null,
 				'code' => $edit_country['code'],
                 'currency' => $edit_country['currency'],
-                'support_no' => $edit_country['support_no'],
-                'support_email' => $edit_country['support_email'],
                 'is_active' => 1,
         ];
         echo json_encode([
@@ -240,8 +158,7 @@ class Country extends CI_Controller {
 		$this->form_validation->set_rules('country_name', 'Country name', 'required');
 		$this->form_validation->set_rules('country_code', 'Country code', 'required');
 		$this->form_validation->set_rules('country_currency', 'Currency', 'required');
-		$this->form_validation->set_rules('country_support', 'Support', 'required');
-		$this->form_validation->set_rules('country_email', 'Email', 'required');
+		
 
 		$id = $this->input->post('hidden_country_id');
 
@@ -253,8 +170,6 @@ class Country extends CI_Controller {
 					'country_name' => form_error('country_name'),
 					'country_code' => form_error('country_code'),
 					'country_currency' => form_error('country_currency'),
-					'country_support' => form_error('country_support'),
-					'country_email' => form_error('country_email'),
 				]
 			];
 		
@@ -265,8 +180,6 @@ class Country extends CI_Controller {
 				'name' => $this->input->post('country_name'),
 				'code' => $this->input->post('country_code'),
 				'currency' => $this->input->post('country_currency'),
-				'support_no' => $this->input->post('country_support'),
-				'support_email' => $this->input->post('country_email'),
 				'is_active' => 1,
 				);
 				$this->Countrymodel->updatecountrydetails($id,$data);
