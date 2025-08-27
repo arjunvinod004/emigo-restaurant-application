@@ -2267,9 +2267,11 @@ $(document).on('click', '.edit_product', function () {
             if(dataType == 'vat'){
                $('#Tax_label').text('VAT Number');
                $('.textbox').removeClass('d-none');
+                $('#Tax_label').removeClass('d-none');
             }else if(dataType == 'gst'){
                 $('#Tax_label').text('GST Number');
                 $('.textbox').removeClass('d-none');
+                 $('#Tax_label').removeClass('d-none');
             }
             else{
                 $('#Tax_label').addClass('d-none');
