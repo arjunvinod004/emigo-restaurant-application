@@ -598,30 +598,6 @@
 
 
 
-            <!--modal for delete confirmation-->
-            <div class="modal fade" id="delete-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-sm" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title" id="exampleModalLabel"><?php echo confirm; ?></h1>
-                            <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="delete_product_id" value="" />
-                            <?php echo are_you_sure; ?>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                            <button class="btn btn-secondary" id="yes_del_product" type="button"
-                                data-bs-dismiss="modal">Yes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--modal for delete confirmation-->
-
-
 
 
 

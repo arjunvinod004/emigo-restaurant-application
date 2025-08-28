@@ -1,4 +1,3 @@
-
 <div class="">
     <div class="page-content p-2">
         <div class="container">
@@ -33,17 +32,7 @@
                     $button_text='Save';
                     $button_name='add';
                 }?>
-
-          
-
-
-
-
-
-
         </div>
-
-
 
         <div class="row">
 
@@ -69,6 +58,12 @@
                                 <th>Name</th>
                                 <th>Code</th>
                                 <th>Currency</th>
+                                <!-- Show this only support page -->
+                                <?php if (!isset($page) || $page == 'support') { ?>
+                                <th>Support Number</th>
+                                <th>Support Email</th>
+                                <?php } ?>
+                                <!-- Show this only support page -->
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -83,12 +78,18 @@
                                 <td><?php echo $val['name'];?></td>
                                 <td><?php echo $val['code'];?></td>
                                 <td><?php echo $val['currency'];?></td>
+                                <!-- Show this only support page -->
+                                <?php if (!isset($page) || $page == 'support') { ?>
+                                <td><?php echo $val['support_number'];?></td>
+                                <td><?php echo $val['support_email'];?></td>
+                                <?php } ?>
+                                <!-- Show this only support page -->
                                 <td class="pb-0 pt-0 d-flex">
-                                    <!-- <form class="m-0"  method="post"> -->
+                                   
                                         <input type="hidden" name="id" value="<?php echo $val['country_id']; ?>">
                                         <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
                                             data-id="<?php echo $val['country_id']; ?>" data-bs-toggle="modal"  data-bs-target="#edit-country"><i class="fa fa-edit"></i></button>
-                                    <!-- </form> -->
+                                   
 
                                     <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button" data-bs-toggle="modal"
                                         data-id="<?php echo $val['country_id']; ?>"
@@ -236,6 +237,22 @@
 
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label">Support Number</label>
+                                <input class="form-control" value="" placeholder="Support Number" type="text"
+                                    name="support_number" id="support_number">
+                                    <span class="error errormsg mt-2" id="country_edit_support_number_error"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label">Support Email</label>
+                                <input class="form-control" value="" placeholder="Support Email" type="text"
+                                    name="support_email" id="support_email">
+                                    <span class="error errormsg mt-2" id="country_edit_support_email_error"></span>
+                            </div>
+                        </div>
 
 
 
@@ -259,52 +276,6 @@
     <!-- edit country -->
 
 
-<!-- delete user -->
-<div class="modal fade " id="delete-country" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- if response within jquery -->
-                <div class="message d-none" role="alert"></div>
-                <input type="hidden" name="id" id="delete_id" value="" />
-                <?php echo are_you_sure; ?>
-            </div>
-            <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                <button class="btn btn-secondary" id="yes_del_user" type="button" data-bs-dismiss="modal">Yes</button>
-            </div>
-
-            </form>
-        </div>
-    </div>
-</div>
-<!-- delete user -->
 
 
-
-
-
-
-    <!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
-
-    <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
+<script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
