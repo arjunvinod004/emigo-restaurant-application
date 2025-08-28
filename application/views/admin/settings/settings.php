@@ -38,7 +38,7 @@
 
         <a href="<?php echo base_url(); ?>admin/country" class="settings-content__btn btn1" ><img
                     class="settings-content__btn-icon"
-                    src="https://img.icons8.com/fluency/23/country.png" alt="edit holidays">Country</a>
+                    src="https://img.icons8.com/fluency/23/country.png" alt="edit holidays">Countries</a>
 
             <a href="<?php echo base_url(); ?>admin/tax" class="settings-content__btn btn1"><img
                     class="settings-content__btn-icon"
@@ -51,10 +51,10 @@
                     alt="add/list user">Category</a>
 
                     
-            <a href="<?php echo base_url(); ?>admin/cooking" class="settings-content__btn btn1 close-order"><img class="settings-content__btn-icon"
+            <!-- <a href="<?php echo base_url(); ?>admin/cooking" class="settings-content__btn btn1 close-order"><img class="settings-content__btn-icon"
                     src="https://img.icons8.com/color/30/chef-cooking-skin-type-3.png" alt="add/list user">Cookings</a>
             <a href="<?php echo base_url(); ?>admin/variants" class="settings-content__btn btn1 clearstock"><img class="settings-content__btn-icon"
-                    src="https://img.icons8.com/color/30/pizza.png" alt="add/list user">Variants</a>
+                    src="https://img.icons8.com/color/30/pizza.png" alt="add/list user">Variants</a> -->
             <a href="<?php echo base_url(); ?>admin/user" class="settings-content__btn btn1" id="list-table"><img class="settings-content__btn-icon"
                     src="https://img.icons8.com/color/30/user.png"
                     alt="add/list user">User</a>

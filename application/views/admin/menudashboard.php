@@ -42,19 +42,11 @@
         </li>
 
         <li class="application-navigation__li">
-            <a href="<?php echo base_url(); ?>admin/support"
+            <a href="<?php echo base_url(); ?>admin/settings/support"
                 class="application-navigation__a <?php echo ($controller == 'support') ? 'application-navigation__a--active' : ''; ?>">Support
 
             </a>
         </li>
-        <!-- <li class="application-navigation__li">
-            <a href="<?php echo base_url('owner/settings'); ?>"
-                class="application-navigation__a <?php echo ($controller == 'variant') ? 'application-navigation__a--active' : ''; ?>">Variant</a>
-        </li>
-        <li class="application-navigation__li">
-            <a href="<?php echo base_url('owner/settings'); ?>"
-                class="application-navigation__a <?php echo ($controller == 'user') ? 'application-navigation__a--active' : ''; ?>">User</a>
-        </li> -->
 
         <li class="application-navigation__li">
             <a href="<?php echo base_url('admin/login/logout'); ?>" class="application-navigation__a">Logout</a>

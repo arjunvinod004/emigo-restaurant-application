@@ -15,7 +15,6 @@ public function __construct() {
     }
 }
 
-
 public function index()
 {
     $data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
@@ -26,9 +25,8 @@ public function index()
 
 
 public function Support(){
-    $data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
+    $data['page'] = "support";
     $data['countries']=$this->Countrymodel->listcountries();
-    $data['stores']=$this->Storemodel->liststores();
-    $this->render_admin_header('admin/support', $data); 
+    $this->render_admin_header('admin/country/countries', $data); 
 }
 }
