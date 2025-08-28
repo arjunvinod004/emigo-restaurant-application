@@ -2481,11 +2481,9 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-// 16. approval button click in store page
+//MARK: - Approve store
    $('.approve').on('click', function () {
             var id = $(this).attr('data-id');
-            // alert(id);
-
             $.ajax({
                 method: "POST",
                 url: base_url + "admin/Pendingstores/approve",
@@ -2493,14 +2491,7 @@ $(document).on('click', '.edit_product', function () {
                     'id': id
                 },
                 success: function (data) {
-                  $('#successModal .modal-body').text('Store approved successfully');
-                        $('#successModal').modal('show');
-                    setTimeout(function () {
-                     $('#successModal').modal('hide');  
-                     location.reload(); 
-                    },1500)
-
-                   // window.location.href = base_url + 'admin/store';
+                  showPopupAlert('success', 'Store approved...', true);
                 }
             });
 

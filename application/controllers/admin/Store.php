@@ -53,84 +53,22 @@ class Store extends My_Controller {
 		}
 	}
 
-
+	//MARK: - Add store view
 	public function addstore(){
-		$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-        $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-        $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
 		$data['countries']=$this->Countrymodel->listcountries();
 		$data['packages']=$this->Packagemodel->listpackages();
-		$this->load->view('admin/header',$data);
-		$this->load->view('admin/menudashboard',$data);
-		$this->load->view('admin/store/addstore',$data);
-		$this->load->view('admin/footer',$data);
-
+		$this->render_admin_header('admin/store/addstore', $data);
 	}
-
-
-
-
+	//MARK: - Edit store view
 	public function editstore($id){
 		$data['countries']=$this->Countrymodel->listcountries();
 		$data['storeDet']=$this->Storemodel->get($id);
 		$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($data['storeDet'][0]['store_country']);
-		//  print_r($data['tax_rates']);exit;
-
-		//  echo $id; exit;
-
-		$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;
-		$data['countries']=$this->Countrymodel->listcountries();
 		$data['packages']=$this->Packagemodel->listpackages();
-		$this->load->view('admin/header',$data);
-		$this->load->view('admin/menudashboard',$data);
-		$this->load->view('admin/store/editstore',$data);
-		$this->load->view('admin/footer',$data);
+		$this->render_admin_header('admin/store/editstore', $data);
 	}
 
-	
+	//MARK: - Store list
 	public function index()
 	{
 		$data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
@@ -513,14 +451,11 @@ class Store extends My_Controller {
 
 //MARK:  - Get Tax Rates
 	public function getTaxRates(){
-// 		echo "here";exit;
 		$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($this->input->post('country_id'));
-		// print_r($data['tax_rates']);exit;
-// 		echo '<option value="">Select</option>';
 		echo '<option value="0">Not Applicable</option>';
             foreach($data['tax_rates'] as $rate) { ?>
-<option value="<?php echo $rate['tax_id']; ?>" data-type="<?php echo $rate['tax_type']; ?>">Applicable</option>
-<?php }
+				<option value="<?php echo $rate['tax_id']; ?>" data-type="<?php echo $rate['tax_type']; ?>">Applicable</option>
+			<?php }
 	}
 
 
