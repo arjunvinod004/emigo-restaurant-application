@@ -95,7 +95,7 @@
                                             if(!empty($listfollowupuser)){
                                             $count = 1;
                                             foreach($listfollowupuser as $val){ ?>
-                                            <option value=" <?php echo $val['store_id']; ?>">
+                                            <option value="<?php echo $val['Name']; ?>">
                                                 <?php echo $val['Name']; ?></option>
 
                                             <?php $count++; }} ?>
@@ -157,7 +157,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title" id="exampleModalLabel">Edit Country</h2>
+                    <h2 class="modal-title" id="exampleModalLabel">Edit Followup</h2>
                     <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -171,9 +171,14 @@
                                 <div class="mb-2">
                                     <label class="form-label" for="default-input">Username</label>
                                     <select name="followup_edit_user" id="followup_edit_user" class="form-select">
-                                        <option value="Emigo">Emigo</option>
-                                        <option value="Emigo User">Emigo User</option>
-                                        <option value="Vishnu">Vishnu</option>
+                                        <?php
+                                            if(!empty($listfollowupuser)){
+                                            $count = 1;
+                                            foreach($listfollowupuser as $val){ ?>
+                                        <option value="<?php echo $val['Name']; ?>">
+                                            <?php echo $val['Name']; ?>
+                                        </option>
+                                        <?php $count++; }} ?>
                                     </select>
                                     <span class="error errormsg mt-2" id="followup_edit_user_error"></span>
 
