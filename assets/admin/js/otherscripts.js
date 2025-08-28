@@ -1,10 +1,7 @@
-
-
-//OWNER SCRIPTS
-//15. Get current date and time in owner dashboard
+//MARK: - Import
+import { showPopupAlert } from './common.js';
 
 $(document).ready(function () {
-    //alert(1);
 
    var base_url = 'http://localhost/emigo-restaurant-application/';
     //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
@@ -112,8 +109,8 @@ $(document).ready(function () {
                     $('#country_name').val(response.data.name);
                     $('#country_code').val(response.data.code);
                     $('#country_currency').val(response.data.currency);
-                    $('#country_support').val(response.data.support_no);
-                    $('#country_email').val(response.data.support_email);
+                    $('#support_number').val(response.data.support_number);
+                    $('#support_email').val(response.data.support_email);
                     // $('#country_id').val(response.data.country_id);
                     $('#edit-country').modal('show');
                 }
@@ -130,15 +127,9 @@ $(document).ready(function () {
     });
 
 
-    // 23. update country
-
-
+    //MARK: - Update Country
     $('#save_country').click(function (e) {
         var save_country = $('#hidden_country_id').val();
-        // alert(save_country);
-        // var id = $(this).attr('data-id');
-        // $('#hidden_country_id').val(id);
-        // alert(id);
         let formData = new FormData($('#edit_save_country')[0]);
         formData.append('hidden_country_id', save_country);
 
@@ -153,15 +144,7 @@ $(document).ready(function () {
             success: function (response) {
                 console.log(response);
                 if (response.success === 'success' && response.data) {
-                    setTimeout(function () {
-                        $('#successModal .modal-body').text('Country Updated successfully');
-                        $('#successModal').modal('show');
-                        $('#edit-country').modal('hide');
-                        setTimeout(function () {
-                            $('#successModal').modal('hide');
-                            location.reload();
-                        }, 1000);
-                    }, 1000);
+                    showPopupAlert('success', 'Record updated...', true);
                 }
 
                 else {
@@ -184,27 +167,18 @@ $(document).ready(function () {
                     else {
                         $('#country_edit_currency_error').html('');
                     }
-
-                    if (response.errors.country_support) {
-                        $('#country_edit_support_error').html(response.errors.country_support);
+                    if (response.errors.support_number) {
+                        $('#country_edit_support_number_error').html(response.errors.support_number);
                     }
                     else {
-                        $('#country_edit_support_error').html('');
+                        $('#country_edit_support_number_error').html('');
                     }
-
-                    if (response.errors.country_email) {
-                        $('#country_edit_email_error').html(response.errors.country_email);
+                    if (response.errors.support_email) {
+                        $('#country_edit_support_email_error').html(response.errors.support_email);
                     }
                     else {
-                        $('#country_edit_email_error').html('');
+                        $('#country_edit_support_email_error').html('');
                     }
-
-                    if (response.errors) {
-                        // alert(response.errors);
-                    }
-                    // $('#successModal .modal-body').text('Country Updated successfully');
-                    // $('#successModal').modal('show');
-                    // $('#edituser').modal('hide');
                 }
             },
             error: function (xhr) {

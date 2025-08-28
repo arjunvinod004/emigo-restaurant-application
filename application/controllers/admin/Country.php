@@ -33,6 +33,7 @@ class Country extends My_Controller {
 	
 	public function index()
 	{
+		$data['page'] = "country";
 	    $data['countries']=$this->Countrymodel->listcountries();
 		$this->render_admin_header('admin/country/countries', $data);
 	}
@@ -110,6 +111,8 @@ class Country extends My_Controller {
                 'name' => $edit_country['name'] ?? null,
 				'code' => $edit_country['code'],
                 'currency' => $edit_country['currency'],
+                'support_number' => $edit_country['support_number'],
+                'support_email' => $edit_country['support_email'],
                 'is_active' => 1,
         ];
         echo json_encode([
@@ -123,6 +126,8 @@ class Country extends My_Controller {
 		$this->form_validation->set_rules('country_name', 'Country name', 'required');
 		$this->form_validation->set_rules('country_code', 'Country code', 'required');
 		$this->form_validation->set_rules('country_currency', 'Currency', 'required');
+		$this->form_validation->set_rules('support_number', 'Number', 'required|numeric|min_length[10]|max_length[10]');
+		$this->form_validation->set_rules('support_email', 'Email', 'required|valid_email');
 		
 
 		$id = $this->input->post('hidden_country_id');
@@ -135,6 +140,8 @@ class Country extends My_Controller {
 					'country_name' => form_error('country_name'),
 					'country_code' => form_error('country_code'),
 					'country_currency' => form_error('country_currency'),
+					'support_number' => form_error('support_number'),
+					'support_email' => form_error('support_email'),
 				]
 			];
 		
@@ -145,6 +152,8 @@ class Country extends My_Controller {
 				'name' => $this->input->post('country_name'),
 				'code' => $this->input->post('country_code'),
 				'currency' => $this->input->post('country_currency'),
+				'support_number' => $this->input->post('support_number'),
+				'support_email' => $this->input->post('support_email'),
 				'is_active' => 1,
 				);
 				$this->Countrymodel->updatecountrydetails($id,$data);

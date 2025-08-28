@@ -1,3 +1,12 @@
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body text-success fw-bold"></div>
+    </div>
+  </div>
+</div>
+<!-- success modal -->
 <div class="application-footer">
     <div class="application-footer__container_support container">
         <div class="application-footer__company-logo ">
@@ -45,11 +54,7 @@
 <!-- JAVASCRIPT -->
 <script src="<?php echo base_url();?>assets/admin/js/jquery-3.7.1.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/bootstrap.min.js"></script>
-<!-- <script src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script> -->
-<script src="<?php echo base_url();?>assets/admin/js/otherscripts.js"></script>
-<!-- <script src="<?php echo base_url();?>assets/admin/js/otherscripts1.js"></script> -->
-<!-- <script src="<?php echo base_url();?>assets/admin/js/order-dashboard.js"></script>
-<script src="<?php echo base_url();?>assets/admin/js/kitchen-dashboard.js"></script> -->
+<script type="module" src="<?php echo base_url();?>assets/admin/js/otherscripts.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/scripts.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/datepicker.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/rooms.js"></script>
