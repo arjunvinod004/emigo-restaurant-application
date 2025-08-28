@@ -67,7 +67,7 @@
                           >
                           <img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
-                                width="23" height="24"> Edit Store
+                                width="23" height="24"> View Store
                             </a>
                                 
 
@@ -92,18 +92,6 @@
                                 
                        
                         
-                       
-                        
-                        <!-- <?php if ($this->session->userdata('roleid') == 2){ ?> -->
-                        <a data-bs-toggle="modal" data-bs-target="#Edit-dish"
-                            data-id="<?php echo $val['store__id']; ?>"
-                           
-                            href=""
-                            class="product-list__item-buttons-block-btn btn6 edit-btn product-list__item-buttons-block-edit-btn"><img
-                                class="product-list__item-button-img"
-                                src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
-                                width="23" height="22">Edit Dish</a>
-                        <!-- <?php } ?> -->
                     </div>
 
 
@@ -116,65 +104,7 @@
 
         </div>
 
-            <!-- <div class="row">
-                <div class="">
-                    <div class="table-responsive-sm">
-
-                        <table id="example" class="table table-striped" style="width:100%">
-                            <thead style="background: #e5e5e5;">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php
-                       if(!empty($stores)){
-                       $count = 1;
-                       foreach($stores as $val){ ?>
-                                <tr>
-                                    <td><?php echo $count;?></td>
-                                    <td><?php echo $val['store_name'];?></td>
-                                    <td><?php echo $val['store_email'];?></td>
-                                    <td><?php echo $val['store_phone'];?></td>
-                                    <td><?php if($val['is_active'] == 1){ ?> <span class="badge-success">Active</span>
-                                        <?php } else { ?> <span class="badge-danger">Inactive</span> <?php }?></td>
-                                    <td class="pb-0 pt-0 d-flex">
-                                      
-                                            <input type="hidden" name="id" value="<?php echo $val['store_id']; ?>">
-                                            <button class="btn tblEditBtn edit_store pl-0 pr-0" 
-                                                data-bs-toggle="tooltip" data-id="<?php echo $val['store_id']; ?>"
-                                                data-bs-original-title="Edit Store" data-bs-target="#edit-store"><i class="fa fa-edit"></i></button>
-                                       
-
-                                        <a class="btn tblDelBtn pl-0 pr-0 del_store" type="button"
-                                            data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
-                                            data-bs-original-title="Delete Store" data-bs-target="#exampleModal"><i
-                                                class="fa fa-trash"></i></a>
-
-
-                                        <a class="product_assign btn btn-primary"
-                                            data-id="<?php echo $val['store_id']; ?>"
-                                            data-name="<?php echo $val['store_name']; ?>" data-bs-toggle="modal"
-                                            data-bs-target="#emp_informations" class="btn tblLogBtn pl-0 pr-0"
-                                            type="button" class="btn btn-secondary" data-toggle="tooltip"
-                                            data-placement="top" title="Storewise Product Assign">
-                                            Product Assign
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php $count++; }} ?>
-                            </tbody>  
-                        </table>
-                    </div>
-                </div>
-            </div> -->
-
+           
 
 
             <!-- Modal for detailed product assign -->
@@ -262,26 +192,6 @@
     </div>
 
     <!-- qr code end -->
-
-
-     <!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
 
 
 

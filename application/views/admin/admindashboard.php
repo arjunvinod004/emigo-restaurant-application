@@ -1,4 +1,3 @@
-<?php echo $title; ?>
 <div class="application-content main-menu-content">
     <div class="application-content__container container">
         <div class="application-main-menus">
