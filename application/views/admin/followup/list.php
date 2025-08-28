@@ -32,95 +32,23 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Emigo</td>
-                                <td>
-                                    <?php echo date('Y-m-d');?>
-                                </td>
-                                <td>Date changed to 1 month</td>
-                                <td class="pb-0 pt-0 d-flex">
-                                    <!-- Edit Button -->
-                                    <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
-                                        data-bs-toggle="modal" data-bs-target="#edit-country"><i
-                                            class="fa fa-edit"></i></button>
-                                    <!-- Delete Button -->
-
-                                    <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button"
-                                        data-bs-toggle="modal" data-bs-original-title="Delete Country"
-                                        data-bs-target="#exampleModal"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>2</td>
-                                <td>Alan</td>
-                                <td>
-                                    2025-08-29
-                                </td>
-                                <td>Date changed to 2 month</td>
-                                <td class="pb-0 pt-0 d-flex">
-                                    <!-- Edit Button -->
-                                    <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
-                                        data-bs-toggle="modal" data-bs-target="#edit-country"><i
-                                            class="fa fa-edit"></i></button>
-                                    <!-- Delete Button -->
-
-                                    <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button"
-                                        data-bs-toggle="modal" data-bs-original-title="Delete Country"
-                                        data-bs-target="#exampleModal"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
-
-
-                            <tr>
-                                <td>3</td>
-                                <td>Vishnu</td>
-                                <td>
-                                    2025-08-30
-                                </td>
-                                <td>Date changed to 3 month</td>
-                                <td class="pb-0 pt-0 d-flex">
-                                    <!-- Edit Button -->
-                                    <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
-                                        data-bs-toggle="modal" data-bs-target="#edit-country"><i
-                                            class="fa fa-edit"></i></button>
-                                    <!-- Delete Button -->
-
-                                    <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button"
-                                        data-bs-toggle="modal" data-bs-original-title="Delete Country"
-                                        data-bs-target="#exampleModal"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
-
-
-                        </tbody>
-
-                        <tbody class="d-none">
 
                             <?php
-                       if(!empty($countries)){
+                       if(!empty($followup)){
                        $count = 1;
-                       foreach($countries as $val){ ?>
+                       foreach($followup as $val){ ?>
                             <tr>
                                 <td><?php echo $count;?></td>
-                                <td><?php echo $val['name'];?></td>
-                                <td><?php echo $val['code'];?></td>
-                                <td><?php echo $val['currency'];?></td>
+                                <td><?php echo $val['entered_user'];?></td>
+                                <td><?php echo $val['date_and_time'];?></td>
+                                <td><?php echo $val['remark'];?></td>
                                 <td class="pb-0 pt-0 d-flex">
-                                    <!-- <form class="m-0"  method="post"> -->
-                                    <input type="hidden" name="id" value="<?php echo $val['country_id']; ?>">
-                                    <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
-                                        data-id="<?php echo $val['country_id']; ?>" data-bs-toggle="modal"
-                                        data-bs-target="#edit-country"><i class="fa fa-edit"></i></button>
-                                    <!-- </form> -->
-
-                                    <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button"
-                                        data-bs-toggle="modal" data-id="<?php echo $val['country_id']; ?>"
-                                        data-bs-original-title="Delete Country" data-bs-target="#exampleModal"><i
-                                            class="fa fa-trash"></i></a>
+                                    <!--Edit-->
+                                    <input type="hidden" name="id" value="<?php echo $val['follow_up_id']; ?>">
+                                    <button class="btn tblEditBtn edit_followup pl-0 pr-0" type="submit" id=""
+                                        data-id="<?php echo $val['follow_up_id']; ?>" data-bs-toggle="modal"
+                                        data-bs-target="#edit-followup"><i class="fa fa-edit"></i></button>
                                 </td>
                             </tr>
                             <?php $count++; }} ?>
@@ -128,7 +56,9 @@
                     </table>
 
                     <div class="float-end">
-                        <button class=" btn btn-danger w-md" type="button" id="">Close Followup</button>
+                        <button class=" btn btn-danger w-md" id="delete_followup" data-id="<?php echo $store_id; ?>"
+                            type="button">Close
+                            Followup</button>
                     </div>
                 </div>
             </div>
@@ -138,30 +68,39 @@
 
         <div class="modal fade" id="add-followup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
+
             <div class="modal-dialog" role="document">
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 class="modal-title" id="exampleModalLabel">Add Followup</h2>
                         <button class="emigo-close-btn" type="button" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
+
+
                     <div class="modal-body">
                         <div class="row bg-soft-light mb-3 border1 pt-2 pb-2">
                             <form class="row mt-0 mb-0" id="add-new-followup" method="post"
                                 enctype="multipart/form-data">
-                                <div class="col-md-4">
+                                <input type="hidden" class="form-control" name="store_id" id="store_id"
+                                    value="<?php echo $store_id; ?>">
+                                <!-- User -->
+
+                                <div class=" col-md-4">
                                     <div class="mb-2">
                                         <label class="form-label" for="default-input">User</label>
                                         <select name="followup_user" id="" class="form-select">
-                                            <option value="1">Emigo</option>
-                                            <option value="2">Emigo User</option>
-                                            <option value="3">Vishnu</option>
-
+                                            <option value="Emigo">Emigo</option>
+                                            <option value="Emigo User">Emigo User</option>
+                                            <option value="Vishnu">Vishnu</option>
                                         </select>
                                         <span class="error errormsg mt-2" id="followup_user_error"></span>
                                         <div id="general_error" class="error errormsg"></div>
                                     </div>
                                 </div>
+
+                                <!-- Date -->
 
                                 <div class="col-md-4">
                                     <div class="mb-2">
@@ -173,6 +112,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Remarks -->
 
                                 <div class="col-md-4">
                                     <div class="mb-2">
@@ -205,12 +145,9 @@
 
     </div>
 
-    <!-- add country -->
+    <!-- edit Followup -->
 
-
-
-    <!-- ! SECTION: HEADER -->
-    <div class="modal fade" id="edit-country" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="edit-followup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -220,46 +157,53 @@
                 </div>
                 <div class="modal-body">
                     <div class="row bg-soft-light mb-3 border1 pt-2">
-                        <form class="row mt-0 mb-0" id="edit_save_country" method="post" enctype="multipart/form-data">
-                            <input type="hidden" id="hidden_country_id">
+                        <form class="row mt-0 mb-0" id="edit_save_followup" method="post" enctype="multipart/form-data">
+                            <input type="hidden" id="hidden_followup_id">
+
+                            <!-- User -->
+
                             <div class="col-md-4">
                                 <div class="mb-2">
-                                    <label class="form-label" for="default-input">Name</label>
-                                    <input class="form-control" value="" placeholder="Name" type="text"
-                                        name="country_name" id="country_name">
-                                    <span class="error errormsg mt-2" id="country_edit_name_error"></span>
-                                    <div id="general_error" class="error errormsg"></div>
+                                    <label class="form-label" for="default-input">Username</label>
+                                    <select name="followup_edit_user" id="followup_edit_user" class="form-select">
+                                        <option value="Emigo">Emigo</option>
+                                        <option value="Emigo User">Emigo User</option>
+                                        <option value="Vishnu">Vishnu</option>
+                                    </select>
+                                    <span class="error errormsg mt-2" id="followup_edit_user_error"></span>
+
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Country Code</label>
-                                    <input class="form-control" value="" placeholder="Country Code" type="text"
-                                        name="country_code" id="country_code">
-                                    <span class="error errormsg mt-2" id="country_edit_code_error"></span>
-                                    <div id="general_error" class="error errormsg"></div>
-                                </div>
-                            </div>
-
-
-
+                            <!--Date -->
 
                             <div class="col-md-4">
                                 <div class="mb-2">
-                                    <label class="form-label" for="default-input">Currency</label>
-                                    <input class="form-control" value="" placeholder="Currency" type="text"
-                                        name="country_currency" id="country_currency">
-                                    <span class="error errormsg mt-2" id="country_edit_currency_error"></span>
+                                    <label class="form-label" for="default-input">Date</label>
+                                    <input class="form-control" value="" placeholder="Date" type="date"
+                                        name="followup_edit_date" id="followup_edit_date" value="">
+                                    <span class="error errormsg mt-2" id="followup_edit_date_error"></span>
 
                                 </div>
                             </div>
 
 
+                            <!--Remarks -->
+
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label class="form-label" for="default-input">Remarks</label>
+                                    <input class="form-control" value="Remarks" placeholder="Currency" type="text"
+                                        name="followup_edit_remarks" id="followup_edit_remarks">
+                                    <span class="error errormsg mt-2" id="followup_edit_remarks_error"></span>
+
+                                </div>
+                            </div>
 
                             <div class="col-md-12">
                                 <div class="justify-content-center" style="float: right;">
-                                    <button class="btn btn-primary w-md" type="button" id="save_country">Update</button>
+                                    <button class="btn btn-primary w-md" type="button"
+                                        id="save_followup">Update</button>
                                 </div>
                             </div>
                         </form>
@@ -278,21 +222,22 @@
 
 
 <!-- delete user -->
-<div class="modal fade " id="delete-country" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade " id="delete-followup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Remove Followup</h1>
                 <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- if response within jquery -->
                 <div class="message d-none" role="alert"></div>
-                <input type="hidden" name="id" id="delete_id" value="" />
+                <input type="hidden" name="id" id="delete_followup_id" value="" />
                 <?php echo are_you_sure; ?>
             </div>
             <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                <button class="btn btn-secondary" id="yes_del_user" type="button" data-bs-dismiss="modal">Yes</button>
+                <button class="btn btn-secondary" id="yes_del_followup" type="button"
+                    data-bs-dismiss="modal">Yes</button>
             </div>
 
             </form>

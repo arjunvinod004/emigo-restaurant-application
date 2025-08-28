@@ -78,6 +78,7 @@
 <script src="<?php echo base_url();?>assets/admin/js/scripts.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/datepicker.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/rooms.js"></script>
+<script src="<?php echo base_url();?>assets/admin/js/Followup.js"></script>
 
 
 <script>

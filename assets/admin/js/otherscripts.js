@@ -2508,59 +2508,7 @@ $(document).on('click', '.edit_product', function () {
         });
 
 
-//MARK: - Add Followup 
 
-$('#add_followup').click(function (e) {
-    let formData = new FormData($('#add-new-followup')[0]);
-    $.ajax({
-       url: base_url + 'admin/Followup/add',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            processData: false,
-            contentType: false,  
-                success: function (response) {
-                if (response.success === 'success') {
-                    setTimeout(function () {
-                        // window.location.href = base_url + 'admin/Enquiry/success';
-                        $('#add-followup').modal('hide');
-                        $('#successModal .modal-body').text('Followup saved successfully');
-                        $('#successModal').modal('show');
-                        $('#add-new-followup')[0].reset();
-                        $('#followup_user_error').html('')
-                        $('#followup_date_error').html('')
-                        $('#followup_remarks_error').html('')
-                        setTimeout(function () {
-                            $('#successModal').modal('hide');
-                            location.reload();
-                        }, 1000);
-                    }, 1000);
-                } else {
-                       $('#followup_user_error').html('')
-                       $('#followup_date_error').html('')
-                       $('#followup_remarks_error').html('')
-                        // Handle field-specific validation errors
-                        if (response.errors.followup_user) {
-                            $('#followup_user_error').html(response.errors.followup_user);
-                        }
-                        
-                        if (response.errors.followup_date) {
-                            $('#followup_date_error').html(response.errors.followup_date);
-                        } 
-                        
-                        if (response.errors.followup_remarks) {
-                            $('#followup_remarks_error').html(response.errors.followup_remarks);
-                        }
-                       
-
-                }
-            },
-            error: function (xhr, status, error) {
-                // Handle error
-                alert('An error occurred while submitting the form.');
-            }
-    })
-})
 
 
 
