@@ -120,7 +120,7 @@
                     </div>
 
                     <div class="product-list__item-buttons-block-three d-grid w-100">
-                        <form action="<?php echo base_url(); ?>admin/followup/index" method="post">
+                        <form action="<?php echo base_url(); ?>admin/followup/" method="post">
                             <input type="hidden" name="store_id" value="<?php echo $val['store_id']; ?>">
                             <button type="submit"
                                 class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-next-available-btn w-100 d-flex">
