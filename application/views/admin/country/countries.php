@@ -276,28 +276,6 @@
     <!-- edit country -->
 
 
-<!-- delete user -->
-<div class="modal fade " id="delete-country" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- if response within jquery -->
-                <div class="message d-none" role="alert"></div>
-                <input type="hidden" name="id" id="delete_id" value="" />
-                <?php echo are_you_sure; ?>
-            </div>
-            <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                <button class="btn btn-secondary" id="yes_del_user" type="button" data-bs-dismiss="modal">Yes</button>
-            </div>
 
-            </form>
-        </div>
-    </div>
-</div>
-<!-- delete user -->
 
 <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>

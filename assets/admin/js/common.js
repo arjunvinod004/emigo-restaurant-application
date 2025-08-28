@@ -11,3 +11,27 @@ export function showPopupAlert(type, message, reload = false, hideAfter = 1500)
         }
     }, hideAfter);
 }
+
+//MARK: - Delete confirmation
+export function confirmDelete(deleteUrl, idField, confirmModal, yesButton, modalToHide = null) 
+{
+    $(confirmModal + ' #delete_id').val(idField);
+    if (modalToHide) {
+        $(modalToHide).modal('hide');
+    }
+    $(confirmModal).modal('show');
+    $(yesButton).off('click').on('click', function () {
+        $.ajax({
+            method: "POST",
+            url: deleteUrl,
+            data: {
+                'id': $(confirmModal + ' #delete_id').val()
+            },
+            success: function (response) {
+                console.log(response);
+                location.reload(); 
+            }
+        });
+    });
+}
+

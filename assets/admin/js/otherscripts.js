@@ -1,5 +1,5 @@
 //MARK: - Import
-import { showPopupAlert } from './common.js';
+import { showPopupAlert,confirmDelete } from './common.js';
 
 $(document).ready(function () {
 
@@ -189,18 +189,16 @@ $(document).ready(function () {
         });
     });
 
-
-    // 24. delete country
-
-
-    $(".delete_country").click(function (e) {
+//MARK: - Delete Country
+    $(".delete_country").click(function (e) 
+    {
         var id = $(this).attr('data-id');
-        // alert(id);
-        $('#delete_id').val(id);
-        $('#edit-tax').modal('hide');
-        $('#delete-country').modal('show');
-
-
+        confirmDelete(
+            base_url + "admin/Country/DeleteUser",
+            id,
+            '#deleteModal',   // confirmation modal
+            '#confirmDeleteBtn',  // yes button
+        );
     });
 
     $('#yes_del_user').click(function () {
@@ -1947,25 +1945,15 @@ $(document).on('click', '.edit_product', function () {
     
 
 
-    //51. delete product
+    //MARK:Delete product
     $(document).on('click', '.del_product', function () {
         var id = $(this).attr('data-id');
-        //   alert(id);
-        $('#delete_product_id').val(id);
-    });
-
-    $('#yes_del_product').click(function () {
-        $.ajax({
-            method: "POST",
-            url: base_url + "admin/Product/Deleteproduct",
-            data: {
-                'id': $('#delete_product_id').val()
-            },
-            success: function (data) {
-                console.log(data);
-                 window.location.href = '';
-            }
-        });
+        confirmDelete(
+            base_url + "admin/Product/Deleteproduct",
+            id,
+            '#deleteModal',   // confirmation modal
+            '#confirmDeleteBtn',  // yes button
+        );
     });
 
 

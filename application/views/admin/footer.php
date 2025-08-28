@@ -7,6 +7,26 @@
   </div>
 </div>
 <!-- success modal -->
+
+<!-- delete user -->
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <input type="hidden" id="delete_id">
+        <p id="delete_message">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn" type="button">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- delete user -->
+
 <div class="application-footer">
     <div class="application-footer__container_support container">
         <div class="application-footer__company-logo ">
