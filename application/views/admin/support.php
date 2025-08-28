@@ -1,3 +1,4 @@
+<?php echo $title; ?><?php print_r($countries); ?>
 <div class="application-content settings-content">
     <div class="application-content__container settings-content__container container">
         <!--<h1 class="application-content__page-heading">Settings</h1>-->
