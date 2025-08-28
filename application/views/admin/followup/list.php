@@ -246,28 +246,4 @@
 </div>
 <!-- delete user -->
 
-
-
-
-
-
-<!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
-
 <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
