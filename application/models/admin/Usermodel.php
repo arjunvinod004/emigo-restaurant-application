@@ -9,6 +9,8 @@ class Usermodel extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
 	}
+
+	
 	public function listclientscsv()
 	{
 		$this->db->select('id,name,email,phone,address');

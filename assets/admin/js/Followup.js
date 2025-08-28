@@ -2,6 +2,8 @@
 import { showPopupAlert,confirmDelete } from './common.js';
 $(document).ready(function () {
 
+
+
  var base_url = 'http://localhost/emigo-restaurant-application/';
     //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
     $(document).on('click', '.emigo-close-btn , .reload-close-btn, .emigo-btn', function () {
@@ -95,15 +97,7 @@ $('#save_followup').click(function (e)
             success: function (response) {
                 console.log(response);
                 if (response.success === 'success') {
-                    setTimeout(function () {
-                        $('#successModal .modal-body').text('Followup Updated Successfully');
-                        $('#successModal').modal('show');
-                        $('#edit-followup').modal('hide');
-                        setTimeout(function () {
-                            $('#successModal').modal('hide');
-                            location.reload();
-                        }, 1000);
-                    }, 1000);
+                      showPopupAlert('success', 'Record updated...', true);
                 }
 
                 else {

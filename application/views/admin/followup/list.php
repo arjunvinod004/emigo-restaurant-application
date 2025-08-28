@@ -91,9 +91,14 @@
                                     <div class="mb-2">
                                         <label class="form-label" for="default-input">User</label>
                                         <select name="followup_user" id="" class="form-select">
-                                            <option value="Emigo">Emigo</option>
-                                            <option value="Emigo User">Emigo User</option>
-                                            <option value="Vishnu">Vishnu</option>
+                                            <?php
+                                            if(!empty($listfollowupuser)){
+                                            $count = 1;
+                                            foreach($listfollowupuser as $val){ ?>
+                                            <option value=" <?php echo $val['store_id']; ?>">
+                                                <?php echo $val['Name']; ?></option>
+
+                                            <?php $count++; }} ?>
                                         </select>
                                         <span class="error errormsg mt-2" id="followup_user_error"></span>
                                         <div id="general_error" class="error errormsg"></div>

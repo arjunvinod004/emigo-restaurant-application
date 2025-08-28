@@ -50,5 +50,16 @@ $this->db->where('store_id', $id);
 return $this->db->delete('followup');
 }
 
+// MARK: List Followup Users
+
+
+public function listuser($logged_in_store_id){
+$this->db->select('*');  
+$this->db->from('users');
+$this->db->where('store_id', $logged_in_store_id);
+$query = $this->db->get();
+return $query->result_array();
+}
+
 }
 ?>
