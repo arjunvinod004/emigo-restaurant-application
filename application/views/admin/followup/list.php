@@ -91,9 +91,14 @@
                                     <div class="mb-2">
                                         <label class="form-label" for="default-input">User</label>
                                         <select name="followup_user" id="" class="form-select">
-                                            <option value="Emigo">Emigo</option>
-                                            <option value="Emigo User">Emigo User</option>
-                                            <option value="Vishnu">Vishnu</option>
+                                            <?php
+                                            if(!empty($listfollowupuser)){
+                                            $count = 1;
+                                            foreach($listfollowupuser as $val){ ?>
+                                            <option value=" <?php echo $val['store_id']; ?>">
+                                                <?php echo $val['Name']; ?></option>
+
+                                            <?php $count++; }} ?>
                                         </select>
                                         <span class="error errormsg mt-2" id="followup_user_error"></span>
                                         <div id="general_error" class="error errormsg"></div>
@@ -245,29 +250,5 @@
     </div>
 </div>
 <!-- delete user -->
-
-
-
-
-
-
-<!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
 
 <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>

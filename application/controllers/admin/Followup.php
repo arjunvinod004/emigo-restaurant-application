@@ -23,15 +23,17 @@ class Followup extends My_Controller {
 	public function index()
 	{
 		$store_id = $this->input->post('store_id'); 
+		$logged_in_store_id = $this->session->userdata('logged_in_store_id');
 		$data['store_id'] = $store_id;
 		$data['followup'] = $this->Followupmodel->get_all_followup($store_id);
+		$data['listfollowupuser'] = $this->Followupmodel->listuser($logged_in_store_id);
 		$this->render_admin_header('admin/followup/list', $data);
 	}
 
 	//MARK: Add Followup
 
 	public function add()
-{
+    {
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('followup_user', 'user', 'required');
 			$this->form_validation->set_rules('followup_date', 'date', 'required');

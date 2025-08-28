@@ -1,5 +1,8 @@
+//MARK: - Import
+import { showPopupAlert,confirmDelete } from './common.js';
+$(document).ready(function () {
 
- import { showPopupAlert,confirmDelete } from './common.js';
+
 
  var base_url = 'http://localhost/emigo-restaurant-application/';
     //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
@@ -21,8 +24,7 @@ $('#add_followup').click(function (e) {
             contentType: false,  
                 success: function (response) {
                 if (response.success === 'success') {
-                      showPopupAlert('success', 'Record saved successfully...', true);
-                    
+                    showPopupAlert('success', 'Followup details saved...', true);
                 } else {
                        $('#followup_user_error').html('')
                        $('#followup_date_error').html('')
@@ -133,21 +135,11 @@ $('#save_followup').click(function (e)
 $("#delete_followup").click(function (e) 
 {
         var id = $(this).attr('data-id');
-        // alert(id);
-        $('#delete_followup_id').val(id);
-        $('#delete-followup').modal('show');
+        confirmDelete(
+            base_url + "admin/Followup/delete",
+            id,
+            '#deleteModal',   // confirmation modal
+            '#confirmDeleteBtn',  // yes button
+        );
 });
-
-    $('#yes_del_followup').click(function () {
-        $.ajax({
-            method: "POST",
-            url: base_url + "admin/Followup/delete",
-            data: {
-                'id': $('#delete_followup_id').val()
-            },
-            success: function (data) {
-                console.log(data);
-                window.location.href = '';
-            }
-        });
-    });
+});
