@@ -74,7 +74,7 @@
 
 
                         <a href=""
-                            class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn remove-modal"
+                            class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn delete_store"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
                             data-bs-target="#removestock"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
@@ -124,35 +124,6 @@
             </div>
             <!-- end -->
 
-
-
-
-
-
-
-
-            <!--modal for delete confirmation-->
-            <div class="modal fade" id="removestock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-sm " role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title" id="exampleModalLabel"><?php echo confirm; ?></h1>
-                            <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="store_id" value="" />
-                            <?php echo are_you_sure; ?>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                            <button class="btn btn-secondary" id="yes_del_store" type="button"
-                                data-bs-dismiss="modal">Yes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--modal for delete confirmation-->
 
 
 

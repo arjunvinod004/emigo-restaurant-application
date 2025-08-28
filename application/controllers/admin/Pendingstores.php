@@ -14,7 +14,6 @@ class Pendingstores extends My_Controller {
 
     public function approve(){
         $id=$this->input->post('id');
-        // echo $id;
         $this->Productmodel->approve($id);
         $this->Productmodel->approveusers($id);
     }

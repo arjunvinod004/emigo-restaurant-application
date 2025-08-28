@@ -429,29 +429,16 @@ $(document).ready(function () {
 
 
 
-    //29. store remove
-
-    $(".remove-modal").click(function (e) {
+    //MARK: - Delete store
+    $(".delete_store").click(function (e) {
         var id = $(this).attr('data-id');
-        //  alert(id);
-        $('#store_id').val(id)
-
+        confirmDelete(
+            base_url + "admin/store/delete",
+            id,
+            '#deleteModal',   // confirmation modal
+            '#confirmDeleteBtn',  // yes button
+        );
     })
-
-
-    $('#yes_del_store').click(function () {
-        // alert('delete');
-        $.ajax({
-            method: "POST",
-            url: base_url + 'admin/store/delete',
-            data: { 'id': $('#store_id').val() },
-            success: function () {
-                // window.location.href = base_url + 'admin/store';
-            }
-        });
-    });
-
-
 
     // 30. qr-code store
 
