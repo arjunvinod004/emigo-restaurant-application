@@ -64,7 +64,7 @@ class Store extends CI_Controller {
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
         
          $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
+		// print_r($store_details);exit;
         //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['Name'] = $store_details->Name;
 		// print_r($data['Name']);exit;
@@ -157,7 +157,8 @@ class Store extends CI_Controller {
 	    $data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
         $data['countries']=$this->Countrymodel->listcountries();
 		$data['stores']=$this->Storemodel->liststores();
-		  $data['storeDet']=$this->Storemodel->get(63);
+		$data['storeDet']=$this->Storemodel->get($logged_in_store_id);
+		print_r($data['storeDet']);
 		//  print_r($data['countries']);exit;
 		$this->load->view('admin/header',$data);
 		$this->load->view('admin/menudashboard',$data);

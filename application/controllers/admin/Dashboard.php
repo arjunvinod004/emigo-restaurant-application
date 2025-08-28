@@ -35,10 +35,13 @@ class Dashboard extends CI_Controller {
 		$data['controller'] = $controller;
 		$data['Clientscount']=$this->Commonmodel->Clientscount();
 		$data['completedOrder']=$this->Commonmodel->completedOrder();
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id');   /* echo $logged_in_store_id;exit; */
+		$logged_in_store_id = $this->session->userdata('logged_in_store_id');  
+		//  echo $logged_in_store_id;exit; 
 		$role_id = $this->session->userdata('roleid');  /* Role id of logged in user */
 		$user_id = $this->session->userdata('loginid');  /* Loged in user id */
         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
+		// print_r($store_details);
+		
         $data['Name'] = $store_details->Name;
         $data['userAddress'] = $store_details->userAddress;
         $data['support_no'] = $store_details->UserPhoneNumber;
