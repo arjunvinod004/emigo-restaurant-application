@@ -5,11 +5,14 @@
             <div class="row">
                 <div class="col-12">
                 <div class="add-new-dish-list-combo">
+                
+                <?php if (!isset($page) || $page != 'support') { ?>
                 <a  href="#" data-bs-toggle="modal" data-bs-original-title="Add Country" data-bs-target="#add-country" class="add-new-dish-btn btn1">
                     <img src="<?php echo base_url('assets/admin/images/add-new-dish-icon.svg'); ?>
                     " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
-                    Add Country
+                    Add
                 </a>
+                <?php } ?>
 
                 <a href="<?php echo base_url('admin/settings'); ?>"   class="add-new-dish-btn btn1">
                         <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
@@ -194,7 +197,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 class="modal-title" id="exampleModalLabel">Edit Country</h2>
+                        <h2 class="modal-title" id="exampleModalLabel">Edit</h2>
                         <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

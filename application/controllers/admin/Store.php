@@ -18,7 +18,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options; 
 use Dompdf\FontMetrics; 
 
-class Store extends CI_Controller {
+class Store extends My_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -63,14 +63,14 @@ class Store extends CI_Controller {
 		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
         
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		// print_r($store_details);exit;
+        $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
+		//   print_r($store_details);exit;
         //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['Name'] = $store_details->Name;
 		// print_r($data['Name']);exit;
         $data['userAddress'] = $store_details->userAddress;
         $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
+        $data['support_email'] = $store_details->userEmail;
 		$data['profileimg'] = $store_details->profileimg;$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
 		$data['countries']=$this->Countrymodel->listcountries();
 		$data['packages']=$this->Packagemodel->listpackages();
@@ -133,37 +133,11 @@ class Store extends CI_Controller {
 	
 	public function index()
 	{
-
-		$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-		$data['Clientscount']=$this->Commonmodel->Clientscount();
-		$data['completedOrder']=$this->Commonmodel->completedOrder();
-
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;
-	    $data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
+		$data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
         $data['countries']=$this->Countrymodel->listcountries();
 		$data['stores']=$this->Storemodel->liststores();
-		$data['storeDet']=$this->Storemodel->get($logged_in_store_id);
-		print_r($data['storeDet']);
-		//  print_r($data['countries']);exit;
-		$this->load->view('admin/header',$data);
-		$this->load->view('admin/menudashboard',$data);
-		$this->load->view('admin/store/stores',$data);
-		$this->load->view('admin/footer',$data);
+		$data['storeDet']=$this->Storemodel->get(63);
+		$this->render_admin_header('admin/store/stores', $data);
 	}
 	
 	public function delete(){

@@ -14,23 +14,26 @@
                         <div class="row  mb-3 border1 pt-2">
 
                             <form class="row g-3" id="addholidays" method="post" enctype="multipart/form-data">
-
+                            
+                            <!-- country selection start -->
                                 <div class="col-md-3">
                                     <div class="mb-2  text-start">
                                         <label class="form-label mx-2" for="default-input">Country</label>
+                                        
                                         <select name="support_country" class="form-select" id="">
                                             <option value="0">Select Country</option>
-                                            <option value="India">India</option>
-                                            <option value="Dubai">Dubai</option>
-                                            <option value="Qatar">Qatar</option>
-                                            <option value="UAE">UAE</option>
-
-
+                                            <?php if (!empty($countries)) { ?>
+                                                <?php foreach ($countries as $country) { ?>
+                                                    <option value="<?php echo $country['country_id']; ?>">
+                                                        <?php echo $country['name']; ?>
+                                                    </option>
+                                                <?php } ?>
+                                            <?php } ?>
                                         </select>
-
                                         <span class=" error errormsg mt-2 mx-2" id="support_country_error"></span>
                                     </div>
                                 </div>
+                                <!-- country selection end -->
 
 
 

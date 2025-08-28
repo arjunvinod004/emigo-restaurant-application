@@ -1,5 +1,5 @@
 <?php
-class Product extends CI_Controller {
+class Product extends My_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -9,18 +9,7 @@ class Product extends CI_Controller {
 
     public function index()
 	{
-        $controller = $this->router->fetch_class(); // Gets the current controller name
-        $method = $this->router->fetch_method();   // Gets the current method name
-        $data['controller'] = $controller;
-        // print_r($data['controller']); exit;
-        $data['Clientscount']=$this->Commonmodel->Clientscount();
-        $data['completedOrder']=$this->Commonmodel->completedOrder();
-    
-        $logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-        $role_id = $this->session->userdata('roleid'); // Role id of logged in user
-        $user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-        $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
+        $logged_in_store_id = $this->session->userdata('logged_in_store_id');
         $config['total_rows'] = $this->Productmodel->getStoreProductsCountbyadmin($logged_in_store_id);
         $config['base_url'] = site_url('admin/Product/index');
         $config['per_page'] = 6; // number of rows per page
@@ -45,35 +34,12 @@ class Product extends CI_Controller {
         $config['last_link'] = '<span class="pagination-last">Last</span>'; // Last link icon
         $config['last_tag_open'] = '<li>';
         $config['last_tag_close'] = '</li>';
-
         $this->pagination->initialize($config);
-
-        $data['Name'] = $store_details->Name;
-        // print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-        $data['profileimg'] = $store_details->profileimg;
-        $data['todayDate'] = date('m-d-Y');
-        $data['todayTime'] = date('H:i:s');
         $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-        //  print_r($page);exit;
-        
-        //print_r($data['pagination']);exit;
         $data['products'] = $this->Productmodel->listproducts($page,$config['per_page']);
         $data['pagination'] = $this->pagination->create_links();
-        //  print_r($data['products']);exit;
-
         $data['categories']=$this->Productmodel->listcategories();
-        //  print_r($data['countries']);exit;
-        $this->load->view('admin/header',$data);
-        $this->load->view('admin/menudashboard',$data);
-        $this->load->view('admin/catalog/products',$data);
-        $this->load->view('admin/footer',$data);
-        // $data['products']=$this->Productmodel->listproducts();
-		// $this->load->view('admin/includes/header');
-		// $this->load->view('admin/catalog/products',$data);
-		// $this->load->view('admin/includes/footer');
+        $this->render_admin_header('admin/catalog/products', $data);
 	}
 
     public function delete(){
