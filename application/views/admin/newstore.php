@@ -15,7 +15,6 @@
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/admin/images/favicon.ico">
     <link href="<?php echo base_url();?>assets/admin/css/crm-responsive.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url();?>assets/admin/css/classic.min.css" rel="stylesheet" /> <!-- 'classic' theme -->
-    <!--<link href="<?php echo base_url();?>assets/admin/fonts/css/all.min.css" rel="stylesheet" />-->
     <link href="<?php echo base_url();?>assets/admin/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet"
         type="text/css" />
     <link href="<?php echo base_url();?>assets/admin/css/icon.min.css" rel="stylesheet" type="text/css" />
@@ -29,7 +28,7 @@
     <div class="application-header">
         <div class="application-header__container container">
             <div class="application-header__brand">
-                <a href="<?php echo base_url();?>/owner/dashboard" class="application-header__brand-logo">
+                <a href="#" class="application-header__brand-logo">
                     <img src="<?php echo base_url();?>assets/admin/images/emigo.png" alt="brand lgo"
                         class="application-header__brand-logo-img" width="97" height="97">
                 </a>
@@ -41,7 +40,6 @@
             <div class="application-header__provider">
                 <img src="<?php echo base_url();?>assets/admin/images/choose-my-food.png" alt="choose my food logo"
                     class="application-header__provider-img" width="300" height="37">
-                <!--<div class="application-header__provider-description">Powered By EMIGO</div>-->
             </div>
         </div>
 
@@ -362,38 +360,13 @@
     </div>
 
     <button id="goToTop" style="display: none; position: fixed; bottom: 20px; right: 20px;">Top</button>
-
     <!-- footer ends -->
 
-
-    <!-- success modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                    <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary reload-close-btn"
-                        data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- success modal -->
 
     <!-- JAVASCRIPT -->
     <script src="<?php echo base_url();?>assets/admin/js/jquery-3.7.1.min.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/bootstrap.min.js"></script>
-    <!-- <script src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script> -->
-    <script src="<?php echo base_url();?>assets/admin/js/newstore.js"></script>
-    <!-- <script src="<?php echo base_url();?>assets/admin/js/otherscripts1.js"></script> -->
-    <!-- <script src="<?php echo base_url();?>assets/admin/js/order-dashboard.js"></script>
-<script src="<?php echo base_url();?>assets/admin/js/kitchen-dashboard.js"></script> -->
+    <script type="module" src="<?php echo base_url();?>assets/admin/js/newstore.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/scripts.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/datepicker.js"></script>
 

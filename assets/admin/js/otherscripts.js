@@ -10,10 +10,20 @@ $(document).ready(function () {
         location.reload();
     });
 
+    //MARK: -  Store Checkbox
+    function bindCheckbox(selector) {
+        $(document).on('change', selector, function() {
+            $(this).val($(this).is(':checked') ? 1 : 0);
+            console.log(selector + " changed → " + $(this).val());
+        });
+    }
+    bindCheckbox('#is_table_tab');
+    bindCheckbox('#is_pickup_tab');
+    bindCheckbox('#is_delivery_tab');
+    bindCheckbox('#is_room_tab');
 
 
-// MARK: - Add Country
-
+    // MARK: - Add Country
     $('#add_country').click(function (e) {
         let formData = new FormData($('#add-new-country')[0]);
         $.ajax({
@@ -64,21 +74,21 @@ $(document).ready(function () {
                         if (response.errors.country_name) {
                             $('#country_name_error').html(response.errors.country_name);
                         }
-                        
+
                         if (response.errors.country_code) {
                             $('#country_code_error').html(response.errors.country_code);
-                        } 
-                        
+                        }
+
                         if (response.errors.country_currency) {
                             $('#country_currency_error').html(response.errors.country_currency);
                         }
                         if (response.errors.country_support) {
                             $('#country_support_error').html(response.errors.country_support);
-                        } 
-                        
+                        }
+
                         if (response.errors.country_email) {
                             $('#country_email_error').html(response.errors.country_email);
-                        } 
+                        }
 
                     }
                 }
@@ -90,10 +100,7 @@ $(document).ready(function () {
         });
     })
 
-    // 22. edit country
-
-
-
+    // MARK: - Edit Country
     $(".edit_country").click(function (e) {
         var id = $(this).attr('data-id');
         $('#hidden_country_id').val(id);
@@ -119,11 +126,6 @@ $(document).ready(function () {
                 }
             }
         })
-        // $('#enquiry_id_new').val(id);
-        // alert(id);
-        // $("#hidden_country_id").data("id", $(this).data('id'));
-
-
     });
 
 
@@ -190,7 +192,7 @@ $(document).ready(function () {
     });
 
 //MARK: - Delete Country
-    $(".delete_country").click(function (e) 
+    $(".delete_country").click(function (e)
     {
         var id = $(this).attr('data-id');
         confirmDelete(
@@ -201,25 +203,23 @@ $(document).ready(function () {
         );
     });
 
-    $('#yes_del_user').click(function () {
-        $.ajax({
-            method: "POST",
-            url: base_url + "admin/Country/DeleteUser",
-            data: {
-                'id': $('#delete_id').val()
-            },
-            success: function (data) {
-                console.log(data);
-                window.location.href = '';
-            }
-        });
-    });
+    // $('#yes_del_user').click(function () {
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "admin/Country/DeleteUser",
+    //         data: {
+    //             'id': $('#delete_id').val()
+    //         },
+    //         success: function (data) {
+    //             console.log(data);
+    //             window.location.href = '';
+    //         }
+    //     });
+    // });
 
 
-    // 25. add tax
-
+    // MARK: - Add Tax
     $('#add_tax').click(function (e) {
-        // alert(1);
         let formData = new FormData($('#add-new-tax')[0]); // Capture form data
         console.log(formData);
 
@@ -284,10 +284,6 @@ $(document).ready(function () {
                         else {
                             $('#country_amount_error').html('');
                         }
-
-
-
-
                     }
                 }
             },
@@ -300,9 +296,7 @@ $(document).ready(function () {
 
 
 
-    // 26. edit tax
-
-
+    // MARK: - Edit Tax
     $(".edit_tax").click(function (e) {
         var id = $(this).attr('data-id');
         // alert(id);
@@ -328,14 +322,9 @@ $(document).ready(function () {
         })
     });
 
-    // 27. update tax
-
+    // MARK: - Update Tax
     $('#save_tax').click(function (e) {
         var save_tax = $('#hidden_tax_id').val();
-        // alert(save_tax);
-        // var id = $(this).attr('data-id');
-        // $('#hidden_country_id').val(id);
-        // alert(id);
         let formData = new FormData($('#edit_tax_country')[0]);
         formData.append('hidden_tax_id', save_tax);
 
@@ -345,8 +334,8 @@ $(document).ready(function () {
             type: 'POST',
             data: formData,
             dataType: 'json',
-            processData: false, // Prevent jQuery from processing the data
-            contentType: false, // Prevent jQuery from setting the Content-Type header
+            processData: false,
+            contentType: false,
             success: function (response) {
                 console.log(response);
 
@@ -401,8 +390,7 @@ $(document).ready(function () {
     });
 
 
-    // 28. delete tax
-
+    // MARK: - Delete Tax
     $(".delete_tax").click(function (e) {
         var id = $(this).attr('data-id');
         // alert(id);
@@ -439,6 +427,52 @@ $(document).ready(function () {
             '#confirmDeleteBtn',  // yes button
         );
     })
+    //MARK: - Approve store
+    $('.approve').on('click', function () {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                method: "POST",
+                url: base_url + "admin/Store/approve",
+                data: {
+                    'id': id
+                },
+                success: function (data) {
+                  showPopupAlert('success', 'Store approved...', true);
+                }
+            });
+    });
+    //MARK: - Disable store
+    $('.disable').on('click', function () {
+            var id = $(this).attr('data-id');
+            var type = $(this).data('type');
+            $.ajax({
+                method: "POST",
+                url: base_url + "admin/Store/disable",
+                data: { id: id, type: type },
+                dataType: "json",
+                success: function (res) {
+                    if (res.status === 'success') {
+                        showPopupAlert('success', 'Disabled...', true);
+                    }
+                }
+            });
+    });
+    //MARK: - Enable store
+    $('.enable').on('click', function () {
+            var id = $(this).attr('data-id');
+            var type = $(this).data('type');
+            $.ajax({
+                method: "POST",
+                url: base_url + "admin/Store/enable",
+                data: { id: id, type: type },
+                dataType: "json",
+                success: function (res) {
+                    if (res.status === 'success') {
+                        showPopupAlert('success', 'Enabled...', true);
+                    }
+                }
+            });
+    });
 
     // 30. qr-code store
 
@@ -489,7 +523,7 @@ $(document).ready(function () {
                         setTimeout(function () {
                             $('#successModal').modal('hide');
                             // window.location.href = base_url + 'admin/categories';
-                            location.reload(); 
+                            location.reload();
                         }, 1000);
                     }, 1000);
                 } else {
@@ -939,10 +973,10 @@ $(document).ready(function () {
                     $('#successModal').modal('show');
                     setTimeout(function () {
                     $('#successModal').modal('hide');
-                    location.reload();  
+                    location.reload();
                     },1000)
                     },1000)
-                  
+
 
                 }
                 else {
@@ -1698,7 +1732,7 @@ $(document).on('click', '.edit_product', function () {
             dataType: 'json',
             success: function (response) {
                 console.log(response.data);
-             
+
                 if (response.success === 'success' && response.data) {
                     $('#category_id').val(response.data.category_id);
                     $('#product_veg_nonveg').val(response.data.product_veg_nonveg);
@@ -1731,7 +1765,7 @@ $(document).on('click', '.edit_product', function () {
                     $('#imagehidden2').val(response.data.image1);
                     $('#imagehidden3').val(response.data.image2);
                     $('#imagehidden4').val(response.data.image3);
-                    
+
                     // $('#country_id').val(response.data.country_id);
                     $('#edit-country').modal('show');
                 }
@@ -1740,7 +1774,7 @@ $(document).on('click', '.edit_product', function () {
                 }
             }
         })
-      
+
     });
 
 
@@ -1903,7 +1937,7 @@ $(document).on('click', '.edit_product', function () {
             $('#iscustomizablee_hidden').val(0);
         }
     });
-    
+
     $(document).on('click', '#checkbox_is_addon', function () {
         if ($(this).is(':checked')) {
             $('#isaddon_hiddenn').val(1);
@@ -1921,7 +1955,7 @@ $(document).on('click', '.edit_product', function () {
             $('#iscustomizable_hidden').val(0);
         }
     });
-    
+
     $(document).on('click', '#checkbox_is_addon_edit', function () {
         if ($(this).is(':checked')) {
             $('#isaddon_hidden').val(1);
@@ -1929,7 +1963,7 @@ $(document).on('click', '.edit_product', function () {
             $('#isaddon_hidden').val(0);
         }
     });
-    
+
 
 
     //MARK:Delete product
@@ -1965,7 +1999,7 @@ $(document).on('click', '.edit_product', function () {
     })
 
 
-    
+
 
 //53. redirect to room page
 
@@ -1984,11 +2018,11 @@ $(document).on('click', '.edit_product', function () {
 //         },
 //         success: function (data) {
 //             console.log(data);
-//              $('#targetDiv').html(data); 
+//              $('#targetDiv').html(data);
 //         }
-        
+
 //     })
- 
+
 // })
 
 
@@ -2043,7 +2077,7 @@ $(document).on('click', '.edit_product', function () {
 
 //MARK:  - Add Store
     $('#storeForm').on('submit', function (e) {
-        e.preventDefault(); 
+        e.preventDefault();
         // Clear previous error messages
         $('.errormsg').text('');
 
@@ -2082,7 +2116,7 @@ $(document).on('click', '.edit_product', function () {
             isValid = false;
         }
 
-    
+
 
         if ($('input[name="contract_start_date"]').val() === '') {
             $('#error_contract_start_date').text('Contract start date is required.');
@@ -2100,9 +2134,9 @@ $(document).on('click', '.edit_product', function () {
         }
 
 
-        
-      
-       
+
+
+
         // Validate 'Default Language'
         if ($('#language').val() === '') {
             $('#error_language').text('Please select a default language.');
@@ -2205,9 +2239,9 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-// MARK: - Select Gst or Tax change 
+// MARK: - Select Gst or Tax change
 
-        $('#sel_gst_or_tax').change(function () 
+        $('#sel_gst_or_tax').change(function ()
         {
             var taxRate = $(this).val();
             var dataType = $(this).find('option:selected').data('type');
@@ -2238,7 +2272,7 @@ $(document).on('click', '.edit_product', function () {
             $('#pickup_hidden').val(0);
         }
     });
-    
+
 
     $('#checkbox_dining').on('click', function () {
         if ($(this).is(':checked')) {
@@ -2468,22 +2502,7 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-//MARK: - Approve store
-   $('.approve').on('click', function () {
-            var id = $(this).attr('data-id');
-            $.ajax({
-                method: "POST",
-                url: base_url + "admin/Pendingstores/approve",
-                data: {
-                    'id': id
-                },
-                success: function (data) {
-                  showPopupAlert('success', 'Store approved...', true);
-                }
-            });
 
-            // alert('hello');
-        });
 
 
 
@@ -2734,7 +2753,7 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-   
+
 
 
 

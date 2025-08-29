@@ -15,7 +15,7 @@
                         Dishes Catalog
                     </span>
                 </a>
-                <a href="<?php echo base_url('admin/store'); ?>" class="application-main-menus__items">
+                <a href="<?php echo base_url('admin/store/all'); ?>" class="application-main-menus__items">
                     <span class="application-main-menus__items-icon-wrapper">
                         <img src="<?php echo base_url();?>assets/admin/images/store-icon.svg" alt="monitor icon"
                             class="application-main-menus__items-icon-img" width="39" height="39">

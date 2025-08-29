@@ -23,19 +23,19 @@ class Login extends CI_Controller {
 		parent::__construct();
 		$this->load->model('admin/Loginmodel');
 	}
-	public function index()
-	{	//echo "hre";exit;
+	public function index($id = null)
+	{
 		$this->load->view('admin/login');
 	}
     public function userlogin()
 	{
-        $this->form_validation->set_error_delimiters('', ''); 
+        $this->form_validation->set_error_delimiters('', '');
 		$this->form_validation->set_rules('username', 'Username', 'required');
         $this->form_validation->set_rules('login[password]', 'Password', 'required');
 		if ($this->form_validation->run() == FALSE)
         {
             $this->load->view('admin/login');
-            
+
         }
         else
         {
@@ -60,7 +60,7 @@ class Login extends CI_Controller {
 				$mail			=	$_POST['username'];
 				$password		= 	$_POST['login']['password'];
 				if(isset($_POST["remember"]))
-				{								
+				{
 					$hour = time() + 3600 * 24 * 30;
 					setcookie('adminemail', $mail, $hour);
 					setcookie('adminpassword', $password, $hour);
@@ -85,7 +85,7 @@ class Login extends CI_Controller {
 	{
 		if($_SERVER['REQUEST_METHOD']=='POST')
 		{
-		    $this->form_validation->set_error_delimiters('', ''); 
+		    $this->form_validation->set_error_delimiters('', '');
 			$this->form_validation->set_rules('email', 'Email', 'required');
 			if($this->form_validation->run()==TRUE)
 			{
@@ -118,7 +118,7 @@ class Login extends CI_Controller {
 					$config['smtp_timeout'] = '60'; //in seconds
 					$this->email->initialize($config);
 					$this->email->from($from, $this->smtp_fromname);
-					$this->email->to($to); 
+					$this->email->to($to);
 					$loginLink=base_url().'login/';
 					$this->email->subject('Deem user Login credentials');
 					$this->email->message('your username is '.$user_name.' and password is '.$passwordGenerate.' Go to the login page '.$loginLink);
@@ -149,14 +149,14 @@ class Login extends CI_Controller {
 			{
 				$this->load->view('admin/forgot_password');
 			}
-			
+
 		}
 		else
 		{
 			$this->load->view('admin/forgot_password');
 		}
 
-		
+
 	}
 	public function logout()
 	{
@@ -169,6 +169,6 @@ class Login extends CI_Controller {
 	}
 	public function get_notification_count(){
 		$login_user=$this->input->post('login_user');
-		echo  $this->Loginmodel->get_notification_count($login_user);   
+		echo  $this->Loginmodel->get_notification_count($login_user);
 	}
 }

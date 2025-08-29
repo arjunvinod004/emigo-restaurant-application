@@ -14,24 +14,21 @@
         </li> -->
 
         <li class="application-navigation__li">
-            <a href="<?php echo base_url(); ?>admin/store"
-                class="application-navigation__a <?php echo ($controller == 'store') ? 'application-navigation__a--active' : ''; ?>">Store</a>
+            <a href="<?php echo base_url(); ?>admin/store/all"
+                class="application-navigation__a <?php echo ($controller == 'store' && $method == 'all') ? 'application-navigation__a--active' : ''; ?>">Store</a>
         </li>
 
         <li class="application-navigation__li">
-            <a href="<?php echo base_url(); ?>admin/pendingstores"
-                class="application-navigation__a <?php echo ($controller == 'pendingstores') ? 'application-navigation__a--active' : ''; ?>">Pending
+            <a href="<?php echo base_url(); ?>admin/store/pending"
+                class="application-navigation__a <?php echo ($controller == 'store' && $method == 'pending') ? 'application-navigation__a--active' : ''; ?>">Pending
                 Stores</a>
         </li>
-
-        <!-- <li class="application-navigation__li">
-            <a href="<?php echo base_url(); ?>admin/rooms"
-                class="application-navigation__a <?php echo ($controller == 'rooms') ? 'application-navigation__a--active' : ''; ?>">Rooms</a>
-        </li> -->
-        <!-- <li class="application-navigation__li">
-            <a href="<?php echo base_url(); ?>admin/categories"
-                class="application-navigation__a <?php echo ($controller == 'categories') ? 'application-navigation__a--active' : ''; ?>">Categories</a>
-        </li> -->
+        <li class="application-navigation__li">
+            <a href="<?php echo base_url(); ?>admin/store/disabled"
+                class="application-navigation__a <?php echo ($controller == 'store' && $method == 'disabled') ? 'application-navigation__a--active' : ''; ?>">
+                Disabled Stores
+            </a>
+        </li>
         <li class="application-navigation__li">
             <a href="<?php echo base_url('admin/product/index'); ?>"
                 class="application-navigation__a <?php echo ($controller == 'product' || $controller == 'Product') ? 'application-navigation__a--active' : ''; ?>">Products</a>

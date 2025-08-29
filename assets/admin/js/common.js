@@ -1,5 +1,5 @@
 //MARK: Show popup alert
-export function showPopupAlert(type, message, reload = false, hideAfter = 1500) 
+export function showPopupAlert(type, message, reload = false, hideAfter = 1500)
 {
     let modalId = (type === 'success') ? '#successModal' : '#errorModal';
     $(modalId + ' .modal-body').text(message);
@@ -13,7 +13,7 @@ export function showPopupAlert(type, message, reload = false, hideAfter = 1500)
 }
 
 //MARK: - Delete confirmation
-export function confirmDelete(deleteUrl, idField, confirmModal, yesButton, modalToHide = null) 
+export function confirmDelete(deleteUrl, idField, confirmModal, yesButton, modalToHide = null)
 {
     $(confirmModal + ' #delete_id').val(idField);
     if (modalToHide) {
@@ -28,8 +28,9 @@ export function confirmDelete(deleteUrl, idField, confirmModal, yesButton, modal
                 'id': $(confirmModal + ' #delete_id').val()
             },
             success: function (response) {
+                /* alert(response) */
                 console.log(response);
-                location.reload(); 
+                location.reload();
             }
         });
     });

@@ -73,16 +73,17 @@
                             data-id="<?php echo $val['store_id']; ?>">
                             <img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
-                                width="23" height="24"> Edit
+                                width="23" height="24"> Edit Store
                         </a>
 
 
 
 
-                        <a class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"
+                        <a
+                            class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn enable"
                             data-id="<?php echo $val['store_id']; ?>" data-type="store"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
-                                alt="remove stock" width="23" height="22">Disable</a>
+                                alt="remove stock" width="23" height="22">Enable</a>
                     </div>
                     <div class="product-list__item-buttons-block-two">
 

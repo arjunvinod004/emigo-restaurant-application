@@ -10,8 +10,6 @@ class Newstore extends CI_Controller {
 		$this->load->model('admin/Usermodel');
 		$this->load->model('admin/Tablemodel');
 		$this->load->model('admin/Packagemodel');
-
-
     }
 
     //MARK: - New Store
@@ -96,12 +94,9 @@ class Newstore extends CI_Controller {
                 'store_email' => $this->input->post('email'),
                 'store_phone' => $this->input->post('phone'),
                 'store_address' => $this->input->post('address'),
-                'store_opening_time' => $this->input->post('store_opening_time'),
-                'store_closing_time' => $this->input->post('store_closing_time'),
                 'contract_start_date' => $this->input->post('contract_start_date'),
                 'contract_end_date' => $this->input->post('contract_end_date'),
                 'next_followup_date' => $this->input->post('next_followup_date'),
-                'followup_remarks' => $this->input->post('followup_remarks'),
                 'no_of_tables' => $this->input->post('no_of_tables'),
                 'store_trade_license' => $this->input->post('trade_license'),
                 'store_location' => $this->input->post('location'),

@@ -1,6 +1,6 @@
 <div class="application-content add-new-dish">
     <div class="application-content__container container add-new-dish__container">
-        <h1 class="application-content__page-heading">Add New Store</h1>
+        <h1 class="application-content__page-heading">Add New Store </h1>
         <div class="add-new-dish-form">
 
             <form id="storeForm" enctype="multipart/form-data" method="post">

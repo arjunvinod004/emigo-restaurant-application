@@ -1,15 +1,13 @@
  //1. Add Store
-
+//MARK: - Import
  $(document).ready(function () {
 
    var base_url = 'http://localhost/emigo-restaurant-application/';
     //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
 
-
+    //MARK: -  Add Store
     $('#storeForm').on('submit', function (e) {
-     alert(111); 
-        e.preventDefault();  // Prevent the default form submission
-        // Clear previous error messages
+        e.preventDefault();
         $('.errormsg').text('');
 
         let isValid = true;
@@ -19,22 +17,18 @@
             $('#country_error').text('Please select a country.');
             isValid = false;
         }
-
         if ($('#sel_gst_or_tax').val() === '') {
             $('#gst_or_tax_error').text('Please select Tax.');
             isValid = false;
         }
-
         if ($('#disp_name').val().trim() === '') {
             $('#disp_name_error').text('Display Name is required.');
             isValid = false;
         }
-
         if ($('#reg_name').val().trim() === '') {
             $('#name_error').text('Registered Name is required.');
             isValid = false;
         }
-
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test($('#email').val().trim())) {
             $('#email_error').text('Please enter a valid email address.');
@@ -77,7 +71,7 @@
             isValid = false;
         }
 
-      
+
         // Validate 'Select Package'
         if ($('#no_of_tables').val() === '') {
             $('#error_no_of_tables').text('Please select a package.');
@@ -85,16 +79,16 @@
         }
 
         // Validate 'Trade License'
-        if ($('#trade_license').val().trim() === '') {
-            $('#error_trade_license').text('Trade license is required.');
-            isValid = false;
-        }
+        // if ($('#trade_license').val().trim() === '') {
+        //     $('#error_trade_license').text('Trade license is required.');
+        //     isValid = false;
+        // }
 
         // Validate 'Location'
-        if ($('#location').val().trim() === '') {
-            $('#error_location').text('Location is required.');
-            isValid = false;
-        }
+        // if ($('#location').val().trim() === '') {
+        //     $('#error_location').text('Location is required.');
+        //     isValid = false;
+        // }
 
         // Validate 'Default Language'
         if ($('#language').val() === '') {
@@ -143,18 +137,10 @@
                 contentType: false,  // Must be false for file upload
                 processData: false,
                 success: function (response) {
-                    console.log(response);
-                    $('#storeForm')[0].reset();
-                      $('#successModal .modal-body').text('Store added successfully');
-                        $('#successModal').modal('show');
-                    setTimeout(function () {
-                     $('#successModal').modal('hide');  
-                     location.reload(); 
-                    },1000)
-                   
-                    //  window.location.href = base_url + 'admin/store';
-
-                    // location.reload();
+                    $("button[type=submit]").prop("disabled", true).text("SAVED");
+                    alert('Store details saved...');
+                    $('#storeForm').trigger("reset");
+                    $("button[type=submit]").prop("disabled", false).text("SAVE");
                 },
                 error: function (xhr, status, error) {
                     // Handle error
@@ -168,7 +154,7 @@
      //2. Change tax value depends on country
     $('#country_id').change(function () {
         var country_id = $(this).val();
-        
+
         // alert(country_id);
         $.ajax({
             method: "POST",
@@ -176,7 +162,7 @@
             data: { 'country_id': country_id },
             success: function (data) {
                 console.log(data);
-                
+
                 $('#sel_gst_or_tax').html(data);
             }
         });
@@ -184,21 +170,24 @@
 
     //MARK:  - Select Gst or Tax change in New Store
 
-        $('#sel_gst_or_tax').change(function () 
+        $('#sel_gst_or_tax').change(function ()
         {
             var taxRate = $(this).val();
             var dataType = $(this).find('option:selected').data('type');
-            
+            // alert(dataType);
 
             if(dataType == 'vat'){
                $('#Tax_label').text('VAT Number');
                $('.textbox').removeClass('d-none');
+                $('#Tax_label').removeClass('d-none');
             }else if(dataType == 'gst'){
                 $('#Tax_label').text('GST Number');
                 $('.textbox').removeClass('d-none');
+                 $('#Tax_label').removeClass('d-none');
             }
             else{
                 $('#Tax_label').addClass('d-none');
+                  $('.textbox').addClass('d-none');
             }
         });
 

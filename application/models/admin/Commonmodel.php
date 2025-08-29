@@ -2,12 +2,87 @@
 Class Commonmodel extends CI_Model
 {
 
-    //Get store product details get_store_product_details()
-    //Get base quantity product get_base_quantity_product($store_id,$productId);
-
 	public function __construct()
-	{ 
-        parent::__construct(); 
+	{
+        parent::__construct();
+    }
+    //MARK: - Get Store Details by ID
+    public function get_store_details_by_id($id){
+        $this->db->select('*');
+        $this->db->from('store');
+        $this->db->where('store_id', $id);
+        $query = $this->db->get();
+        return $query->row();
+    }
+    //MARK: - Delete Record
+    public function delete_record($table, $where)
+    {
+        if ($this->db->where($where)->delete($table)) {
+            return true;
+        }
+        return false;
+    }
+    //MARK: - Update Record
+    public function update($table, $where, $data)
+    {
+        return $this->update_record($table, $where, $data);
+    }
+    //MARK: - Get Active Records
+    public function get_records($table, $only_active = false, $status_field = 'is_active', $extra_where = [], $order_by = null, $order_dir = 'ASC')
+    {
+        if ($only_active) {
+            $this->db->where($status_field, 1);
+        }
+
+        if (!empty($extra_where)) {
+            $this->db->where($extra_where);
+        }
+
+        if ($order_by) {
+            $this->db->order_by($order_by, $order_dir);
+        }
+
+        return $this->db->get($table)->result_array();
+    }
+    //MARK: - Get Inactive Records
+    public function get_inactive_records($table)
+    {
+        $this->db->where('is_active', 0);
+        $this->db->order_by('store_id', 'DESC');
+        return $this->db->get($table)->result_array();
+    }
+
+    //MARK: - Get Inactive Records
+    public function get_unapproved_records($table)
+    {
+        $this->db->where('is_approve', 0);
+        $this->db->order_by('store_id', 'DESC');
+        return $this->db->get($table)->result_array();
+    }
+    //MARK: - Approve Record
+    public function approve_record($table,$field, $where)
+    {
+        $data = array($field => 1);
+        if($table == 'store'){
+            $data['is_active'] = 1;
+        }
+        $this->db->where($where);
+        if ($this->db->update($table, $data)) {
+            return true;
+        }
+        return false;
+    }
+    //MARK: - Disable Record
+    public function disable_record($table, $status_field, $where, $value = 0)
+    {
+        $data = [$status_field => $value];
+        return $this->db->where($where)->update($table, $data);
+    }
+    //MARK: - Enable Record
+    public function enable_record($table, $status_field, $where, $value = 1)
+    {
+        $data = [$status_field => $value];
+        return $this->db->where($where)->update($table, $data);
     }
 
     public function get_store_product_details($store_id,$productId)
@@ -27,21 +102,21 @@ Class Commonmodel extends CI_Model
             'store_product_id' => $productId
         ]);
         $query = $this->db->get();
-    
+
         if ($query->num_rows() > 0) {
             return $query->row()->variant_value; // Return the minimum variant_value
         }
         return null; // Return null if no record found
     }
-	
+
 
 	public function fetchtopmenu()
 	{
-		
+
 		$query		= "SELECT module.modulecode, module.moduleid, module.modulename,module.icon
-                       FROM module 
+                       FROM module
 		               WHERE module.moduletype = 'Topmenu' AND module.is_active = 1";
-		
+
 		$query = $this->db->query($query);
 		$rows=$this->db->affected_rows();
         if($rows >0)
@@ -51,15 +126,15 @@ Class Commonmodel extends CI_Model
         else
         {
             return ;
-        }		
+        }
 	}
     public function fetcleftmenu()
 	{
-		
+
 		$query		= "SELECT module.modulecode, module.moduleid, module.modulename,module.icon
-                       FROM module 
+                       FROM module
 		               WHERE module.moduletype = 'Leftmenu' AND module.is_active = 1";
-		
+
 		$query = $this->db->query($query);
 		$rows=$this->db->affected_rows();
         if($rows >0)
@@ -69,16 +144,16 @@ Class Commonmodel extends CI_Model
         else
         {
             return ;
-        }		
+        }
 	}
-	
+
     public function fetchaccessmodules($roleid)
     {
         // $query		= "SELECT privilege.mainModules
-        //                FROM privilege 
+        //                FROM privilege
         //                WHERE privilege.roleid = '".$roleid."'";
         $query		= "SELECT module.modulecode, module.moduleid, module.modulename,module.icon
-        FROM module 
+        FROM module
         WHERE module.moduletype = 'Topmenu' AND module.is_active = 1";
         $query = $this->db->query($query);
         $rows=$this->db->affected_rows();
@@ -89,7 +164,7 @@ Class Commonmodel extends CI_Model
         else
         {
         return ;
-        }		
+        }
     }
 
     public function fetchuserDetails($roleID,$loginID)
@@ -98,7 +173,7 @@ Class Commonmodel extends CI_Model
         $query.=" WHERE userid='".$this->loginID."'";
         $query = $this->db->query($query);
         $rows = $this->db->affected_rows();
-    
+
             if($rows!=0)
             {
                 return $query->result_array();
@@ -106,11 +181,11 @@ Class Commonmodel extends CI_Model
             else
             {
                 return;
-                
+
             }
     }
 
-    
+
     public function fetch_notifications($login_user){
         $this->db->select('id,title');
 		$this->db->from('notification');
@@ -134,8 +209,8 @@ Class Commonmodel extends CI_Model
     }
 
     public function pendingfollowup(){
-        $today = date('Y-m-d'); 
-        $after_30_days = date('Y-m-d', strtotime('+30 days')); 
+        $today = date('Y-m-d');
+        $after_30_days = date('Y-m-d', strtotime('+30 days'));
         // print_r( $after_30_days); exit;
         $this->db->select('store_id, store_name, next_followup_date'); // Select relevant columns
         $this->db->from('store');
@@ -150,13 +225,13 @@ Class Commonmodel extends CI_Model
         $this->db->where('next_followup_date <=', date('Y-m-d', strtotime('+30 days')));
         $query = $this->db->get();
         return $query->result_array();
-        
+
         // $result = $query->row();
         // return $result->store_count;
     }
 
 
-    
+
     public function completedOrder(){
          // Filter for completed orders
         $this->db->from('order'); // Specify the table
@@ -182,8 +257,8 @@ Class Commonmodel extends CI_Model
    $this->db->where('store_id',$logged_in_store_id);
    $query = $this->db->get();
    $result = $query->row();
-   
-   return $result->total_amount ?? 0; 
+
+   return $result->total_amount ?? 0;
 //    $this->db->where('Date(date)',$today);
 //    return $this->db->count_all_results();
 }
@@ -198,8 +273,8 @@ public function todayAmount($logged_in_store_id){
    $this->db->where('Date(date)',$today);
    $query = $this->db->get();
    $result = $query->row();
-   
-   return $result->total_amount ?? 0; 
+
+   return $result->total_amount ?? 0;
 //    $this->db->where('Date(date)',$today);
 //    return $this->db->count_all_results();
 }
@@ -228,5 +303,5 @@ public function todayAmount($logged_in_store_id){
            return $query->row();
     }
 
-}	
+}
 ?>

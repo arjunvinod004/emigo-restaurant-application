@@ -103,6 +103,6 @@ $route['owner/order/completedOrdersPKDL/(:num)'] = 'owner/order/completedOrdersP
 
 
 $route['forgotpassword'] = 'admin/Login/forgotpassword';
-$route['Login'] = 'admin/Login';
+$route['admin/login/(:num)'] = 'admin/login/index/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

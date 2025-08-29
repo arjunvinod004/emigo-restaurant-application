@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once ('application/libraries/dompdf/autoload.inc.php'); 
+require_once ('application/libraries/dompdf/autoload.inc.php');
 
-// excel 
+// excel
 require_once('application/third_party/PHPExcel-1.8/Classes/PHPExcel.php');
 // require_once ('application/libraries/phpexcel/autoload.php');
 // use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,9 +14,9 @@ require_once('application/third_party/PHPExcel-1.8/Classes/PHPExcel.php');
 // use PhpOffice\PhpSpreadsheet\Style\Border;
 // use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-use Dompdf\Dompdf; 
-use Dompdf\Options; 
-use Dompdf\FontMetrics; 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Dompdf\FontMetrics;
 
 class Store extends My_Controller {
 
@@ -35,7 +35,7 @@ class Store extends My_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -46,7 +46,8 @@ class Store extends My_Controller {
 		$this->load->model('admin/Usermodel');
 		$this->load->model('admin/Tablemodel');
 		$this->load->model('admin/Packagemodel');
-		
+		$this->load->model('admin/Commonmodel');
+
 		require('Common.php');
 		if (!$this->session->userdata('login_status')) {
 			redirect(login);
@@ -69,22 +70,95 @@ class Store extends My_Controller {
 	}
 
 	//MARK: - Store list
-	public function index()
+	public function all()
 	{
 		$data['taxes']=$this->Taxmodel->listtaxes();  //print_r($data['taxes']);
         $data['countries']=$this->Countrymodel->listcountries();
-		$data['stores']=$this->Storemodel->liststores();
+		$data['stores']= $this->Commonmodel->get_records('store', true, 'is_active');/* if false return all datas */
 		$data['storeDet']=$this->Storemodel->get(63);
 		$this->render_admin_header('admin/store/stores', $data);
 	}
-	
+
+	//MARK: - Pending stores
+	public function pending()
+    {
+        $data['pendingstores']=$this->Commonmodel->get_unapproved_records($table='store');
+        $this->render_admin_header('admin/pendingstores', $data);
+    }
+
+	//MARK: - Disabled list
+	public function disabled()
+	{
+		$data['taxes']=$this->Taxmodel->listtaxes();
+        $data['countries']=$this->Countrymodel->listcountries();
+		$data['stores']= $this->Commonmodel->get_inactive_records('store');
+		$data['storeDet']=$this->Storemodel->get(63);
+		$this->render_admin_header('admin/store/disabled_stores', $data);
+	}
+
+	//MARK: - Delete store
 	public function delete(){
 		$id = $this->input->post('id');
-		// echo $id;exit;
-	     $this->Storemodel->delete($id);
-		// $this->session->set_flashdata('error','Store deleted successfully');
+		$store_details = $this->Commonmodel->get_store_details_by_id($id);
+		unlink('./uploads/store/'.$store_details->store_logo_image);
+		$this->Commonmodel->delete_record('store', ['store_id' => $id]);
 	}
-	
+
+	//MARK: - Approve store
+	public function approve()
+	{
+        $id=$this->input->post('id');
+        $this->Commonmodel->approve_record('store','is_approve',['store_id' => $id]);
+        $this->Commonmodel->approve_record('users','is_active',['userid' => $id]);
+		$this->create_login_qr_code($id);
+    }
+	public function create_login_qr_code($id)
+	{
+		$store_id = $id;
+		//$hash = md5($store_id);
+		$hash = $store_id;
+		require_once BASEPATH . 'libraries/phpqrcode/qrlib.php';
+		$codeContents = base_url() . 'admin/login/' . $hash;
+		$qrCodeDir = FCPATH . 'uploads/admin_login_qr_codes/';
+		if (!file_exists($qrCodeDir)) {
+			mkdir($qrCodeDir, 0755, true);
+		}
+		$qr_name = 'store_' . $store_id . '.png';
+		$qrCodePath = $qrCodeDir . $qr_name;
+		QRcode::png($codeContents, $qrCodePath, QR_ECLEVEL_L, 10, 2);
+		$qrCodeUrl = base_url('uploads/admin_login_qr_codes/' . $qr_name);
+		$data = array(
+			'admin_login_qr' => $qrCodeUrl,
+		);
+		$this->Commonmodel->update('store', ['store_id' => $store_id], $data);
+	}
+	//MARK: - Store disable
+	public function disable()
+	{
+		$id     = $this->input->post('id');
+		$type   = $this->input->post('type'); // 'store' or 'product'
+		if ($type == 'store') {
+			$this->Commonmodel->disable_record('store', 'is_active', ['store_id' => $id]);
+		} elseif ($type == 'product') {
+			$this->Commonmodel->disable_record('products', 'is_active', ['product_id' => $id]);
+		}
+		echo json_encode(['status' => 'success']);
+	}
+
+	//MARK: - Enable store
+	public function enable()
+	{
+		$id     = $this->input->post('id');
+		$type   = $this->input->post('type'); // 'store' or 'product'
+		if ($type == 'store') {
+			$this->Commonmodel->enable_record('store', 'is_active', ['store_id' => $id]);
+		} elseif ($type == 'product') {
+			$this->Commonmodel->enable_record('products', 'is_active', ['product_id' => $id]);
+		}
+		echo json_encode(['status' => 'success']);
+	}
+
+
 	public function add(){
 		if ($this->session->userdata('last_insert_store_id')) {
 			$data['store_details'] = $this->Storemodel->get($this->session->userdata('last_insert_store_id'));
@@ -92,14 +166,14 @@ class Store extends My_Controller {
 		$data['packages']=$this->Packagemodel->listpackages();
 		$data['countries']=$this->Countrymodel->listcountries();
 		$this->load->view('admin/includes/header');
-		$this->load->view('admin/store/add',$data); 
+		$this->load->view('admin/store/add',$data);
 		$this->load->view('admin/includes/footer');
 	}
 	public function add_store(){
 		$data['packages']=$this->Packagemodel->listpackages();
 		$data['countries']=$this->Countrymodel->listcountries();
 		if ($this->input->method() === 'post') {
-			
+
 				// echo "here1";exit;
                 if(!empty($_FILES['store_logo_image']['name'])){
 					$config['upload_path'] = './uploads/store/';
@@ -108,11 +182,11 @@ class Store extends My_Controller {
 					// print_r($config['file_name']); exit;
 
 					// echo "image here"; exit;
-					
-					
+
+
 					$this->load->library('upload',$config);
 					$this->upload->initialize($config);
-					
+
 				if($this->upload->do_upload('store_logo_image')){
 						$uploadData = $this->upload->data();
 						$store_logo_image = $uploadData['file_name'];
@@ -126,10 +200,10 @@ class Store extends My_Controller {
 				}
 
 
-				
-				
+
+
 				if($this->input->post('bill_no') == ''){  //GST Registration number
-					$bill_no = 0;	
+					$bill_no = 0;
 				}else{
 					$bill_no = $this->input->post('bill_no'); //GST Registration number
 				}
@@ -149,7 +223,7 @@ class Store extends My_Controller {
 
 				$txt_pickup_or_take_away = $this->input->post('txt_pickup_or_take_away'); //if checked 1 else 0
 				$txt_dining = $this->input->post('txt_dining');
-				$txt_delivery = $this->input->post('txt_delivery');	
+				$txt_delivery = $this->input->post('txt_delivery');
 
 				  // Concatenate the values
 				  $combinedPickupNumber = $pickup_country_code . $txt_pickup_or_take_away;
@@ -189,16 +263,16 @@ class Store extends My_Controller {
 					'is_approve'=>0
 			        );
 
-				//  print_r($data);exit;
-				
+				//print_r($data);exit;
+
 				$package_details = $this->Packagemodel->get($this->input->post('no_of_tables'));
 				// print_r($package_details); exit;
-				
+
 				//When add store select packege id then find no_of_quantity in the package table
 				$last_insert_store_id = $this->Storemodel->insert($data);
 				$this->session->set_userdata('last_insert_store_id', $last_insert_store_id);
 				$this->session->set_userdata('last_insert_store_name', $this->input->post('name'));
-				
+
 
 				for ($i = 1; $i <= $package_details[0]['no_of_quantity']; $i++) {
 					$data = array(
@@ -242,102 +316,56 @@ class Store extends My_Controller {
 						'is_active' => 1,
 			        );
 					$this->Usermodel->insert($data);
-
-
-				
-				// $this->session->set_flashdata('success','New record inserted...');
-				// redirect('admin/store');
 		}
 	}
-	
+
+	//MARK: - Edit store
 	public function edit(){
-		//print_r($data['tax_rates']);exit;
 		$data['countries']=$this->Countrymodel->listcountries();
 	    if(isset($_POST['edit']))
 		{
-
-			$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;
-
-		    $id=$this->input->post('id');    //echo $role_id;die();
+		    $id=$this->input->post('id');    /* echo $id;die(); */
 			$data['storeDet']=$this->Storemodel->get($id);
-			$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($this->input->post('hiddencountry'));    //when edit get country tax rates using hidden country 
+			$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($this->input->post('hiddencountry'));    /* when edit get country tax rates using hidden country */
 			$this->form_validation->set_rules('disp_name', 'Display Name', 'required');
 			$this->form_validation->set_rules('name', 'Name', 'required');
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
             $this->form_validation->set_rules('phone', 'Phone', 'required|callback_validate_phone');
 			$this->form_validation->set_rules('address', 'Address', 'required');
-			$this->form_validation->set_rules('store_opening_time', 'Opening Time', 'required');
-			$this->form_validation->set_rules('store_closing_time', 'Closing Time', 'required');
 			$this->form_validation->set_rules('contract_start_date', 'Contract Start Date', 'required');
-			$this->form_validation->set_rules('store_trade_license', 'Trade License', 'required');
-			$this->form_validation->set_rules('store_location', 'Location', 'required');
+			/* $this->form_validation->set_rules('store_trade_license', 'Trade License', 'required');
+			$this->form_validation->set_rules('store_location', 'Location', 'required'); */
 			$this->form_validation->set_rules('gst_or_tax', 'Tax rate', 'required');
-			// $this->form_validation->set_rules('bill_no', 'Billno', 'required');
 			$this->form_validation->set_rules('country', 'Country', 'required');
 			$this->form_validation->set_rules('language', 'Language', 'required');
-			// $this->form_validation->set_rules('language', 'Language', 'required');
-            // $this->form_validation->set_rules('currency', 'Currency', 'required');
-			// $this->form_validation->set_rules('username', 'Username', 'required');
-			// $this->form_validation->set_rules('password', 'Password', 'required');
 
-			if ($this->form_validation->run() == FALSE) 
+			if ($this->form_validation->run() == FALSE)
 			{
-				//echo "here";exit;
-				$this->load->view('admin/header',$data);
-			    $this->load->view('admin/store/editstore',$data); 
-			    $this->load->view('admin/footer',$data);
+				$this->render_admin_header('admin/store/editstore', $data);
 			}
 			else
 			{
 				//echo "here1";exit;
 				if(!empty($_FILES['store_logo_image']['name'])){
 					$image_path = './uploads/store/' . $this->input->post('old_image');
-					//echo $image_path;exit;
-					//unlink($image_path);
+					if (file_exists($image_path)) {
+						unlink($image_path);
+					}
 					$config['upload_path'] = './uploads/store/';
 					$config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx';
 					$config['file_name'] = $_FILES['store_logo_image']['name'];
-					
-					
+
+
 					$this->load->library('upload',$config);
 					$this->upload->initialize($config);
-					
+
 					if($this->upload->do_upload('store_logo_image')){
 						$uploadData = $this->upload->data();
 						$store_logo_image = $uploadData['file_name'];
 					}else{
 						$upload=0;
 					   $uploaderr=$this->upload->display_errors();
-	
+
 					}
 				}else{
 					$store_logo_image = $this->security->xss_clean($this->input->post('old_image'));
@@ -352,8 +380,8 @@ class Store extends My_Controller {
 
 				$txt_pickup_or_take_away = $this->input->post('txt_pickup_or_take_away'); //if checked 1 else 0
 				$txt_dining = $this->input->post('txt_dining');
-				$txt_delivery = $this->input->post('txt_delivery');	
-				
+				$txt_delivery = $this->input->post('txt_delivery');
+
 				$taxRate= $this->input->post('gst_or_tax');
 				$is_whatsapp = $this->input->post('is_whatsapp_check');
 				//  print_r($taxRate); exit;
@@ -372,12 +400,9 @@ class Store extends My_Controller {
 			        'store_email' => $this->input->post('email'),
 			        'store_phone' => $this->input->post('phone'),
                     'store_address' => $this->input->post('address'),
-                    'store_opening_time' => $this->input->post('store_opening_time'),
-					'store_closing_time' => $this->input->post('store_closing_time'),
 					'contract_start_date' => $this->input->post('contract_start_date'),
 					'contract_end_date' => $this->input->post('contract_end_date'),
 					'next_followup_date' => $this->input->post('next_followup_date'),
-					'followup_remarks' => $this->input->post('followup_remarks'),
 					'no_of_tables' => $this->input->post('no_of_tables'),
 					'store_trade_license' => $this->input->post('store_trade_license'),
                     'store_location' => $this->input->post('store_location'),
@@ -390,15 +415,6 @@ class Store extends My_Controller {
 					'is_delivery_tab' => $this->input->post('is_delivery_tab'),
 					'is_room_tab' => $this->input->post('is_room_tab'),
 					'store_selected_languages' => $checkbox_string,
-					
-					// 'is_pickup' => $checkbox_pickup_or_take_away,
-					// 'pickup_number' => $txt_pickup_or_take_away,
-					// 'is_dining' => $checkbox_dining,
-					// 'dining_number' => $txt_dining,
-					// 'is_delivery' => $checkbox_delivery,
-					// 'delivery_number' => $txt_delivery,
-					// 'store_logo_image' => $store_logo_image,
-					// 'whatsapp_enable' => $is_whatsapp,
 					'is_pickup' => 0,
 					'pickup_number' => 0,
 					'is_dining' => 0,
@@ -408,44 +424,12 @@ class Store extends My_Controller {
 					'store_logo_image' => $store_logo_image,
 					'whatsapp_enable' =>0,
 			        'is_active' => $this->input->post('is_active'),
-			        );
-				// print_r($data);exit;
+			    );
+
 				$this->Storemodel->update($id,$data);
 				$this->session->set_flashdata('success','Store details updated...');
-				redirect('admin/store');
+				redirect('admin/store/all');
 			}
-		}
-		else
-		{
-
-			$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-		$data['Clientscount']=$this->Commonmodel->Clientscount();
-		$data['completedOrder']=$this->Commonmodel->completedOrder();
-
-		$logged_in_store_id = $this->session->userdata('logged_in_store_id'); //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-         $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
-		//   print_r($store_details);exit;
-        //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['Name'] = $store_details->Name;
-		// print_r($data['Name']);exit;
-        $data['userAddress'] = $store_details->userAddress;
-        $data['support_no'] = $store_details->UserPhoneNumber;
-         $data['support_email'] = $store_details->userEmail;
-		$data['profileimg'] = $store_details->profileimg;
-			//echo "this1=" . $this->input->post('id1');exit;
-			$id=$this->input->post('id'); 
-			$data['storeDet']=$this->Storemodel->get($id);   // print_r($data['storeDet']);exit;
-			$data['tax_rates']=$this->Taxmodel->getTaxRatesByCountryId($data['storeDet'][0]['store_country']); //when edit get country tax rates using hidden country id
-			$this->load->view('admin/header',$data);
-			$this->load->view('admin/menudashboard',$data);
-			$this->load->view('admin/store/editstore',$data); 
-			$this->load->view('admin/footer',$data);
 		}
 	}
 

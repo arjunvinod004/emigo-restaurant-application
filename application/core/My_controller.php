@@ -7,12 +7,13 @@ class MY_Controller extends CI_Controller {
         parent::__construct();
     }
 
-    /* Common render function */
+    //MARK: - Render Admin Header
     public function render_admin_header($view, $data = []) {
         $this->load->model('website/Homemodel');
 		$controller = $this->router->fetch_class(); /* Gets the current controller name */
 		$method = $this->router->fetch_method();    /* Gets the current method name */
 		$data['controller'] = $controller;
+		$data['method'] = $method;
 		$data['Clientscount']=$this->Commonmodel->Clientscount();
 		$data['completedOrder']=$this->Commonmodel->completedOrder();
 		$logged_in_store_id = $this->session->userdata('logged_in_store_id');   /* echo $logged_in_store_id;exit; */
@@ -24,7 +25,7 @@ class MY_Controller extends CI_Controller {
         $data['support_no'] = $store_details->UserPhoneNumber;
         $data['support_email'] = $store_details->userEmail;
 		$data['profileimg'] = $store_details->profileimg;
-        
+
 		$this->load->view('admin/header',$data);
 		$this->load->view('admin/menudashboard',$data);
 		$this->load->view($view, $data);
