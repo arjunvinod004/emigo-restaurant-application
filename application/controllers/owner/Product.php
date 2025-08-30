@@ -2,11 +2,11 @@
 class Product extends CI_Controller {
 
     public function __construct() {
-        
+
         parent::__construct();
 
-        
-        
+
+
         $this->load->model('admin/Productmodel');
         $this->load->model('admin/Commonmodel');
         $this->load->model('admin/Variantmodel');
@@ -18,9 +18,9 @@ class Product extends CI_Controller {
         $this->load->library('pagination');
     }
 
+    //MARK: Shop Product List
     public function index()
 	{
-       
         $controller = $this->router->fetch_class(); // Gets the current controller name
 		$method = $this->router->fetch_method();   // Gets the current method name
 		$data['controller'] = $controller;
@@ -41,29 +41,19 @@ class Product extends CI_Controller {
         $config['cur_tag_close'] = '</a></li>';
         $config['num_tag_open'] = '<li>';
         $config['num_tag_close'] = '</li>';
-
-        // Custom icons for first and last links
         $config['first_link'] = '<span class="pagination-first">First</span>'; // First link icon
         $config['first_tag_open'] = '<li>';
         $config['first_tag_close'] = '</li>';
         $config['last_link'] = '<span class="pagination-last">Last</span>'; // Last link icon
         $config['last_tag_open'] = '<li>';
         $config['last_tag_close'] = '</li>';
-
         $this->pagination->initialize($config);
-        
-        $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0; 
-        
-        
-        // Get the current page number
-        //$data['products'] = $this->Productmodel->shopAssignedProductsbyPagination($config['per_page'], $page);
+        $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
         $all_products = $this->Productmodel->shopAssignedProductsbyPagination(); //print_r($all_products);
         $data['products'] = array_slice($all_products, $page, $config['per_page']);
         $data['pagination'] = $this->pagination->create_links();
-        // print_r($data['pagination']);exit;
         $date =date('Y-m-d');
         $data['date'] =$date;
-        
         $store_details = $this->Homemodel->get_store_details_by_store_id($logged_store_id);
         $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
@@ -71,10 +61,6 @@ class Product extends CI_Controller {
         $data['support_no'] = $support_details->support_no;
         $data['support_email'] = $support_details->support_email;
         $data['store_logo'] = $store_details->store_logo_image;
-       
-        
-        
-       // $data['currentStock'] =$this->Ordermodel->getCurrentStock( $product_ids_string,$date,$logged_store_id);
 		$this->load->view('owner/includes/header',$data);
         $this->load->view('owner/includes/owner-dashboard',$data);
 		$this->load->view('owner/catalog/products',$data);
@@ -115,12 +101,12 @@ class Product extends CI_Controller {
                 $html .= '<div class="product-list__item-details">';
                 $html .= '<h3 class="product-list__item-name">' . $product_name = ($product->store_product_name_en != '') ? $product->store_product_name_en : $product->product_name_en . '</h3>';
                 $html .= '<p class="product-list__item-price">' . $product_rate . '</p>';
-                $html .= '<p class="product-list__item-status-' . 
-                (($stock > 0) && ($product->availability == 0) ? 'available' : 'unavailable') . 
-                ' text-capitalize">' . 
-                (($stock > 0) && ($product->availability == 0) ? 'Available' : 'Unavailable') . 
+                $html .= '<p class="product-list__item-status-' .
+                (($stock > 0) && ($product->availability == 0) ? 'available' : 'unavailable') .
+                ' text-capitalize">' .
+                (($stock > 0) && ($product->availability == 0) ? 'Available' : 'Unavailable') .
                 '</p>';
-                $html .= '<select width="50%" class="change_availability mb-2" 
+                $html .= '<select width="50%" class="change_availability mb-2"
                     data-id="' . $product->store_product_id . '">';
                 $html .= '<option value="0"' . (($product->availability == 0) ? ' selected' : '') . '>Active</option>';
                 $html .= '<option value="1"' . (($product->availability == 1) ? ' selected' : '') . '>Inactive</option>';
@@ -138,7 +124,7 @@ class Product extends CI_Controller {
                 $html .= '<div class="product-list__item-buttons-block-one">';
                 $html .= '<a href="" class="product-list__item-buttons-block-btn btn6 open-modal" data-bs-toggle="modal"
                         data-id="' . $product->store_product_id . '" data-bs-target="#addstock">';
-                $html .= '<img class="product-list__item-button-img" src="'.base_url().'assets/admin/images/add-stock-icon.svg" alt="add stock" width="23" height="24"> Add Stock</a>';                    
+                $html .= '<img class="product-list__item-button-img" src="'.base_url().'assets/admin/images/add-stock-icon.svg" alt="add stock" width="23" height="24"> Add Stock</a>';
                 $html .= '<a href="" class="product-list__item-buttons-block-btn btn6 remove-modal" data-bs-toggle="modal"
                         data-id="' . $product->store_product_id . '" data-bs-target="#removestock"><img class="product-list__item-button-img"
                             src="'.base_url().'assets/admin/images/remove-stock-icon.svg" alt="add stock"
@@ -149,7 +135,7 @@ class Product extends CI_Controller {
                                 src="'.base_url().'assets/admin/images/next-available-time-icon.svg"
                                 alt="add stock" width="23" height="24">Next
                             Available Time</a>' : '';
-    
+
                 $html .= '<a data-bs-toggle="modal" data-bs-target="#Edit-dish"
                         data-id="' . $product->store_product_id . '"
                         data-isCustomizable="' . $product->is_customizable . '" href=""
@@ -165,20 +151,20 @@ class Product extends CI_Controller {
         } else {
             $html .= '<div class="no-products-found"><p>No products found.</p></div>';
         }
-        echo $html; 
+        echo $html;
         }
 
 
     public function save() {
-        $this->load->library('form_validation'); 
+        $this->load->library('form_validation');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
-        $this->form_validation->set_rules('product_veg_nonveg', 'Select Veg or Nonveg', 'required');   
-        $this->form_validation->set_rules('product_name_ma', 'Malayalam', 'required');   
-        $this->form_validation->set_rules('product_name_en', 'English', 'required');   
-        $this->form_validation->set_rules('product_name_hi', 'Hindi', 'required');   
+        $this->form_validation->set_rules('product_veg_nonveg', 'Select Veg or Nonveg', 'required');
+        $this->form_validation->set_rules('product_name_ma', 'Malayalam', 'required');
+        $this->form_validation->set_rules('product_name_en', 'English', 'required');
+        $this->form_validation->set_rules('product_name_hi', 'Hindi', 'required');
         $this->form_validation->set_rules('product_name_ar', 'Arabic', 'required');
         $this->form_validation->set_rules('images[]', 'Images', 'callback_check_images');
-                       
+
         if ($this->form_validation->run() == FALSE) {
             // If validation fails, send errors back to the view
             $response = [
@@ -194,8 +180,8 @@ class Product extends CI_Controller {
                 ]
             ];
             echo json_encode($response);
-        } 
-        else 
+        }
+        else
         {
             $uploadedImages = [];
             $uploadPath = './uploads/product/';
@@ -206,13 +192,13 @@ class Product extends CI_Controller {
             $files = $_FILES['images'];
             $fileCount = count($files['name']);
 
-            //echo json_encode($files); 
+            //echo json_encode($files);
             $category_id = $this->input->post('category_id');
 
 
-            foreach ($_FILES['images']['name'] as $key => $name) 
+            foreach ($_FILES['images']['name'] as $key => $name)
             {
-                if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) 
+                if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK)
                 {
                     move_uploaded_file($_FILES['images']['tmp_name'][$key], "./uploads/product/$name");
                 }
@@ -223,11 +209,11 @@ class Product extends CI_Controller {
                 'subcategory_id' =>0,
                 'store_id' => $this->session->userdata('logged_in_store_id'), //If admin store id default 0 otherwise store id
                 'price' => $this->input->post('rate') ?? 0,
-                'image' => isset($files['name'][0]) && !empty($files['name'][0])? $files['name'][0] : null, 
-                'image1' => isset($files['name'][1]) && !empty($files['name'][1])? $files['name'][1] : null, 
-                'image2' => isset($files['name'][2]) && !empty($files['name'][2])? $files['name'][2] : null, 
-                'image3' => isset($files['name'][3]) && !empty($files['name'][3])? $files['name'][3] : null, 
-                'image4' => isset($files['name'][4]) && !empty($files['name'][4])? $files['name'][4] : null, 
+                'image' => isset($files['name'][0]) && !empty($files['name'][0])? $files['name'][0] : null,
+                'image1' => isset($files['name'][1]) && !empty($files['name'][1])? $files['name'][1] : null,
+                'image2' => isset($files['name'][2]) && !empty($files['name'][2])? $files['name'][2] : null,
+                'image3' => isset($files['name'][3]) && !empty($files['name'][3])? $files['name'][3] : null,
+                'image4' => isset($files['name'][4]) && !empty($files['name'][4])? $files['name'][4] : null,
                 'is_customizable' => $this->input->post('iscustomizable_hidden'),
                 'is_addon' => $this->input->post('isaddon_hidden'),
                 'product_veg_nonveg' => $this->input->post('product_veg_nonveg'),
@@ -286,7 +272,7 @@ class Product extends CI_Controller {
             $this->form_validation->set_message('check_images', 'At least one image must be selected.');
             return FALSE;
         }
-    
+
     // Check if there are exactly 4 images
         if (count($_FILES['images']['name']) != 5) {
             $this->form_validation->set_message('check_images', 'Exactly 4 images must be selected.');
@@ -296,7 +282,7 @@ class Product extends CI_Controller {
         return TRUE;
     }
 
-    public function add() {  
+    public function add() {
             $controller = $this->router->fetch_class(); // Gets the current controller name
             $method = $this->router->fetch_method();   // Gets the current method name
             $data['controller'] = $controller;
@@ -304,7 +290,7 @@ class Product extends CI_Controller {
             $data['subcategories']=$this->Productmodel->sublistcategories();
             $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
             $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
-            
+
             $store_details = $this->Homemodel->get_store_details_by_store_id($this->session->userdata('logged_in_store_id'));
         $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
@@ -312,13 +298,13 @@ class Product extends CI_Controller {
         $data['support_no'] = $support_details->support_no;
         $data['support_email'] = $support_details->support_email;
         $data['store_logo'] = $store_details->store_logo_image;
-        
+
             $this->load->view('owner/includes/header',$data);
             $this->load->view('owner/includes/owner-dashboard',$data);
             $this->load->view('owner/catalog/add-product',$data);
             $this->load->view('owner/includes/footer');
     }
-    public function add_combo() {  
+    public function add_combo() {
         $controller = $this->router->fetch_class(); // Gets the current controller name
         $method = $this->router->fetch_method();   // Gets the current method name
         $data['controller'] = $controller;
@@ -326,7 +312,7 @@ class Product extends CI_Controller {
         $data['subcategories']=$this->Productmodel->sublistcategories();
         $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
         $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
-        
+
         $store_details = $this->Homemodel->get_store_details_by_store_id($this->session->userdata('logged_in_store_id'));
     $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
     $data['store_disp_name'] = $store_details->store_disp_name;
@@ -334,7 +320,7 @@ class Product extends CI_Controller {
     $data['support_no'] = $support_details->support_no;
     $data['support_email'] = $support_details->support_email;
     $data['store_logo'] = $store_details->store_logo_image;
-    
+
         $this->load->view('owner/includes/header',$data);
         $this->load->view('owner/includes/owner-dashboard',$data);
         $this->load->view('owner/catalog/add_combo',$data);
@@ -342,17 +328,17 @@ class Product extends CI_Controller {
 }
 
     // Function to add a product with translations
-    
+
 public function edit()
 {
-    $id=$this->input->post('id'); 
+    $id=$this->input->post('id');
     $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
             $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
     $data['categories']=$this->Productmodel->listcategories();
     $data['subcategories']=$this->Productmodel->sublistcategories();// print_r($data['subcategories']);exit;
     $data['productDet']=$this->Productmodel->get_owner_product_by_id($id);//echo $id;print_r($data['productDet']);exit;
     $this->load->view('owner/includes/header');
-    $this->load->view('owner/catalog/edit-product',$data); 
+    $this->load->view('owner/catalog/edit-product',$data);
     $this->load->view('owner/includes/footer');
 }
 public function update_image() {
@@ -360,10 +346,10 @@ public function update_image() {
     $imageData = $this->input->post('image');
     $imageId = $this->input->post('imageId');
     $fileName = random_string('alnum', 16).'cropped-image.jpg';  // Or dynamically generate this based on your logic
-    
+
     // Ensure correct MIME type (if you are working with PNG or JPEG)
     $mimeType = 'image/jpeg';  // Set based on your choice of format (image/png, image/jpeg)
-    
+
     // Remove the base64 part and get the image data
     list($type, $data) = explode(';', $imageData);
     list(, $data) = explode(',', $data);
@@ -374,7 +360,7 @@ public function update_image() {
 
     // Save the image to a file
     if (file_put_contents($filePath, $data)) {
-        echo json_encode(['filename'=>$fileName,'imageId'=> $imageId]);  
+        echo json_encode(['filename'=>$fileName,'imageId'=> $imageId]);
 
     } else {
         echo 'Failed to save the image';
@@ -421,15 +407,15 @@ public function update_image1() {
     }
 }
 
-    
+
 
 
 
 public function update(){
-   
+
         $id=$this->input->post('id'); //echo $id;die();
         $data['productDet']=$this->Productmodel->get_product_by_id($id);//print_r($data['categoryDet']);exit;
-        $this->form_validation->set_error_delimiters('', ''); 
+        $this->form_validation->set_error_delimiters('', '');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
         $this->form_validation->set_rules('product_veg_nonveg', 'Veg/Non-Veg', 'required');
         $this->form_validation->set_rules('product_name_ma', 'Malayalam', 'required');
@@ -440,27 +426,27 @@ public function update(){
             $this->form_validation->set_rules('product_desc_en', 'English', 'required');
             $this->form_validation->set_rules('product_desc_hi', 'Hindi', 'required');
             $this->form_validation->set_rules('product_desc_ar', 'Arabic', 'required');
-        if ($this->form_validation->run() == FALSE) 
+        if ($this->form_validation->run() == FALSE)
         {
             //echo "here";exit;
             $this->load->view('admin/includes/header');
-            $this->load->view('admin/catalog/edit-product',$data); 
+            $this->load->view('admin/catalog/edit-product',$data);
             $this->load->view('admin/includes/footer');
         }
         else
         {
-            
+
 
             $data = array(
                 'category_id' => $this->input->post('category_id'),
                 'subcategory_id' => $this->input->post('subcategory_id'),
                 'store_id' => $this->session->userdata('logged_in_store_id'), //If admin store id default 0 otherwise store id
                     'price' => 0,
-                    'image' => isset($_POST['image']) && !empty($_POST['image'])? $_POST['image'] : null, 
-                    'image1' => isset($_POST['image1']) && !empty($_POST['image1'])? $_POST['image1'] : null,  
-                    'image2' => isset($_POST['image2']) && !empty($_POST['image2'])? $_POST['image2'] : null, 
-                    'image3' => isset($_POST['image3']) && !empty($_POST['image3'])? $_POST['image3'] : null, 
-                    'image4' => isset($_POST['image4']) && !empty($_POST['image4'])? $_POST['image4'] : null, 
+                    'image' => isset($_POST['image']) && !empty($_POST['image'])? $_POST['image'] : null,
+                    'image1' => isset($_POST['image1']) && !empty($_POST['image1'])? $_POST['image1'] : null,
+                    'image2' => isset($_POST['image2']) && !empty($_POST['image2'])? $_POST['image2'] : null,
+                    'image3' => isset($_POST['image3']) && !empty($_POST['image3'])? $_POST['image3'] : null,
+                    'image4' => isset($_POST['image4']) && !empty($_POST['image4'])? $_POST['image4'] : null,
                     'is_customizable' => $this->input->post('iscustomizable_hidden'),
                     'is_addon' => $this->input->post('isaddon_hidden'),
                     'product_veg_nonveg' => $this->input->post('product_veg_nonveg'),
@@ -529,7 +515,7 @@ public function categoryname_exists($country)
     }
 
     public function load_images($store_product_id) {
-        $data['store_product_id'] = $store_product_id; 
+        $data['store_product_id'] = $store_product_id;
         $data['images'] = $this->Productmodel->getProductImages($store_product_id);
         $this->load->view('owner/catalog/product_images',$data);
     }
@@ -537,14 +523,14 @@ public function categoryname_exists($country)
         $store_product_id = $this->input->post('store_product_id');
         $image = $this->input->post('image');
         $this->Productmodel->set_default_image($store_product_id , $image);
-        echo json_encode(['status' => 'success']);  
+        echo json_encode(['status' => 'success']);
     }
 
 
     public function load_recipes($store_product_id) {
         $data['store_product_id'] = $store_product_id;
         $data['recipes'] = $this->Cookingmodel->listcookings();
-        $data['already_assigned_recipes_ids'] = $this->Productmodel->already_assigned_recipe_ids($this->session->userdata('logged_in_store_id'),$store_product_id); 
+        $data['already_assigned_recipes_ids'] = $this->Productmodel->already_assigned_recipe_ids($this->session->userdata('logged_in_store_id'),$store_product_id);
         $this->load->view('owner/catalog/assigned_recipes',$data);
     }
     public function update_selected_recipe(){
@@ -559,11 +545,11 @@ public function categoryname_exists($country)
                     'is_active' => $product['is_active']
                 );
                // echo json_encode($updateData);exit;
-                
+
                 // Check if the product already exists in the store_variants table
                 $existingRecipe = $this->Productmodel->get_recipe_by_product_id($product['recipe_id'], $this->session->userdata('logged_in_store_id'),$product['store_product_id']);
                 //echo json_encode(['recipe_id' => $product['recip_id'], 'store_id' => $this->session->userdata('logged_in_store_id') , 'store_product_id' => $product['store_product_id']]);exit;
-            
+
                 if ($existingRecipe != 0) {
                     // Update the existing record
                     $this->Productmodel->update_selected_recipe($product['recipe_id'],$this->session->userdata('logged_in_store_id'), $product['store_product_id'], $updateData);
@@ -609,11 +595,11 @@ public function categoryname_exists($country)
     //                 'is_active' => $product['is_active']
     //             );
     //            //echo json_encode($updateData);exit;
-                
+
     //             // Check if the product already exists in the store_variants table
     //             $existingVariant = $this->Productmodel->get_variant_by_product_id($product['variant_id'], $this->session->userdata('logged_in_store_id'),$product['store_product_id']);
     //             //echo json_encode(['variant_id' => $product['variant_id'], 'store_id' => $this->session->userdata('logged_in_store_id') , 'store_product_id' => $product['store_product_id']]);exit;
-            
+
     //             if ($existingVariant != 0) {
     //                 // Update the existing record
     //                 $this->Productmodel->update_selected_variants($product['variant_id'],$this->session->userdata('logged_in_store_id'), $product['store_product_id'], $updateData);
@@ -697,14 +683,14 @@ public function categoryname_exists($country)
     echo json_encode(['status' => 'success']);
 }
 
-    
+
 
     public function update_selected_products()
     {
         // Retrieve JSON data from the AJAX request
         $products = $this->input->post('products');
         if (!empty($products)) {
-            foreach ($products as $product) 
+            foreach ($products as $product)
             {
                 // Prepare the data to update
                 $updateData = [
@@ -751,7 +737,7 @@ public function categoryname_exists($country)
                         {
 
                                 $quantity = (int)$product['stock_quantity'];
-                                
+
 
                                 $this->db->set('pu_qty', $quantity);
                                 $this->db->set('minqty', $product['minimum_quantity']);
@@ -765,9 +751,9 @@ public function categoryname_exists($country)
                                 $this->db->where('ttype', 'SK');
                                 $this->db->where('order_id', 0);
                                 $this->db->where('id', $result->id);
-                                $this->db->update('store_stock');    
+                                $this->db->update('store_stock');
 
-                        } 
+                        }
                         $this->db->set('is_active', 0);
                         $this->db->where('store_id', $this->session->userdata('logged_in_store_id'));
                         $this->db->where('store_product_id', $product['product_id']);
@@ -782,7 +768,7 @@ public function categoryname_exists($country)
             echo json_encode(['status' => 'failure']);
         }
     }
-    
+
     public function update_selected_addons()
     {
         // Retrieve data sent via AJAX
@@ -807,7 +793,7 @@ public function categoryname_exists($country)
          // Check if the product already exists in the store_variants table
          $existingAddon = $this->Productmodel->get_addon_by_product_id($product_id, $this->session->userdata('logged_in_store_id'),$store_product_id);
          //echo json_encode(['variant_id' => $product['variant_id'], 'store_id' => $this->session->userdata('logged_in_store_id') , 'store_product_id' => $product['store_product_id']]);exit;
-     
+
          if ($existingAddon != 0) {
             echo json_encode(['status' => 'error', 'message' => 'Addon already exist']);
          } else {
@@ -817,9 +803,9 @@ public function categoryname_exists($country)
          }
 
         // Return a response
-        
+
     }
-    
+
     public function update_selected_addons_status()
     {
         $selected_addon_id = $_POST['selected_addon_id'];
@@ -828,7 +814,7 @@ public function categoryname_exists($country)
         if ($result) {
             echo json_encode(['status' => 'success', 'message' => 'Addon updated successfully']);
         }
-        
+
     }
 
     public function upload_new_image(){
@@ -838,10 +824,10 @@ public function categoryname_exists($country)
             $config['upload_path'] = './uploads/product/';
             $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx';
             $config['file_name'] = $_FILES['image']['name'];
-            
+
             $this->load->library('upload',$config);
             $this->upload->initialize($config);
-            
+
             if($this->upload->do_upload('image')){
                 $uploadData = $this->upload->data();
                 $image = $uploadData['file_name'];
@@ -850,21 +836,21 @@ public function categoryname_exists($country)
             }else{
                 $error =  $this->upload->display_errors(); echo $error;
                 $this->load->view('admin/includes/header');
-                $this->load->view('admin/catalog/add_product',$error); 
+                $this->load->view('admin/catalog/add_product',$error);
                 $this->load->view('admin/includes/footer');
             }
         }
     }
-    
-    public function getDescriptions() 
+
+    public function getDescriptions()
 {
     $id = $this->input->post('id');
     $loggedInStoreId = $this->session->userdata('logged_in_store_id');
-    
+
     // Fetch descriptions
-    $descriptions = $this->Productmodel->getDescriptionsById($id, $loggedInStoreId); 
+    $descriptions = $this->Productmodel->getDescriptionsById($id, $loggedInStoreId);
     $customisable = $this->Productmodel->getCustomisableById($id, $loggedInStoreId);
-    
+
     // Check if descriptions is valid
     if (!$descriptions || !is_array($descriptions)) {
         echo json_encode([
@@ -873,38 +859,38 @@ public function categoryname_exists($country)
         ]);
         return;
     }
-    
+
     $result = [
         'customisable' => $customisable['is_customizable'],
         'rate' => $descriptions['rate'] ?? null,
-        'malayalam_name' => !empty($descriptions['store_product_name_ma']) 
-            ? $descriptions['store_product_name_ma'] 
+        'malayalam_name' => !empty($descriptions['store_product_name_ma'])
+            ? $descriptions['store_product_name_ma']
             : ($descriptions['product_name_ma'] ?? null),
-        'english_name' => !empty($descriptions['store_product_name_en']) 
-            ? $descriptions['store_product_name_en'] 
+        'english_name' => !empty($descriptions['store_product_name_en'])
+            ? $descriptions['store_product_name_en']
             : ($descriptions['product_name_en'] ?? null),
-        'hindi_name' => !empty($descriptions['store_product_name_hi']) 
-            ? $descriptions['store_product_name_hi'] 
+        'hindi_name' => !empty($descriptions['store_product_name_hi'])
+            ? $descriptions['store_product_name_hi']
             : ($descriptions['product_name_hi'] ?? null),
-        'arabic_name' => !empty($descriptions['store_product_name_ar']) 
-            ? $descriptions['store_product_name_ar'] 
+        'arabic_name' => !empty($descriptions['store_product_name_ar'])
+            ? $descriptions['store_product_name_ar']
             : ($descriptions['product_name_ar'] ?? null),
-        'malayalam_desc' => !empty($descriptions['store_product_desc_ma']) 
-            ? $descriptions['store_product_desc_ma'] 
+        'malayalam_desc' => !empty($descriptions['store_product_desc_ma'])
+            ? $descriptions['store_product_desc_ma']
             : ($descriptions['product_desc_ma'] ?? null),
-        'english_desc' => !empty($descriptions['store_product_desc_en']) 
-            ? $descriptions['store_product_desc_en'] 
+        'english_desc' => !empty($descriptions['store_product_desc_en'])
+            ? $descriptions['store_product_desc_en']
             : ($descriptions['product_desc_en'] ?? null),
-        'hindi_desc' => !empty($descriptions['store_product_desc_hi']) 
-            ? $descriptions['store_product_desc_hi'] 
+        'hindi_desc' => !empty($descriptions['store_product_desc_hi'])
+            ? $descriptions['store_product_desc_hi']
             : ($descriptions['product_desc_hi'] ?? null),
-        'arabic_desc' => !empty($descriptions['store_product_desc_ar']) 
-            ? $descriptions['store_product_desc_ar'] 
+        'arabic_desc' => !empty($descriptions['store_product_desc_ar'])
+            ? $descriptions['store_product_desc_ar']
             : ($descriptions['product_desc_ar'] ?? null),
     ];
-    
-    
-    
+
+
+
     // Respond with success and data
     echo json_encode([
         'success' => true,
@@ -953,7 +939,7 @@ public function addstocks(){
             ]
         ];
         echo json_encode($response);
-        
+
     }
     else{
         $productId = $this->input->post('product_id');
@@ -970,7 +956,7 @@ public function addstocks(){
             $store_id=$this->session->userdata('logged_in_store_id');
             $base_value = $this->Commonmodel->get_base_quantity_product($store_id,$productId);  //print_r($base_value);exit;
             $pu_qty = $this->input->post('pu_qty',TRUE);
-            $stock = ((int)$base_value) * $pu_qty; 
+            $stock = ((int)$base_value) * $pu_qty;
         }
         $date = date('Y-m-d');
         $result = $this->Productmodel->addStock($stock, $store_id, $productId, $date);
@@ -980,7 +966,7 @@ public function addstocks(){
         ];
         echo json_encode($response);
     }
-    
+
 }
 
 public function changeProductStatus(){
@@ -1006,7 +992,7 @@ public function removestocks(){
                 'sl_qty' => form_error('sl_qty')
             ]
         ];
-        echo json_encode($response);  
+        echo json_encode($response);
     }
     else{
         $productId = $this->input->post('product_id_remove');

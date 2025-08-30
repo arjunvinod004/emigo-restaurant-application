@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends CI_Controller {
+class Dashboard extends My_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -18,50 +18,28 @@ class Dashboard extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
-	
+
 	public function __construct()
 	{
 		parent::__construct();
 		require('Common.php');
+		$this->load->model('admin/Commonmodel');
+		$this->load->model('website/Homemodel');
+		$this->load->model('admin/Storemodel');
 		if (!$this->session->userdata('login_status')) {
 			redirect(login);
 		}
 	}
+	//MARK: Shop Owner Dashboard
 	public function index()
 	{
-	    $this->load->model('website/Homemodel');
-
-		$controller = $this->router->fetch_class(); // Gets the current controller name
-		$method = $this->router->fetch_method();   // Gets the current method name
-		$data['controller'] = $controller;
-        $logged_in_store_id = $this->session->userdata('logged_in_store_id');  //echo $logged_in_store_id;exit;
-
-		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
-		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
-        $store_details = $this->Homemodel->get_store_details_by_store_id($logged_in_store_id);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['store_disp_name'] = $store_details->store_disp_name;
-        $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
-        $data['support_email'] = $support_details->support_email;
-		$data['store_logo'] = $store_details->store_logo_image;
-        
-        $this->load->model('admin/Storemodel');
-		$data['productsCount']=$this->Commonmodel->productsCount();
-		$data['completedOrder']=$this->Commonmodel->completedOrder();
-        $data['store_details']=$this->Storemodel->get($logged_in_store_id);
-		$data['pendingOrder']=$this->Commonmodel->pendingOrder();
-        $data['todayOrder']=$this->Commonmodel->todayOrder($logged_in_store_id);
-        $data['totalAmount']=$this->Commonmodel->totalAmount($logged_in_store_id);
-        $data['todayAmount']=$this->Commonmodel->todayAmount($logged_in_store_id);
-		$this->session->set_userdata('store_name',$data['store_details'][0]['store_name']);
-		
+		$logged_in_store_id = $this->session->userdata('logged_in_store_id');
+		$role_id = $this->session->userdata('roleid');
+		$user_id = $this->session->userdata('loginid');
+		$data['store_details'] = $this->Commonmodel->get_store_details_by_id($logged_in_store_id);
+		$this->session->set_userdata('store_name',$data['store_details']->store_name);
 		if($role_id == 1 || $role_id == 2) { //Admin and Shop owner
-			$this->load->view('owner/includes/header',$data);
-			$this->load->view('owner/includes/owner-dashboard',$data);
-			$this->load->view('owner/dashboard',$data);
-			$this->load->view('owner/includes/footer');
+			$this->render_shopowner_header('owner/dashboard', $data);
 		}
 		if($role_id == 5) { //Admin and Shop owner
 			redirect('owner/order');
@@ -80,7 +58,7 @@ class Dashboard extends CI_Controller {
 		if (!empty($getholidaydays)) {
 			$store_id = $this->session->userdata('logged_in_store_id');
 			$date = date('Y-m-d');
-			
+
 			$html = '<table class="table table-striped mt-3" style="width:100%">';
 			$html .= '<thead style="background: #e5e5e5;">';
 			$html .= '<tr>
@@ -91,7 +69,7 @@ class Dashboard extends CI_Controller {
 					  </tr>';
 			$html .= '</thead>';
 			$html .= '<tbody>';
-			
+
 			$count = 1;
 			foreach ($getholidaydays as $holiday) {
 				$html .= '<tr id="order-id'  . $holiday['id'] . '">';
@@ -105,20 +83,20 @@ class Dashboard extends CI_Controller {
 				$html .= '</button>';
 				$html .= '</a>';
 				$html .= '</td>';
-				
+
 				$html .= '</tr>';
-		
+
 				$count++;
 			}
-		
+
 			$html .= '</tbody>';
 			$html .= '</table>';
-		
+
 			echo $html;
 		} else {
 			echo '<p>No Holidays found.</p>';
 		}
-	
+
 }
 public function DeleteHoliday(){
 	$this->load->model('owner/Ordermodel');
@@ -135,7 +113,7 @@ public function DeleteHoliday(){
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('holiday_date', 'date', 'required');
 		$this->form_validation->set_rules('holiday_name', ' name', 'required');
-		if ($this->form_validation->run() == FALSE) 
+		if ($this->form_validation->run() == FALSE)
 		{
 			$response = [
 				'errors' => false,
@@ -148,7 +126,7 @@ public function DeleteHoliday(){
 		}
 		else
 		{
-			
+
 			$store_id = $this->session->userdata('logged_in_store_id');
 			$data=array(
 			'store_id' => $store_id,
@@ -175,7 +153,7 @@ public function DeleteHoliday(){
 						  </tr>';
 				$html .= '</thead>';
 				$html .= '<tbody>';
-				
+
 				$count = 1;
 				foreach ($getholidaydays as $holiday) {
 					$html .= '<tr id="order-id' . $holiday['id'] . '">';
@@ -185,18 +163,18 @@ public function DeleteHoliday(){
 					$html .= '<td>' . htmlspecialchars($holiday['holiday_name']) . '</td>';
 					$html .= '<td>' . htmlspecialchars($holiday['holiday_description']) . '</td>';
 					$html .= '</tr>';
-			
+
 					$count++;
 				}
-			
+
 				$html .= '</tbody>';
 				$html .= '</table>';
-			
+
 				echo $html;
 			} else {
 				echo '<p>No Holidays found.</p>';
 			}
-			
+
 		}
 	}
 }

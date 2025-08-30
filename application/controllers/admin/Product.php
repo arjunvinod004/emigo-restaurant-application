@@ -363,7 +363,7 @@ public function Deleteproduct(){
     $this->Productmodel->delete_product($id);
 }
 
-
+//MARK: - Search Products on admin key up
 public function searchProductOnadminKeyUp(){
     $search = $this->input->get('search');
     $searchproducts=$this->Productmodel->shopAssignedProductsByadminKeyUpSearch($search);
@@ -373,9 +373,6 @@ public function searchProductOnadminKeyUp(){
     if (!empty($searchproducts)) {
         $count = 1;
         foreach ($searchproducts as $val) {
-            $vegBadge = ($val->product_veg_nonveg == 'veg') ? '<span class="badge-success">Veg</span>' : '<span class="badge-danger">Non Veg</span>';
-            $isAddon = ($val->is_addon == 1) ? 'checked' : '';
-            $isCustom = ($val->is_customizable == 1) ? 'checked' : '';
             $image = base_url() . 'uploads/product/' . ($val->image ?? '');
 
             $html .= "
@@ -384,9 +381,6 @@ public function searchProductOnadminKeyUp(){
      <td>{$count}</td>
      <td>{$val->product_name_en}</td>
       <td>{$this->Productmodel->getCategoryName($val->category_id)}</td>
-     <td>{$vegBadge}</td>
-     <td><input type='checkbox' class='form-check-input' disabled value='1' {$isAddon}></td>
-     <td><input type='checkbox' class='form-check-input' disabled value='1' {$isCustom}></td>
      <td><img width='100' height='100' src='{$image}' class='img-thumbnail'></td>
      <td class='pb-0 pt-0 d-flex'>
          <input type='hidden' name='id' value='{$val->product_id}'>
@@ -394,8 +388,6 @@ public function searchProductOnadminKeyUp(){
          <a class='btn tblDelBtn pl-0 pr-0 del_product' type='button' data-id='{$val->product_id}' data-bs-toggle='modal' data-bs-target='#delete-product'><i class='fa fa-trash'></i></a>
      </td>
  </tr>
-
-
             ";
             $count++;
         }

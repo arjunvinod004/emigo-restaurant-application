@@ -89,7 +89,7 @@
                     </div>
                     <div class="product-list__item-buttons-block-two">
 
-                        <!-- <a href=""
+                        <a href=""
                             class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-next-available-btn qrcode-modal"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
                             data-bs-target="#qr-code"><img class="product-list__item-button-img"
@@ -102,7 +102,7 @@
                             data-name="<?php echo $val['store_disp_name']; ?>" data-bs-target="#emp_informations"><img
                                 class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/next-available-time-icon.svg"
-                                alt="next available button stock" width="23" height="24">Product Assign</a> -->
+                                alt="next available button stock" width="23" height="24">Product Assign</a>
 
 
                     </div>

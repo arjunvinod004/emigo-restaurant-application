@@ -14,6 +14,15 @@ Class Commonmodel extends CI_Model
         $query = $this->db->get();
         return $query->row();
     }
+    //MARK: - Get Country Details by Country ID
+    public function get_country_details_by_country_id($country_id){
+        $this->db->select('*');
+        $this->db->from('countries');
+        $this->db->where('country_id', $country_id);
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
     //MARK: - Delete Record
     public function delete_record($table, $where)
     {
@@ -94,6 +103,134 @@ Class Commonmodel extends CI_Model
         $this->db->order_by('category_name_en', 'ASC');
         $query = $this->db->get();
         return $query->result_array();
+    }
+
+    //MARK: - List Store products
+    public function shopAssignedProductsbyPagination() {
+        $store_id = $this->session->userdata('logged_in_store_id');
+		$type = '';
+		$products_by_category_active = [];
+        $category_ids_order = $this->getAllCategoriesOrderByStore($store_id);
+		//  print_r($category_ids_order);
+        foreach ($category_ids_order as $cat_order) {
+               $category_id = $cat_order['category_id'];
+               $allproducts = $this->getAllProductsByStoreOrderByType($store_id, $category_id,$type);
+
+			//  print_r($allproducts);
+               $products_by_category_active[$category_id] = $allproducts;
+			//    print_r($products_by_category_active);
+        }
+        $allproducts = array_merge_recursive($products_by_category_active);
+        $inactiveProducts = [];
+        $activeProducts = [];
+
+        // Separate products by status
+        foreach ($allproducts as $category_id => $products) {
+            foreach ($products as $product) {
+                if ($product['status'] == 0) {
+                    $inactiveProducts[] = $product;
+                } elseif ($product['status'] == 1) {
+                    $activeProducts[] = $product;
+                }
+            }
+        }
+        // Merge the arrays
+        $results = array_merge($inactiveProducts, $activeProducts);
+        return $results;
+    }
+    public function getAllCategoriesOrderByStore($store_id){
+        $this->db->select('category_id');
+        $this->db->from('categories');
+        $this->db->order_by('order_index', 'ASC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAllProductsByStoreOrderByType($store_id, $category_id , $type) {
+        $this->db->select(
+            's.product_id,
+             s.store_product_id,
+             s.is_active,
+             s.availability,
+             s.remarks,
+             s.image as store_image,
+             s.store_product_desc_en,
+             s.store_product_name_en,
+             s.store_product_desc_ma,
+             s.store_product_name_ma,
+             s.store_product_desc_hi,
+             s.store_product_name_hi,
+             s.store_product_desc_ar,
+             s.store_product_name_ar,
+             p.product_name_en,
+             p.product_desc_en,
+             p.product_name_ma,
+             p.product_desc_ma,
+             p.product_name_hi,
+             p.product_desc_hi,
+             p.product_name_ar,
+             p.product_desc_ar,
+             s.rate,
+             s.is_customizable,
+             p.product_veg_nonveg,
+             p.category_id'
+        );
+        $this->db->from('store_wise_product_assign s');
+		// echo $this->db->last_query();exit;
+        $this->db->join('product p', 'p.product_id = s.product_id');
+        $this->db->where('s.store_id', $store_id);
+        $this->db->where('s.category_id', $category_id);
+
+        if ($type != '') {
+            $this->db->where('p.product_veg_nonveg', $type);
+        }
+
+        $query = $this->db->get();
+        $products = $query->result_array();
+		//  print_r($products);exit;
+
+        $result = [];
+
+        foreach ($products as $product) {
+            //print_r($product);exit;
+            if ($product['category_id'] == 23) {
+                // Check stock for combo products
+                $combo_items = $this->getComboItems($store_id,$product['store_product_id']);
+                $combo_available = true;
+
+                $availability = $this->getCurrentProductAvailability($product['store_product_id'],$store_id);
+
+                if (empty($combo_items) || $availability == 1) {
+                    $combo_available = false;
+                }
+                else
+                {
+                    foreach ($combo_items as $item)
+                    {
+                        $stock = $this->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
+                        $availability = $this->getCurrentProductAvailability($item['item_id'],$store_id);
+                        if ($stock < $item['quantity'] || $availability == 1)
+                        {
+                            $combo_available = false;
+                            break;
+                        }
+                    }
+                }
+
+
+
+                // $product['status'] = $combo_available ? '0' : '1';
+                $product['status'] = ($combo_available && $product['is_active'] == 0) ? '0' : '1';
+            } else {
+                // Check stock for individual products
+                $stock1 = $this->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id);
+                //$product['status'] = $stock > 0 ? '0' : '1';
+                $product['status'] = ($stock1 > 0 && $product['is_active'] == 0 && $product['availability'] == 0) ? '0' : '1';
+            }
+
+            $result[] = $product;
+        }
+
+        return $result;
     }
 
     public function get_store_product_details($store_id,$productId)

@@ -1872,92 +1872,23 @@ $(document).on('click', '.edit_product', function () {
             '#confirmDeleteBtn',  // yes button
         );
     });
-
-
-    // 52. search in products
-
+    //MARK:-Search product on keyup
     $('#search_admin_product').on('keyup', function () {
-        var search = $(this).val();   //alert(search);
+        var search = $(this).val();
         $.ajax({
             url: base_url + "admin/Product/searchProductOnadminKeyUp",
-            type: 'GET', // HTTP method (can be POST if needed)
+            type: 'GET',
             data: {
                 search: search
-            }, // Data sent to the controller
+            },
             success: function (response) {
-                console.log(response); // Log the response for debugging
-                $('#search_result_admin_container').html(response); // Update the HTML content of a container
+                $('#search_result_admin_container').html(response);
             },
             error: function (xhr, status, error) {
                 console.error('Error: ' + error);
             }
         })
     })
-
-
-
-
-//53. redirect to room page
-
-// $('.product_room').click(function () {
-//     var id = $(this).attr('data-id');
-//     var store_name = $(this).attr('data-name');
-//     alert(id);
-//     alert(store_name);
-//     $.ajax({
-//         method: "POST",
-//         url: base_url + "admin/rooms/index",
-//         data: {
-//             'id': id,
-//             'store_name': store_name
-
-//         },
-//         success: function (data) {
-//             console.log(data);
-//              $('#targetDiv').html(data);
-//         }
-
-//     })
-
-// })
-
-
-
-
-
-
-
-
-    // if (response.errors.category_id) {
-    //     $('#category_id_error').html(response.errors.category_id);
-    // } else if (response.errors.subcategory_id) {
-    //     $('#subcategory_id_error').html(response.errors.subcategory_id);
-    // } else if (response.errors.product_veg_nonveg) {
-    //     $('#product_veg_nonveg_error').html(response.errors
-    //         .product_veg_nonveg);
-    // } else if (response.errors.product_name_ma) {
-    //     $('#product_name_ma_error').html(response.errors.product_name_ma);
-    // } else if (response.errors.product_name_en) {
-    //     $('#product_name_en_error').html(response.errors.product_name_en);
-    // } else if (response.errors.product_name_hi) {
-    //     $('#product_name_hi_error').html(response.errors.product_name_hi);
-    // } else if (response.errors.product_name_ar) {
-    //     $('#product_name_ar_error').html(response.errors.product_name_ar);
-    // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //6. Load tables within iframe from add store
