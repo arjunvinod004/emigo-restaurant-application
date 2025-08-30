@@ -25,7 +25,8 @@ Class Commonmodel extends CI_Model
     //MARK: - Update Record
     public function update($table, $where, $data)
     {
-        return $this->update_record($table, $where, $data);
+        $this->db->where($where);
+        return $this->db->update($table, $data);
     }
     //MARK: - Get Active Records
     public function get_records($table, $only_active = false, $status_field = 'is_active', $extra_where = [], $order_by = null, $order_dir = 'ASC')
@@ -83,6 +84,16 @@ Class Commonmodel extends CI_Model
     {
         $data = [$status_field => $value];
         return $this->db->where($where)->update($table, $data);
+    }
+    //MARK: - List Active Categories
+    public function listactivecategories()
+    {
+        $this->db->select('*');
+        $this->db->from('categories');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('category_name_en', 'ASC');
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     public function get_store_product_details($store_id,$productId)

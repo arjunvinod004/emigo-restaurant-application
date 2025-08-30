@@ -36,3 +36,27 @@ export function confirmDelete(deleteUrl, idField, confirmModal, yesButton, modal
     });
 }
 
+//MARK: - Enable Disable confirmation
+export function enable_disable_confirmation(deleteUrl, idField, confirmModal, yesButton, modalToHide = null)
+{
+    $(confirmModal + ' #enabledisable_id').val(idField);
+    if (modalToHide) {
+        $(modalToHide).modal('hide');
+    }
+    $(confirmModal).modal('show');
+    $(yesButton).off('click').on('click', function () {
+        $.ajax({
+            method: "POST",
+            url: deleteUrl,
+            data: {
+                'id': $(confirmModal + ' #enabledisable_id').val()
+            },
+            success: function (response) {
+                /* alert(response) */
+                console.log(response);
+                location.reload();
+            }
+        });
+    });
+}
+

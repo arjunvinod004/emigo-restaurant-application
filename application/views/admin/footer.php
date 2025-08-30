@@ -8,7 +8,7 @@
 </div>
 <!-- success modal -->
 
-<!-- delete user -->
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -24,8 +24,23 @@
     </div>
   </div>
 </div>
-
-<!-- delete user -->
+<!-- Delete Confirmation Modal -->
+ <!-- Enable Confirmation Modal -->
+<div class="modal fade" id="enabledisableModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <input type="hidden" id="enabledisable_id">
+        <p id="enabledisable_message">Are you sure?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+        <button class="btn btn-danger" id="confirmenabledisableBtn" type="button">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Enable Confirmation Modal -->
 
 <div class="application-footer">
     <div class="application-footer__container_support container">

@@ -38,7 +38,7 @@
 
 
 
-                     
+
 
 
                         <table id="example" class="table table-striped" style="width:100%">
@@ -46,8 +46,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Category Name</th>
-                                    <!-- <th>Image</th> -->
                                     <th>Order</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -60,35 +60,37 @@
                                 <tr>
                                     <td><?php echo $count;?></td>
                                     <td><?php echo $val['category_name_en'];?></td>
-                                     <!-- <td><img width="100" height="100"
-                                            src="<?php echo base_url(); ?>uploads/categories/<?php if(isset($val['category_img'])) echo $val['category_img']; ?>"
-                                            class="img-thumbnail"></td> -->
                                     <td>
                                         <input type="text" class="form-control update_category_order" style="width:30%;"
                                             value="<?php echo $val['order_index']; ?>"
                                             data-category-id="<?php echo $val['category_id']; ?>" />
                                     </td>
 
-                                    <!-- <td><?php if($val['is_active'] == 1){ ?> <span class="badge-success">Active</span>
-                                        <?php } else { ?> <span class="badge-danger">Inactive</span> <?php }?></td> -->
+                                    <td>
+                                        <?php if ($val['is_active'] == 1) { ?>
+                                            <button class="btn btn-sm btn-danger toggle-status disable_item"
+                                                    data-id="<?php echo $val['category_id']; ?>"
+                                                    data-type = "category"
+                                                    data-status="0">
+                                                Disable
+                                            </button>
+                                        <?php } else { ?>
+                                            <button class="btn btn-sm btn-success toggle-status enable_item"
+                                                    data-id="<?php echo $val['category_id']; ?>"
+                                                    data-type = "category"
+                                                    data-status="1">
+                                                Enable
+                                            </button>
+                                        <?php } ?>
+                                    </td>
+
                                     <td class="pb-0 pt-0 d-flex">
-                                       
+
                                             <input type="hidden" name="id" value="<?php echo $val['category_id']; ?>">
                                             <button class="btn tblEditBtn edit_category pl-0 pr-0" type="submit"
                                                 data-bs-toggle="modal" data-id="<?php echo $val['category_id']; ?>"
                                                 data-bs-original-title="Edit Category" data-bs-target="#edit-category"><i
                                                     class="fa fa-edit"></i></button>
-                                     
-
-                                        <a class="btn tblDelBtn pl-0 pr-0 del_category" type="button"
-                                            data-bs-toggle="modal" data-id="<?php echo $val['category_id']; ?>"
-                                            data-bs-original-title="Delete Category" data-bs-target="#delete-category"><i
-                                                class="fa fa-trash"></i></a>
-
-                                                
-                                        <!-- <a data-bs-toggle="modal" data-bs-target="#emp_informations" class="btn tblLogBtn pl-0 pr-0" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Additional Informations">
-                        <i class="fa-solid fa-circle-plus"></i>
-                    </a> -->
                                     </td>
                                 </tr>
                                 <?php $count++; }} ?>
@@ -133,139 +135,77 @@
                     </div>
                     <div class="modal-body">
                     <div class="row bg-soft-light mb-3 border1 pt-2">
-                    <form class="row mt-0 mb-0" id="addCategories"
-                    enctype="multipart/form-data" method="post" >
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Code</label>
-                                <input class="form-control" value="" placeholder="code"
-                                type="text" name="category_code">
-                                <span class="error errormsg mt-2" id="category_code_error"></span>
-                                <div id="general_error" class="error errormsg"></div>
-                               
-                            </div>
+                       <!-- Add category form start -->
+                    <form class="row g-3 mt-0 mb-0" id="addCategories" enctype="multipart/form-data" method="post" style="width:100%">
+
+                        <!-- Order field full width -->
+                        <div class="col-12">
+                            <label class="form-label">Order</label>
+                            <input type="text" readonly class="form-control" name="category_order"
+                                value="<?php echo $order_index; ?>" placeholder="Order">
+                            <span class="error errormsg mt-2" id="category_order_error"></span>
+                            <div id="general_error" class="error errormsg"></div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Order</label>
-                                <input type="text" readonly class="form-control" name="category_order"
-                                value="<?php echo $order_index; ?>" placeholder="Order"> 
-                                <span class="error errormsg mt-2" id="category_order_error"></span>
-                                <div id="general_error" class="error errormsg"></div>
-                            </div>
-                        </div>
-
-
-                        <!-- <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">photo</label>
-                                <input  type="file" class="form-control-file" name="userfile">
-                                <span class="error errormsg mt-2" id="category_userfile_error"></span>
-                            </div>
-                        </div> -->
-
+                        <!-- Four fields per row -->
                         <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Category Malayalam</label>
-                                <input class="form-control"
-                                value="" type="text"
-                                placeholder="Malayalam" name="category_name_ma">
-                                <span class="error errormsg mt-2" id="category_name_ma_error"></span>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Category English</label>
-                                <input class="form-control"
-                                value="" type="text"
-                                placeholder="English" name="category_name_en">
-                                <span class="error errormsg mt-2" id="category_name_en_error"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input"> category Hindi</label>
-                                <input class="form-control"
-                                value="" type="text"
-                                placeholder="Hindi" name="category_name_hi">
-                                <span class="error errormsg mt-2" id="category_name_hi_error"></span>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input"> Category  Arabic</label>
-                                <input class="form-control"
-                                value="" type="text"
-                                placeholder="Arabic" name="category_name_ar">
-                                <span class="error errormsg mt-2" id="category_name_ar_error"></span>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Desc malayalam</label>
-                                <textarea name="category_desc_ma" class="form-control"
-                                placeholder="Malayalam"
-                                rows=""></textarea>
-                                <span class="error errormsg mt-2" id="category_name_desc_ma_error"></span>
-                            
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Desc English</label>
-                                <textarea name="category_desc_en" class="form-control"
-                                       placeholder="English"
-                                               rows=""></textarea>
-                             <span class="error errormsg mt-2" id="category_name_desc_en_error"></span>
-                            </div>
+                            <label class="form-label">Category Malayalam</label>
+                            <input class="form-control" type="text" placeholder="Malayalam" name="category_name_ma">
+                            <span class="error errormsg mt-2" id="category_name_ma_error"></span>
                         </div>
 
                         <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Desc Hindi</label>
-                                <textarea name="category_desc_hi" class="form-control"
-                                placeholder="Hindi"
-                                rows=""></textarea>
-                         <span class="error errormsg mt-2" id="category_name_desc_hi_error"></span>
-                            
-                            </div>
+                            <label class="form-label">Category English</label>
+                            <input class="form-control" type="text" placeholder="English" name="category_name_en">
+                            <span class="error errormsg mt-2" id="category_name_en_error"></span>
                         </div>
+
                         <div class="col-md-3">
-                            <div class="mb-2">
-                                <label class="form-label" for="default-input">Desc Arabic</label>
-                                <textarea name="category_desc_ar" class="form-control"
-                                placeholder="Arabic"
-                                rows=""></textarea>
-                                <span class="error errormsg mt-2" id="category_name_desc_ar_error"></span>
-                            
-                            
-                            </div>
+                            <label class="form-label">Category Hindi</label>
+                            <input class="form-control" type="text" placeholder="Hindi" name="category_name_hi">
+                            <span class="error errormsg mt-2" id="category_name_hi_error"></span>
                         </div>
 
+                        <div class="col-md-3">
+                            <label class="form-label">Category Arabic</label>
+                            <input class="form-control" type="text" placeholder="Arabic" name="category_name_ar">
+                            <span class="error errormsg mt-2" id="category_name_ar_error"></span>
+                        </div>
 
+                        <!-- Descriptions, also 4 in a row -->
+                        <div class="col-md-3">
+                            <label class="form-label">Desc Malayalam</label>
+                            <textarea name="category_desc_ma" class="form-control" placeholder="Malayalam"></textarea>
+                            <span class="error errormsg mt-2" id="category_name_desc_ma_error"></span>
+                        </div>
 
+                        <div class="col-md-3">
+                            <label class="form-label">Desc English</label>
+                            <textarea name="category_desc_en" class="form-control" placeholder="English"></textarea>
+                            <span class="error errormsg mt-2" id="category_name_desc_en_error"></span>
+                        </div>
 
-                        
+                        <div class="col-md-3">
+                            <label class="form-label">Desc Hindi</label>
+                            <textarea name="category_desc_hi" class="form-control" placeholder="Hindi"></textarea>
+                            <span class="error errormsg mt-2" id="category_name_desc_hi_error"></span>
+                        </div>
 
-                        <div class="col-md-12">
-                            <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md"  type="button" id="add_category" >Save</button>
-                            </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Desc Arabic</label>
+                            <textarea name="category_desc_ar" class="form-control" placeholder="Arabic"></textarea>
+                            <span class="error errormsg mt-2" id="category_name_desc_ar_error"></span>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="col-12 text-end mt-3">
+                            <button class="btn btn-primary w-md" type="button" id="add_category">Save</button>
                         </div>
                     </form>
+                    <!-- Add category form end -->
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -283,148 +223,113 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 class="modal-title" id="exampleModalLabel">edit category</h2>
+                        <h2 class="modal-title" id="exampleModalLabel">Edit</h2>
                         <button class="emigo-close-btn" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                     <div class="row bg-soft-light mb-3 border1 pt-2">
-                        <form class="row mt-0 mb-0" id="edit_categories"
+                    <form class="row mt-0 mb-0" id="edit_categories"
                         enctype="multipart/form-data" method="post" >
 
-                        <input type="hidden" id="hidden_category_id" >
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Code</label>
-                                    <input class="form-control" value="" placeholder="code"
-                                    type="text" name="category_code" id="category_code">
-                                    <span class="error errormsg mt-2" id="category_edit_code_error"></span>
-                                    <div id="general_error" class="error errormsg"></div>
-                                   
-                                </div>
+                        <input type="hidden" id="hidden_category_id">
+
+                        <!-- Order (full width single line) -->
+                        <div class="col-md-12">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_order">Order</label>
+                                <input type="text" class="form-control" readonly
+                                    name="category_order" id="category_order"
+                                    value="" placeholder="Order">
+                                <span class="error errormsg mt-2" id="category_edit_order_error"></span>
+                                <div id="general_error" class="error errormsg"></div>
                             </div>
-    
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Order</label>
-                                    <input type="text" class="form-control" readonly name="category_order" id="category_order"
-                                    value="" placeholder="Order"> 
-                                    <span class="error errormsg mt-2" id="category_edit_order_error"></span>
-                                    <div id="general_error" class="error errormsg"></div>
-                                </div>
-                            </div>
-    
-    
-                            <!-- <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">photo</label>
-                                    <input  type="hidden" value="" class="form-control-file"  name="existing_userfile" id="existing_userfile">
-                                    <input  type="file" value="" class="form-control-file" name="userfile" id="userfile">
-                                    <img id="preview_img" src="" alt="Preview" style="max-width: 150px;">
-                                    <span class="error errormsg mt-2" id="category_edit_userfile_error"></span>
-                                </div>
-                            </div> -->
-    
-                            <div class="col-md-3">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Category Malayalam</label>
-                                    <input class="form-control"
-                                    value="" type="text"
+                        </div>
+
+                        <!-- Category Names (4 in one row) -->
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_name_ma">Category Malayalam</label>
+                                <input class="form-control" type="text"
                                     placeholder="Malayalam" name="category_name_ma" id="category_name_ma">
-                                    <span class="error errormsg mt-2" id="category_edit_name_ma_error"></span>
-                                </div>
+                                <span class="error errormsg mt-2" id="category_edit_name_ma_error"></span>
                             </div>
-    
-    
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Category English</label>
-                                    <input class="form-control"
-                                    value="" type="text"
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_name_en">Category English</label>
+                                <input class="form-control" type="text"
                                     placeholder="English" name="category_name_en" id="category_name_en">
-                                    <span class="error errormsg mt-2" id="category_edit_name_en_error" ></span>
-                                </div>
+                                <span class="error errormsg mt-2" id="category_edit_name_en_error"></span>
                             </div>
-    
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input"> category Hindi</label>
-                                    <input class="form-control"
-                                    value="" type="text"
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_name_hi">Category Hindi</label>
+                                <input class="form-control" type="text"
                                     placeholder="Hindi" name="category_name_hi" id="category_name_hi">
-                                    <span class="error errormsg mt-2" id="category_edit_name_hi_error"></span>
-                                </div>
+                                <span class="error errormsg mt-2" id="category_edit_name_hi_error"></span>
                             </div>
-    
-    
-                            <div class="col-md-4">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input"> Category  Arabic</label>
-                                    <input class="form-control"
-                                    value="" type="text"
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_name_ar">Category Arabic</label>
+                                <input class="form-control" type="text"
                                     placeholder="Arabic" name="category_name_ar" id="category_name_ar">
-                                    <span class="error errormsg mt-2" id="category_edit_name_ar_error"></span>
-                                </div>
+                                <span class="error errormsg mt-2" id="category_edit_name_ar_error"></span>
                             </div>
-    
-    
-                            <div class="col-md-3">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Desc malayalam</label>
-                                    <textarea name="category_desc_ma" id="category_desc_ma" class="form-control"
-                                  id="category_desc_ma" placeholder="Malayalam"
-                                    rows=""></textarea>
-                                    <span class="error errormsg mt-2" id="category_edit_name_desc_ma_error"></span>
-                                
-                                </div>
+                        </div>
+
+                        <!-- Category Descriptions (4 in one row) -->
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_desc_ma">Desc Malayalam</label>
+                                <textarea name="category_desc_ma" id="category_desc_ma" class="form-control"
+                                        placeholder="Malayalam" rows="2"></textarea>
+                                <span class="error errormsg mt-2" id="category_edit_name_desc_ma_error"></span>
                             </div>
-    
-    
-                            <div class="col-md-3">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Desc English</label>
-                                    <textarea name="category_desc_en"  class="form-control"
-                                         id="category_desc_en" placeholder="English"
-                                                   rows=""></textarea>
-                                 <span class="error errormsg mt-2" id="category_edit_name_desc_en_error"></span>
-                                </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_desc_en">Desc English</label>
+                                <textarea name="category_desc_en" id="category_desc_en" class="form-control"
+                                        placeholder="English" rows="2"></textarea>
+                                <span class="error errormsg mt-2" id="category_edit_name_desc_en_error"></span>
                             </div>
-    
-                            <div class="col-md-3">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Desc Hindi</label>
-                                    <textarea  name="category_desc_hi" id="category_desc_hi" class="form-control"
-                                  id placeholder="Hindi"
-                                    rows=""></textarea>
-                             <span class="error errormsg mt-2" id="category_edit_name_desc_hi_error"></span>
-                                
-                                </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_desc_hi">Desc Hindi</label>
+                                <textarea name="category_desc_hi" id="category_desc_hi" class="form-control"
+                                        placeholder="Hindi" rows="2"></textarea>
+                                <span class="error errormsg mt-2" id="category_edit_name_desc_hi_error"></span>
                             </div>
-                            <div class="col-md-3">
-                                <div class="mb-2">
-                                    <label class="form-label" for="default-input">Desc Arabic</label>
-                                    <textarea name="category_desc_ar" class="form-control"
-                                  id="category_desc_ar" placeholder="Arabic"
-                                    rows=""></textarea>
-                                    <span class="error errormsg mt-2" id="category_edit_name_desc_ar_error"></span>
-                                
-                                
-                                </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label" for="category_desc_ar">Desc Arabic</label>
+                                <textarea name="category_desc_ar" id="category_desc_ar" class="form-control"
+                                        placeholder="Arabic" rows="2"></textarea>
+                                <span class="error errormsg mt-2" id="category_edit_name_desc_ar_error"></span>
                             </div>
-    
-    
-    
-    
-                            
-    
-                            <div class="col-md-12">
-                                <div class="justify-content-center" style="float: right;">
-                                    <button class="btn btn-primary w-md"  type="button" id="save_category" >Update</button>
-                                </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-md-12">
+                            <div class="justify-content-center" style="float: right;">
+                                <button class="btn btn-primary w-md" type="button" id="save_category">Update</button>
                             </div>
-                        </form>
+                        </div>
+                    </form>
+
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -434,27 +339,6 @@
     </div>
 
     <!-- edit country -->
-
-
-
- <!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
 
 
     <!-- delete user -->
@@ -474,7 +358,7 @@
                 <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
                     <button class="btn btn-secondary" id="yes_cat_user" type="button" data-bs-dismiss="modal">Yes</button>
                 </div>
-    
+
                 </form>
             </div>
         </div>

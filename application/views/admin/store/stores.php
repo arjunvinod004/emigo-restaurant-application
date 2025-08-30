@@ -68,7 +68,7 @@
                     <div class="product-list__item-buttons-block-one">
 
                         <input type="hidden" name="id" value="<?php echo $val['store_id']; ?>">
-                        <a href="<?php echo base_url('admin/store/editstore/'.$val['store_id']); ?>"
+                        <a title="Edit Store" href="<?php echo base_url('admin/store/editstore/'.$val['store_id']); ?>"
                             class="product-list__item-buttons-block-btn product-list__item-buttons-block-add-new-stock-btn btn6 open-modal"
                             data-id="<?php echo $val['store_id']; ?>">
                             <img class="product-list__item-button-img"
@@ -79,14 +79,17 @@
 
 
 
-                        <a class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"
+                        <a title="Disable Store" class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"
                             data-id="<?php echo $val['store_id']; ?>" data-type="store"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
                                 alt="remove stock" width="23" height="22">Disable</a>
+
+                                <a target="_blank" href="<?php echo $val['admin_login_qr']; ?>" title="Download Admin Login QR" class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"><img class="product-list__item-button-img">Login QR</a>
+
                     </div>
                     <div class="product-list__item-buttons-block-two">
 
-                        <a href=""
+                        <!-- <a href=""
                             class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-next-available-btn qrcode-modal"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
                             data-bs-target="#qr-code"><img class="product-list__item-button-img"
@@ -99,22 +102,9 @@
                             data-name="<?php echo $val['store_disp_name']; ?>" data-bs-target="#emp_informations"><img
                                 class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/next-available-time-icon.svg"
-                                alt="next available button stock" width="23" height="24">Product Assign</a>
+                                alt="next available button stock" width="23" height="24">Product Assign</a> -->
 
 
-
-
-
-
-
-                        <!-- <?php if ($this->session->userdata('roleid') == 2){ ?> -->
-                        <a data-bs-toggle="modal" data-bs-target="#Edit-dish" data-id="<?php echo $val['store__id']; ?>"
-                            href=""
-                            class="product-list__item-buttons-block-btn btn6 edit-btn product-list__item-buttons-block-edit-btn"><img
-                                class="product-list__item-button-img"
-                                src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
-                                width="23" height="22">Edit Dish</a>
-                        <!-- <?php } ?> -->
                     </div>
 
                     <div class="product-list__item-buttons-block-three d-grid w-100">
@@ -151,65 +141,6 @@
 
         </div>
 
-        <!-- <div class="row">
-                <div class="">
-                    <div class="table-responsive-sm">
-
-                        <table id="example" class="table table-striped" style="width:100%">
-                            <thead style="background: #e5e5e5;">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php
-                       if(!empty($stores)){
-                       $count = 1;
-                       foreach($stores as $val){ ?>
-                                <tr>
-                                    <td><?php echo $count;?></td>
-                                    <td><?php echo $val['store_name'];?></td>
-                                    <td><?php echo $val['store_email'];?></td>
-                                    <td><?php echo $val['store_phone'];?></td>
-                                    <td><?php if($val['is_active'] == 1){ ?> <span class="badge-success">Active</span>
-                                        <?php } else { ?> <span class="badge-danger">Inactive</span> <?php }?></td>
-                                    <td class="pb-0 pt-0 d-flex">
-
-                                            <input type="hidden" name="id" value="<?php echo $val['store_id']; ?>">
-                                            <button class="btn tblEditBtn edit_store pl-0 pr-0"
-                                                data-bs-toggle="tooltip" data-id="<?php echo $val['store_id']; ?>"
-                                                data-bs-original-title="Edit Store" data-bs-target="#edit-store"><i class="fa fa-edit"></i></button>
-
-
-                                        <a class="btn tblDelBtn pl-0 pr-0 del_store" type="button"
-                                            data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
-                                            data-bs-original-title="Delete Store" data-bs-target="#exampleModal"><i
-                                                class="fa fa-trash"></i></a>
-
-
-                                        <a class="product_assign btn btn-primary"
-                                            data-id="<?php echo $val['store_id']; ?>"
-                                            data-name="<?php echo $val['store_name']; ?>" data-bs-toggle="modal"
-                                            data-bs-target="#emp_informations" class="btn tblLogBtn pl-0 pr-0"
-                                            type="button" class="btn btn-secondary" data-toggle="tooltip"
-                                            data-placement="top" title="Storewise Product Assign">
-                                            Product Assign
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php $count++; }} ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div> -->
-
 
 
         <!-- Modal for detailed product assign -->
@@ -229,39 +160,6 @@
             </div>
         </div>
         <!-- end -->
-
-
-
-
-
-
-
-
-        <!--modal for delete confirmation-->
-        <div class="modal fade" id="removestock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm " role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="exampleModalLabel"><?php echo confirm; ?></h1>
-                        <button class="emigo-close-btn" type="button" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="id" id="store_id" value="" />
-                        <?php echo are_you_sure; ?>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">No</button>
-                        <button class="btn btn-secondary" id="yes_del_store" type="button"
-                            data-bs-dismiss="modal">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--modal for delete confirmation-->
-
-
 
         <!-- qr code -->
         <div class="modal fade" id="qr-code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
