@@ -199,7 +199,7 @@
 
                         <!-- Save Button -->
                         <div class="col-12 text-end mt-3">
-                            <button class="btn btn-primary w-md" type="button" id="add_category">Save</button>
+                            <button class="btn btn1 w-md" type="button" id="add_category">Save</button>
                         </div>
                     </form>
                     <!-- Add category form end -->
@@ -322,7 +322,7 @@
                         <!-- Submit Button -->
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="save_category">Update</button>
+                                <button class="btn btn1 w-md" type="button" id="save_category">Update</button>
                             </div>
                         </div>
                     </form>

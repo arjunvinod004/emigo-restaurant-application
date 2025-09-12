@@ -2,7 +2,7 @@
 <!-- ============================================================== -->
 <div class="container">
     <div class="page-content p-2">
-        <div class="container">
+        <div class="container p-0">
             <div class="row">
                 <div class="col-12">
                     <div class="add-new-dish-list-combo">
@@ -84,7 +84,7 @@
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
                                 alt="remove stock" width="23" height="22">Disable</a>
 
-                                <a target="_blank" href="<?php echo $val['admin_login_qr']; ?>" title="Download Admin Login QR" class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"><img class="product-list__item-button-img">Login QR</a>
+                                <!-- <a target="_blank" href="<?php echo $val['admin_login_qr']; ?>" title="Download Admin Login QR" class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn disable"><img class="product-list__item-button-img">Login QR</a> -->
 
                     </div>
                     <div class="product-list__item-buttons-block-two">
@@ -153,13 +153,14 @@
                         <button type="button" class="emigo-close-btn" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <iframe id="table_iframe_product_assign" height="750px" width="100%"></iframe>
+                    <div class="modal-body" id="product_assign">
+                        <!-- <iframe id="table_iframe_product_assign" height="750px" width="100%"></iframe> -->
                     </div>
                 </div>
             </div>
         </div>
         <!-- end -->
+
 
         <!-- qr code -->
         <div class="modal fade" id="qr-code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

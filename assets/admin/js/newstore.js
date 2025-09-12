@@ -14,67 +14,67 @@
 
         // Basic client-side validation
         if ($('#country_id').val() === '') {
-            $('#country_error').text('Please select a country.');
+            $('#country_error').text('Select country.');
             isValid = false;
         }
         if ($('#sel_gst_or_tax').val() === '') {
-            $('#gst_or_tax_error').text('Please select Tax.');
+            $('#gst_or_tax_error').text('Select Tax.');
             isValid = false;
         }
         if ($('#disp_name').val().trim() === '') {
-            $('#disp_name_error').text('Display Name is required.');
+            $('#disp_name_error').text('Enter display name');
             isValid = false;
         }
         if ($('#reg_name').val().trim() === '') {
-            $('#name_error').text('Registered Name is required.');
+            $('#name_error').text('Enter registered name');
             isValid = false;
         }
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test($('#email').val().trim())) {
-            $('#email_error').text('Please enter a valid email address.');
+            $('#email_error').text('Enter a valid email address.');
             isValid = false;
         }
 
         const phonePattern = /^\d{10}$/;
         if (!phonePattern.test($('#phone').val().trim())) {
-            $('#phone_error').text('Please enter a valid 10-digit phone number.');
+            $('#phone_error').text('Enter a valid 10-digit phone number.');
             isValid = false;
         }
 
         if ($('#address').val().trim() === '') {
-            $('#address_error').text('Address is required.');
+            $('#address_error').text('Enter address');
             isValid = false;
         }
 
-        if ($('#store_desc').val().trim() === '') {
-            $('#store_desc_error').text('Description is required.');
-            isValid = false;
-        }
+        // if ($('#store_desc').val().trim() === '') {
+        //     $('#store_desc_error').text('Description is required.');
+        //     isValid = false;
+        // }
 
         if ($('input[name="contract_start_date"]').val() === '') {
-            $('#error_contract_start_date').text('Contract start date is required.');
+            $('#error_contract_start_date').text('Enter contract start date');
             isValid = false;
         }
 
         if ($('input[name="contract_end_date"]').val() === '') {
-            $('#error_contract_end_date').text('Contract end date is required.');
+            $('#error_contract_end_date').text('Enter contract end date');
             isValid = false;
         }
 
         if ($('input[name="next_followup_date"]').val() === '') {
-            $('#error_next_followup_date').text('Followup date is required.');
+            $('#error_next_followup_date').text('Enter followup date');
             isValid = false;
         }
 
-        if ($('input[name="followup_remarks"]').val() === '') {
-            $('#error_followup_remarks').text('Followup remark is required.');
-            isValid = false;
-        }
+        // if ($('input[name="followup_remarks"]').val() === '') {
+        //     $('#error_followup_remarks').text('Followup remark is required.');
+        //     isValid = false;
+        // }
 
 
         // Validate 'Select Package'
         if ($('#no_of_tables').val() === '') {
-            $('#error_no_of_tables').text('Please select a package.');
+            $('#error_no_of_tables').text('Select package.');
             isValid = false;
         }
 
@@ -85,43 +85,61 @@
         // }
 
         // Validate 'Location'
-        // if ($('#location').val().trim() === '') {
-        //     $('#error_location').text('Location is required.');
-        //     isValid = false;
-        // }
+        if ($('#location').val().trim() === '') {
+            $('#error_location').text('Enter location');
+            isValid = false;
+        }
 
         // Validate 'Default Language'
         if ($('#language').val() === '') {
-            $('#error_language').text('Please select a default language.');
+            $('#error_language').text('Select language.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person name'
+        if ($('#contact_person_name').val() === '') {
+            $('#error_contact_person_name').text('Enter name.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person phone'
+        if ($('#contact_person_phone').val() === '') {
+            $('#error_contact_person_phone').text('Enter phone.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person designation'
+        if ($('#contact_person_designation').val() === '') {
+            $('#error_contact_person_designation').text('Select designation.');
             isValid = false;
         }
 
         // Username Validation
-        if ($('#username').val().trim() === '') {
-            $('#error_username').text('Username is required.');
-            isValid = false;
-        }
+        // if ($('#username').val().trim() === '') {
+        //     $('#error_username').text('Enter username');
+        //     isValid = false;
+        // }
 
         // Password Validation
-        if ($('#password').val().trim() === '') {
-            $('#error_password').text('Password is required.');
-            isValid = false;
-        }
+        // if ($('#password').val().trim() === '') {
+        //     $('#error_password').text('Enter password');
+        //     isValid = false;
+        // }
 
         // Username Validation
-        if ($('#user_username').val().trim() === '') {
-            $('#error_user_username').text('Users username is required.');
-            isValid = false;
-        }
+        // if ($('#user_username').val().trim() === '') {
+        //     $('#error_user_username').text('Enter username.');
+        //     isValid = false;
+        // }
 
         // Password Validation
-        if ($('#user_password').val().trim() === '') {
-            $('#error_user_password').text('Users password is required.');
-            isValid = false;
-        }
+        // if ($('#user_password').val().trim() === '') {
+        //     $('#error_user_password').text('Enter password.');
+        //     isValid = false;
+        // }
 
         if ($('#store_logo_image').val().trim() === '') {
-            $('#error_store_logo_image').text('Logo image is required.');
+            $('#error_store_logo_image').text('Choose logo image');
             isValid = false;
         }
 

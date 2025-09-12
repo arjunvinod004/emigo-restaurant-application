@@ -11,7 +11,7 @@
                             Add Followup
                         </a>
 
-                        <a href="<?php echo base_url('admin/store/index'); ?>" class="add-new-dish-btn btn1">
+                        <a href="<?php echo base_url('admin/store/all'); ?>" class="add-new-dish-btn btn1">
                             <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
                         " alt="add new dish" class="add-new-dish__icon" width="23" height="23">Back</a>
                     </div>
@@ -56,7 +56,7 @@
                     </table>
 
                     <div class="float-end">
-                        <button class=" btn btn-danger w-md" id="delete_followup" data-id="<?php echo $store_id; ?>"
+                        <button class=" btn btn5" id="delete_followup" data-id="<?php echo $store_id; ?>"
                             type="button">Close
                             Followup</button>
                     </div>
@@ -136,7 +136,7 @@
 
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="add_followup">Save</button>
+                                <button class="btn btn1" type="button" id="add_followup">Save</button>
 
                             </div>
                         </div>
@@ -212,7 +212,7 @@
 
                             <div class="col-md-12">
                                 <div class="justify-content-center" style="float: right;">
-                                    <button class="btn btn-primary w-md" type="button"
+                                    <button class="btn btn1" type="button"
                                         id="save_followup">Update</button>
                                 </div>
                             </div>

@@ -31,7 +31,7 @@ class Order extends CI_Controller {
 	 * Delete order - deleteOrder()
 	 * Change order status - changeOrderStatus()
 	 * Change delivery boy - changeDeliveryBoy()
-	 * Save new dining order - SaveNewDiningOrder()   
+	 * Save new dining order - SaveNewDiningOrder()
 	 * Save new pickup order - SaveNewPickupOrder()
 	 * Save new delivery order - SaveNewDeliveryOrder()
 	 * Display table orders - tableOrders()
@@ -49,7 +49,7 @@ class Order extends CI_Controller {
 	 * Get supplier user report - getSupplierUserReportByStoreId()
 	 * Change to dining status - dining_order()
 	 */
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -65,9 +65,9 @@ class Order extends CI_Controller {
 			redirect(login);
 		}
 	}
-	
+
 	public function test(){
-	   $orderids=$this->Ordermodel->get_pending_reorder_table_ids(); 
+	   $orderids=$this->Ordermodel->get_pending_reorder_table_ids();
 	}
 	public function index()
 	{
@@ -80,21 +80,21 @@ class Order extends CI_Controller {
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
 		$loginName = $this->session->userdata('loginName');
 		$data['name'] = $loginName;
-        
-        $store_details = $this->Homemodel->get_store_details_by_store_id($logged_in_store_id);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+
+        $store_details = $this->Commonmodel->get_store_details_by_id($logged_in_store_id);
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
 		$data['store_logo'] = $store_details->store_logo_image;
-        
+
         $this->load->model('admin/Tablemodel');
-		
+
 
 		if($role_id == 1 || $role_id == 2) { //Admin and Shop owner
-			$data['tables']=$this->Tablemodel->getTablesByStoreId($logged_in_store_id); 
-			$data['rooms']=$this->Roommodel->getRoomsByStoreId($logged_in_store_id);
+			$data['tables']=$this->Tablemodel->getTablesByStoreId($logged_in_store_id);
+			$data['rooms']=$this->Roommodel->getRoomTableIdsWithOrders($logged_in_store_id);
 			$data['storeDetails']=$this->Storemodel->get($logged_in_store_id);
 			// print_r($data['storeDet']);
 
@@ -102,11 +102,11 @@ class Order extends CI_Controller {
 			//Count display pending dining,delivery,pickup for admin and shop owner
 			$data['pending_delivery_cooking']=$this->Tablemodel->pending_delivery_cooking($logged_in_store_id);
 			$data['pending_delivery_ready']=$this->Tablemodel->pending_delivery_ready($logged_in_store_id);
-			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id); 
+			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id);
 			$data['pending_pickup_ready']=$this->Tablemodel->pending_pickup_ready($logged_in_store_id);
-			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id); 
-			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id); 
-			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id); 
+			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id);
+			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id);
+			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id);
 			$data['pending_delivery_count']=$this->Tablemodel->pending_delivery_count($logged_in_store_id);
 			$this->load->view('owner/includes/header',$data);
 			$this->load->view('owner/includes/owner-dashboard',$data);
@@ -114,19 +114,22 @@ class Order extends CI_Controller {
 			$this->load->view('owner/includes/footer');
 		}
 		if($role_id == 5) { // Supplier boy
-			$data['tables']=$this->Tablemodel->getTablesAssignedByStoreId($logged_in_store_id,$user_id); //get orders assigned to loged in supplier user  
+			$data['tables']=$this->Tablemodel->getTablesAssignedByStoreId($logged_in_store_id,$user_id); //get orders assigned to loged in supplier user
+			$data['rooms']=$this->Roommodel->getRoomTableIdsWithOrders($logged_in_store_id);
 			$data['ready_orders']=$this->Ordermodel->getReadyOrders($logged_in_store_id,$role_id,$user_id); //ready orders display except
 			$data['enable_table'] = $this->Settingsmodel->getEnableTables($logged_in_store_id,$user_id); // Fetch enable delivery
 			$data['enable_delivery'] = $this->Settingsmodel->getEnableDelivery($logged_in_store_id,$user_id); // Fetch enable delivery
     		$data['enable_pickup'] = $this->Settingsmodel->getEnablePickup($logged_in_store_id,$user_id);     // Fetch enable pickup
+
 			//Count display pending dining,delivery,pickup for supplier
+			$data['storeDetails']=$this->Storemodel->get($logged_in_store_id);
 			$data['pending_delivery_cooking']=$this->Tablemodel->pending_delivery_cooking($logged_in_store_id); // pending delivery order count
 			$data['pending_delivery_ready']=$this->Tablemodel->pending_delivery_ready($logged_in_store_id);
-			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id); 
+			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id);
 			$data['pending_pickup_ready']=$this->Tablemodel->pending_pickup_ready($logged_in_store_id);
-			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id); 
-			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id); 
-			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id); 
+			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id);
+			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id);
+			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id);
 			$data['pending_delivery_count']=$this->Tablemodel->pending_delivery_count($logged_in_store_id);
 			$this->load->view('owner/includes/header',$data);
 			$this->load->view('owner/includes/supplier-dashboard',$data);
@@ -140,11 +143,11 @@ class Order extends CI_Controller {
 			//Count display approved dining,delivery,pickup for supplier
 			$data['pending_delivery_cooking']=$this->Tablemodel->pending_delivery_cooking($logged_in_store_id);
 			$data['pending_delivery_ready']=$this->Tablemodel->pending_delivery_ready($logged_in_store_id);
-			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id); 
+			$data['pending_pickup_cooking']=$this->Tablemodel->pending_pickup_cooking($logged_in_store_id);
 			$data['pending_pickup_ready']=$this->Tablemodel->pending_pickup_ready($logged_in_store_id);
-			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id); 
-			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id); 
-			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id); 
+			$data['comp_pickup_count']=$this->Tablemodel->comp_pickup_count($logged_in_store_id);
+			$data['comp_delivery_count']=$this->Tablemodel->comp_delivery_count($logged_in_store_id);
+			$data['pending_pickup_count']=$this->Tablemodel->pending_pickup_count($logged_in_store_id);
 			$data['pending_delivery_count']=$this->Tablemodel->pending_delivery_count($logged_in_store_id);
 			$this->load->view('owner/includes/header',$data);
 			$this->load->view('owner/includes/kitchen-dashboard',$data);
@@ -152,7 +155,7 @@ class Order extends CI_Controller {
 			$this->load->view('owner/includes/footer');
 		}
 	}
-	
+
 	public function current_stock(){
 		$date = date('Y-m-d');
 		$product_id = $this->input->post('product_id');
@@ -160,21 +163,23 @@ class Order extends CI_Controller {
 		$availableStock = $this->Ordermodel->getCurrentStock($product_id, $date, $store_id);
 		echo $availableStock;
 	}
-	
+
 	public function get_Pending_Orders_Count() {
         $user_id = $this->session->userdata('loginid'); // Loged in user id
 		$role_id = $this->session->userdata('roleid'); // Role id
 		$logged_in_store_id = $this->session->userdata('logged_in_store_id');
+
 		$ready_orders_db=$this->Ordermodel->getReadyOrders($this->session->userdata('logged_in_store_id'),$role_id,$user_id);
         $dining_count = $this->Ordermodel->get_Pending_Orders_Count_db('D',$logged_in_store_id,$role_id,$user_id);
+		//echo "here";exit;
         $pickup_count = $this->Ordermodel->get_Pending_Orders_Count_db('PK',$logged_in_store_id,$role_id,$user_id);
         $delivery_count = $this->Ordermodel->get_Pending_Orders_Count_db('DL',$logged_in_store_id,$role_id,$user_id);
-		$room_count = $this->Ordermodel->get_Pending_Orders_Count_db('rom',$logged_in_store_id,$role_id,$user_id);
+		$room_count = $this->Ordermodel->get_Pending_room_Orders_Count_db('rom',$logged_in_store_id);
 
 		$ready_order_count = $this->Ordermodel->get_Ready_Orders_Count_user_assigned($logged_in_store_id,$role_id,$user_id);
         $pending_order_table_ids = $this->Ordermodel->get_pending_order_table_ids();
-        $pending_reorder_table_ids = $this->Ordermodel->get_pending_reorder_table_ids(); 
-        
+        $pending_reorder_table_ids = $this->Ordermodel->get_pending_reorder_table_ids();
+
         $data = array(
             'ready-orders-db' => $ready_orders_db,
             'dining'   => $dining_count,
@@ -185,7 +190,7 @@ class Order extends CI_Controller {
             'table_ids' => $pending_order_table_ids,
             'reorder_table_ids' => $pending_reorder_table_ids
         );
-        
+
         echo json_encode($data);
     }
 
@@ -197,7 +202,7 @@ class Order extends CI_Controller {
 		$data['controller'] = $controller;
 		$data['method'] = $method;
 		$data['store_id'] = $this->session->userdata('logged_in_store_id');
-		
+
 		$this->load->model('website/Homemodel');
 		$store_details = $this->Homemodel->get_store_details_by_store_id($data['store_id']);
         $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
@@ -205,7 +210,7 @@ class Order extends CI_Controller {
         $data['store_address'] = $store_details->store_address;
         $data['support_no'] = $support_details->support_no;
         $data['support_email'] = $support_details->support_email;
-		
+
 		$this->load->view('owner/includes/header',$data);
 		$this->load->view('owner/includes/owner-dashboard',$data);
 		$this->load->view('owner/order/reports');
@@ -223,8 +228,8 @@ class Order extends CI_Controller {
 
 
 	public function getSalesReportByStoreId() {
-		$store_id = $this->input->post('store_id');	
-		$date = $this->input->post('date');	
+		$store_id = $this->input->post('store_id');
+		$date = $this->input->post('date');
 		$salesReports = $this->Ordermodel->getSalesReportByStoreId($store_id , $date);
 		// Initialize the table structure
 		$table = '';
@@ -236,7 +241,7 @@ class Order extends CI_Controller {
 		$table .= '<th>Pickup</th>';
 		$table .= '<th>Delivery</th>';
 		$table .= '</tr>';
-		$table .= '</thead>';	
+		$table .= '</thead>';
 		$table .= '<tbody>';
 
 		// Assume $salesReports is an array containing multiple rows of sales report data
@@ -265,8 +270,8 @@ class Order extends CI_Controller {
 	}
 
 	public function getSupplierSalesReportByStoreId() {
-		$store_id = $this->input->post('store_id');	
-		$date = $this->input->post('date');	
+		$store_id = $this->input->post('store_id');
+		$date = $this->input->post('date');
 		$salesReports = $this->Ordermodel->getSupplierSalesReportByStoreId($store_id , $date);
 		// Initialize the table structure
 		$table = '';
@@ -278,7 +283,7 @@ class Order extends CI_Controller {
 		$table .= '<th>Pickup</th>';
 		$table .= '<th>Delivery</th>';
 		$table .= '</tr>';
-		$table .= '</thead>';	
+		$table .= '</thead>';
 		$table .= '<tbody>';
 
 		// Assume $salesReports is an array containing multiple rows of sales report data
@@ -305,7 +310,7 @@ class Order extends CI_Controller {
 		// Echo the table
 		echo $table;
 	}
-	
+
 	public function userReport($store_id){
 		$data['store_id'] = $store_id;  //In this case type return table id
 		$this->load->view('owner/order/user_report',$data);
@@ -316,12 +321,12 @@ class Order extends CI_Controller {
 	}
 
 	public function getUserReportByStoreId() {
-		$store_id = $this->input->post('store_id');	
+		$store_id = $this->input->post('store_id');
 		$date = $this->input->post('date');
 		$user_id= $this->session->userdata('loginid');
 		$roleid= $this->session->userdata('roleid');
 		$userReports = $this->Ordermodel->getUserReportByStoreId($store_id , $date, $roleid,$user_id);
-		
+
 		$table = '';
 		$table .= '<table class="table table-striped table-bordered table-hover" id="dataTables-example">';
 		$table .= '<thead>';
@@ -331,7 +336,7 @@ class Order extends CI_Controller {
 		$table .= '<th>Login</th>';
 		$table .= '<th>Logout</th>';
 		$table .= '</tr>';
-		$table .= '</thead>';	
+		$table .= '</thead>';
 		$table .= '<tbody>';
 
 		// Assume $userReports is an array containing multiple rows of user report data
@@ -361,10 +366,10 @@ class Order extends CI_Controller {
 	}
 
 	public function getSupplierUserReportByStoreId() {
-		$store_id = $this->input->post('store_id');	
-		$date = $this->input->post('date');	
+		$store_id = $this->input->post('store_id');
+		$date = $this->input->post('date');
 		$userReports = $this->Ordermodel->getSupplierUserReportByStoreId($store_id , $date);
-		
+
 		$table = '';
 		$table .= '<table class="table table-striped table-bordered table-hover" id="dataTables-example">';
 		$table .= '<thead>';
@@ -374,7 +379,7 @@ class Order extends CI_Controller {
 		$table .= '<th>Login</th>';
 		$table .= '<th>Logout</th>';
 		$table .= '</tr>';
-		$table .= '</thead>';	
+		$table .= '</thead>';
 		$table .= '<tbody>';
 
 		// Assume $userReports is an array containing multiple rows of user report data
@@ -414,8 +419,8 @@ class Order extends CI_Controller {
 		$this->load->view('owner/order/pending_reports',$data);
 	}
 	public function getDeliveryReportByStoreId() {
-		$store_id = $this->input->post('store_id');	
-		$date = $this->input->post('date');	
+		$store_id = $this->input->post('store_id');
+		$date = $this->input->post('date');
 		$deliveryReports = $this->Ordermodel->getDeliveryReportByStoreId($store_id , $date);
 		// Initialize the table structure
 		$table = '';
@@ -433,7 +438,7 @@ class Order extends CI_Controller {
 		$table .= '<th>Delivered Time</th>';
 		$table .= '<th>Delivery Boy</th>';
 		$table .= '</tr>';
-		$table .= '</thead>';	
+		$table .= '</thead>';
 		$table .= '<tbody>';
 
 		// Assume $deliveryReports is an array containing multiple rows of sales report data
@@ -469,8 +474,8 @@ class Order extends CI_Controller {
 
 
 	// public function getallpendingreports(){
-	// 	$store_id = $this->input->post('store_id');	
-	// 	$date = $this->input->post('date');	
+	// 	$store_id = $this->input->post('store_id');
+	// 	$date = $this->input->post('date');
 	// 	 $deliveryReports = $this->Ordermodel->getDeliveryReportByStoreId($store_id , $date);
 	// 	// Initialize the table structure
 	// 	$table = '';
@@ -488,7 +493,7 @@ class Order extends CI_Controller {
 	// 	$table .= '<th>Delivered Time</th>';
 	// 	$table .= '<th>Delivery Boy</th>';
 	// 	$table .= '</tr>';
-	// 	$table .= '</thead>';	
+	// 	$table .= '</thead>';
 	// 	$table .= '<tbody>';
 
 	// 	// Assume $deliveryReports is an array containing multiple rows of sales report data
@@ -535,10 +540,10 @@ class Order extends CI_Controller {
 /******  1b850f36-69c8-4792-ba6b-1b055e8e8358  *******/
 public function newOrder(){
 		$order_no = $this->Productmodel->getOrderNo(); //Generate order number
-        $day = date("d");   
-        $month = date("m"); 
-        $year = date("y"); 
-		$data['heading'] = "";  
+        $day = date("d");
+        $month = date("m");
+        $year = date("y");
+		$data['heading'] = "";
 		$order_no_with_date = $order_no.$day.$month.$year;
 		$data['order_number'] = $order_no_with_date;
 		$data['products']=$this->Productmodel->shopAssignedProducts();
@@ -552,7 +557,7 @@ public function newOrder(){
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
 		$loginName = $this->session->userdata('loginName');
 		$data['name'] = $loginName;
-        
+
         $store_details = $this->Homemodel->get_store_details_by_store_id($logged_in_store_id);
         $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
@@ -560,29 +565,29 @@ public function newOrder(){
         $data['support_no'] = $support_details->support_no;
         $data['support_email'] = $support_details->support_email;
 		$data['store_logo'] = $store_details->store_logo_image;
-		
+
 		$this->load->view('owner/includes/header',$data);
 		$this->load->view('owner/includes/owner-dashboard',$data);
 		$this->load->view('owner/order/newOrder',$data);
 		$this->load->view('owner/includes/footer');
 	}
 
-	public function newDiningOrder($order_number){  
+	public function newDiningOrder($order_number){
 		$store_id = $this->session->userdata('logged_in_store_id');
         $role_id = $this->session->userdata('roleid'); // Role id of logged in user
         $user_id = $this->session->userdata('loginid'); // Loged in user id
 		$data['order_number'] = $order_number;
 		$data['activeTables']=$this->Ordermodel->getActiveTablesByStoreId($store_id,$user_id,$role_id);
 		$data['products']=$this->Productmodel->shopAssignedActiveProducts();
-		$data['heading'] = "Dining"; 
-		$data['orderType'] = "D"; 
+		$data['heading'] = "Dining";
+		$data['orderType'] = "D";
 		$this->load->view('owner/order/newDiningOrder',$data);
 	}
 
 	public function newDeliveryOrder($order_number){
-		$data['heading'] = "Delivery"; 
+		$data['heading'] = "Delivery";
 		$data['order_number'] = $order_number;
-		$data['orderType'] = "DL"; 
+		$data['orderType'] = "DL";
 		$data['products']=$this->Productmodel->shopAssignedActiveProducts();
 		$this->load->view('owner/order/newDeliveryOrder',$data);
 	}
@@ -590,7 +595,7 @@ public function newOrder(){
 	public function newPickupOrder($order_number){
 		$data['heading'] = "Pickup";
 		$data['order_number'] = $order_number;
-		$data['orderType'] = "PK"; 
+		$data['orderType'] = "PK";
 		$data['products']=$this->Productmodel->shopAssignedActiveProducts();
 		$this->load->view('owner/order/newPickupOrder',$data);
 	}
@@ -599,7 +604,7 @@ public function newOrder(){
 		$isReserved = $this->input->post('isReserved');
 		$tableId = $this->input->post('tableId');
 		$this->Ordermodel->setTableReserved($tableId,$isReserved);
-		echo json_encode(array('status' => 'success'));	
+		echo json_encode(array('status' => 'success'));
 	}
 
 	public function SaveConfirmOrder() {
@@ -608,10 +613,10 @@ public function newOrder(){
 		$date = date('Y-m-d');
 		$outOfStockProducts = [];
 		$productQuantities = [];
-		
+
 		foreach ($orders as $product) {
             $product_id = $product['product_id'];
-            if (!isset($productQuantities[$product_id])) 
+            if (!isset($productQuantities[$product_id]))
             {
                 $productQuantities[$product_id] = 0;
             }
@@ -625,25 +630,25 @@ public function newOrder(){
             }
         }
         //print_r($productQuantities);exit;
-	
+
 		foreach ($orders as $product) {
 			$productDetails = $this->Ordermodel->get_store_wise_product_by_id($product['product_id']);
 	        //print_r($productDetails);exit;
 			if (empty($productDetails)) {
 				continue; // Skip if product details are not found
 			}
-	
+
 			// Get store ID
 			$store_id = $this->session->userdata('logged_in_store_id');
-	
+
 			// Check if product is a Combo
 			if ($productDetails[0]['category_id'] == 23) {
 				$comboItems = $this->Productmodel->getComboItems($store_id, $product['product_id']);
-	
+
 				foreach ($comboItems as $item) {
 					$availableStock = $this->Ordermodel->getCurrentStock($item['item_id'], $date, $store_id);
 					$requiredQuantity = $product['quantity'] * $item['quantity'];
-	
+
 					if ($requiredQuantity > $availableStock) {
 						$outOfStockProducts[] = [
 							'product_name' => $this->Ordermodel->getProductName($item['item_id']),
@@ -666,7 +671,7 @@ public function newOrder(){
 				}
 			}
 		}
-	
+
 	//exit;
 		// If any product is out of stock, return an error message
 		if (!empty($outOfStockProducts)) {
@@ -682,16 +687,16 @@ public function newOrder(){
 			// If all products are available, update the order
 			$orderno = $this->Ordermodel->updateOrderNo($order_id);
 			$this->Ordermodel->changeOrderStatus($order_id,0);
-		
+
 			echo json_encode([
 				'status' => 'success',
 				'orderno' => $orderno
 			]);
 		}
-	
-		
+
+
 	}
-	
+
 	public function deleteOrderItem() {
 		$orderId = $this->input->post('orderId');
 		$store_id= $this->session->userdata('logged_in_store_id');
@@ -709,7 +714,7 @@ public function newOrder(){
 			echo json_encode(['success' => true]);
 		}
 	}
-	
+
 	public function deleteOrder() {
 		$orderId = $this->input->post('orderId');
 		if ($this->Ordermodel->deleteOrder($orderId)) {
@@ -747,14 +752,14 @@ public function newOrder(){
 		if($is_combo)
 		{
 					$combo_items = $this->Ordermodel->getComboItems($store_id,$product_id);
-					foreach ($combo_items as $item) 
+					foreach ($combo_items as $item)
 					{
 						$stock = $this->Ordermodel->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
 						if ($stock < ($qty * $item['quantity'])) {
 							// echo json_encode(['status' => 'error', 'message' => 'Not enough stock for product: ' . $item['item_id']]);
 							echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($item['item_id']) . " Not available</div>";
 							return;
-						}          
+						}
 					}
 					$orderItems = [
 						'orderno' => $order_id,
@@ -779,11 +784,11 @@ public function newOrder(){
 						'is_paid' => 0,
 						'is_reorder' => 0
 					];
-					
+
 					$this->db->insert('order_items', $orderItems);
 
 					$orderExists = $this->Ordermodel->isOrderExists($order_id);
-					if($orderExists) 
+					if($orderExists)
 					{
 						//echo "here";exit;
 						$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -818,7 +823,7 @@ public function newOrder(){
 							'modified_date'=> date('Y-m-d H:i:s')
 						];
 						$this->db->insert('order', $order_data);
-					}	
+					}
 
 		}
 		else
@@ -857,11 +862,11 @@ public function newOrder(){
 							'is_paid' => 0,
 							'is_reorder' => 0
 						];
-						
+
 						$this->db->insert('order_items', $orderItems);
 
 						$orderExists = $this->Ordermodel->isOrderExists($order_id);
-						if($orderExists) 
+						if($orderExists)
 						{
 							//echo "here";exit;
 							$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -906,7 +911,7 @@ public function newOrder(){
 					if ($availableStock < $qty) {
 						echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($product_id) . " Not available</div>";
 					}
-					
+
 					else
 					{
 
@@ -933,11 +938,11 @@ public function newOrder(){
 								'is_paid' => 0,
 								'is_reorder' => 0
 							];
-							
+
 							$this->db->insert('order_items', $orderItems);
 
 							$orderExists = $this->Ordermodel->isOrderExists($order_id);
-							if($orderExists) 
+							if($orderExists)
 							{
 								//echo "here";exit;
 								$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -985,7 +990,7 @@ if (!empty($orders)) {
 		$accordionHtml = '<form method="post" action="' . base_url('owner/order/update') . '">
 		<input type="hidden" name="store_id" value="' . $this->session->userdata('logged_in_store_id') . '">
 		<input type="hidden" name="order_id" value="' . $order_id . '">
-		<div class="table-responsive">  
+		<div class="table-responsive">
 		<table class="table">
             <thead>
                 <tr>
@@ -995,7 +1000,7 @@ if (!empty($orders)) {
 					<th width="10%">Rate</th>
 					<th width="10%">Amount</th>
 					<th width="5%">Vat(%)</th>
-					
+
 					<th width="10%">Total-Amt</th>
 					<th width="10%">Is Addon</th>
 					<th width="20%">Recipe Details</th>
@@ -1051,8 +1056,8 @@ if (!empty($orders)) {
         </table></form>
 		</div>';
 
-		
-	
+
+
 		echo $accordionHtml;
 	}
 	}
@@ -1080,14 +1085,14 @@ if (!empty($orders)) {
 			if($is_combo)
 			{
 					$combo_items = $this->Ordermodel->getComboItems($store_id,$product_id);
-					foreach ($combo_items as $item) 
+					foreach ($combo_items as $item)
 					{
 						$stock = $this->Ordermodel->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
 						if ($stock < ($qty * $item['quantity'])) {
 							// echo json_encode(['status' => 'error', 'message' => 'Not enough stock for product: ' . $item['item_id']]);
 							echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($item['item_id']) . " Not available</div>";
 							return;
-						}          
+						}
 					}
 					$orderItems = [
 						'orderno' => $order_id,
@@ -1112,11 +1117,11 @@ if (!empty($orders)) {
 						'is_paid' => 0,
 						'is_reorder' => 0
 					];
-					
+
 					$this->db->insert('order_items', $orderItems);
-			
+
 					$orderExists = $this->Ordermodel->isOrderExists($order_id);
-					if($orderExists) 
+					if($orderExists)
 					{
 						//echo "here";exit;
 						$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1191,11 +1196,11 @@ if (!empty($orders)) {
 							'is_paid' => 0,
 							'is_reorder' => 0
 						];
-						
+
 						$this->db->insert('order_items', $orderItems);
 
 						$orderExists = $this->Ordermodel->isOrderExists($order_id);
-						if($orderExists) 
+						if($orderExists)
 						{
 							//echo "here";exit;
 							$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1240,7 +1245,7 @@ if (!empty($orders)) {
 					if ($availableStock < $qty) {
 						echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($product_id) . " Not available</div>";
 					}
-					
+
 					else
 					{
 
@@ -1267,11 +1272,11 @@ if (!empty($orders)) {
 								'is_paid' => 0,
 								'is_reorder' => 0
 							];
-							
+
 							$this->db->insert('order_items', $orderItems);
 
 							$orderExists = $this->Ordermodel->isOrderExists($order_id);
-							if($orderExists) 
+							if($orderExists)
 							{
 								//echo "here";exit;
 								$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1310,17 +1315,17 @@ if (!empty($orders)) {
 					}
 				}
 	}
-	
-	
+
+
 			$orders = $this->Ordermodel->getOrderItems($order_id);
 	if(!empty($orders)) {
-		
+
 			$accordionHtml = '';
 			$total_amount = 0;
 			$accordionHtml = '<form method="post" action="' . base_url('owner/order/update') . '">
 			<input type="hidden" name="store_id" value="' . $this->session->userdata('logged_in_store_id') . '">
 			<input type="hidden" name="order_id" value="' . $order_id . '">
-			<div class="table-responsive">  
+			<div class="table-responsive">
 			<table class="table">
 				<thead>
 					<tr>
@@ -1330,7 +1335,7 @@ if (!empty($orders)) {
 						<th width="10%">Rate</th>
 						<th width="10%">Amount</th>
 						<th width="5%">Vat(%)</th>
-					
+
 						<th width="10%">Total-Amt</th>
 						<th width="10%">Is Addon</th>
 						<th width="20%">Recipe Details</th>
@@ -1385,7 +1390,7 @@ if (!empty($orders)) {
 				</tfoot>
 			</table></form>
 			</div>';
-		
+
 			echo $accordionHtml;
 		}
 		}
@@ -1406,7 +1411,7 @@ if (!empty($orders)) {
 		$product_id = $this->input->post('product_id');
 		$tableId = $this->input->post('tableID');
 		$qty = $this->input->post('qty');
-		
+
 
 		$date = date('Y-m-d');
 		$productDetails = $this->Ordermodel->get_store_wise_product_by_id($product_id);
@@ -1414,14 +1419,14 @@ if (!empty($orders)) {
 		if($is_combo)
 		{
 					$combo_items = $this->Ordermodel->getComboItems($store_id,$product_id);
-					foreach ($combo_items as $item) 
+					foreach ($combo_items as $item)
 					{
 						$stock = $this->Ordermodel->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
 						if ($stock < ($qty * $item['quantity'])) {
 							// echo json_encode(['status' => 'error', 'message' => 'Not enough stock for product: ' . $item['item_id']]);
 							echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($item['item_id']) . " Not available</div>";
 							return;
-						}          
+						}
 					}
 
 					$orderItems = [
@@ -1447,11 +1452,11 @@ if (!empty($orders)) {
 						'is_paid' => 0,
 						'is_reorder' => 0
 					];
-					
+
 					$this->db->insert('order_items', $orderItems);
 
 					$orderExists = $this->Ordermodel->isOrderExists($order_id);
-					if($orderExists) 
+					if($orderExists)
 					{
 						//echo "here";exit;
 						$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1494,7 +1499,7 @@ if (!empty($orders)) {
 		{
 				if( $this->input->post('variant_value') > 0)  //Check if variant product or not enter if variant
 				{
-					$variantValue =  $this->input->post('variant_value'); // Ensure it's a number 
+					$variantValue =  $this->input->post('variant_value'); // Ensure it's a number
 					$qty = (int) $qty;
 					$availableStock = $this->Ordermodel->getCurrentStock($product_id , $date , $store_id);
 					if ($availableStock < $qty * $variantValue) {
@@ -1526,11 +1531,11 @@ if (!empty($orders)) {
 							'is_paid' => 0,
 							'is_reorder' => 0
 						];
-						
+
 						$this->db->insert('order_items', $orderItems);
 
 						$orderExists = $this->Ordermodel->isOrderExists($order_id);
-						if($orderExists) 
+						if($orderExists)
 						{
 							//echo "here";exit;
 							$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1575,7 +1580,7 @@ if (!empty($orders)) {
 					if ($availableStock < $qty) {
 						echo "<div class='alert alert-danger' role='alert'>". $qty .' '. $this->Ordermodel->getProductName($product_id) . " Not available</div>";
 					}
-					
+
 					else
 					{
 
@@ -1602,11 +1607,11 @@ if (!empty($orders)) {
 								'is_paid' => 0,
 								'is_reorder' => 0
 							];
-							
+
 							$this->db->insert('order_items', $orderItems);
 
 							$orderExists = $this->Ordermodel->isOrderExists($order_id);
-							if($orderExists) 
+							if($orderExists)
 							{
 								//echo "here";exit;
 								$updatedTotalAmt = $this->Ordermodel->updateTotalAmount($order_id);
@@ -1654,7 +1659,7 @@ if(!empty($orders)) {
 		$accordionHtml = '<form method="post" action="' . base_url('owner/order/update') . '">
 		<input type="hidden" name="store_id" value="' . $this->session->userdata('logged_in_store_id') . '">
 		<input type="hidden" name="order_id" value="' . $order_id . '">
-		<div class="table-responsive">  
+		<div class="table-responsive">
 		<table class="table">
             <thead>
                 <tr>
@@ -1664,7 +1669,7 @@ if(!empty($orders)) {
 					<th width="10%">Rate</th>
 					<th width="10%">Amount</th>
 					<th width="5%">Vat(%)</th>
-				
+
 					<th width="10%">Total-Amt</th>
 					<th width="10%">Is Addon</th>
 					<th width="20%">Recipe Details</th>
@@ -1719,7 +1724,7 @@ if(!empty($orders)) {
             </tfoot>
         </table></form>
 		</div>';
-	
+
 		echo $accordionHtml;
 	}
 	}
@@ -1753,7 +1758,7 @@ if(!empty($orders)) {
 		$data['type'] = $type;
 		$this->load->view('owner/order/pending_orders',$data);
 	}
-	
+
 
 	public function OrdersPendingPKDL($table_id){
 		$data['table_id'] = $table_id;  //In this case type return table id
@@ -1762,7 +1767,7 @@ if(!empty($orders)) {
 
 		public function RoomOrdersPendingPKDL($table_id){
 		$data['table_id'] = $table_id;  //In this case type return table id
-		// print_r($data['table_id']); 
+		// print_r($data['table_id']);
 		$this->load->view('owner/order/pending_room_orders',$data);
 	}
 
@@ -1779,9 +1784,9 @@ if(!empty($orders)) {
 		$data['storeDet']=$this->Storemodel->get($this->session->userdata('logged_in_store_id'));
 		//$this->Ordermodel->CheckOrderPaid($this->session->userdata('logged_in_store_id'),$orderno);
 		$data['order']=$this->Ordermodel->getOrderSummary($orderno);
-		$data['order_items']=$this->Ordermodel->getOrderItems($orderno); 
+		$data['order_items']=$this->Ordermodel->getOrderItems($orderno);
 		$data['order_type'] = $data['order_items'][0]['order_type'];
-		$data['table_name'] = $this->Ordermodel->get_table_name($data['order_items'][0]['table_id']); 
+		$data['table_name'] = $this->Ordermodel->get_table_name($data['order_items'][0]['table_id']);
 		$this->load->view('owner/order/printOrderItem',$data);
 	}
 
@@ -1831,11 +1836,11 @@ if(!empty($orders)) {
 				$total_amount = $order['quantity'] * $order['rate'] + $tax_amount;
 				$order_sl  = $order['id'];
 				$product_id  = $order['product_id'];
-				$this->Ordermodel->CheckOrderApprove($order_sl,$store_id,$order_id,$product_id,$order['quantity'],$order['rate'],$tax_amount,$total_amount);	
+				$this->Ordermodel->CheckOrderApprove($order_sl,$store_id,$order_id,$product_id,$order['quantity'],$order['rate'],$tax_amount,$total_amount);
 			}
 		}
 		else if(isset($_POST['pay'])){
-			$this->Ordermodel->CheckOrderPaid($store_id,$order_id);	
+			$this->Ordermodel->CheckOrderPaid($store_id,$order_id);
 		}
 		else
 		{
@@ -1850,13 +1855,13 @@ if(!empty($orders)) {
 		$category_id = $this->input->post('category');
     	$orders = $this->input->post('items');
 		$store_id = $this->session->userdata('logged_in_store_id');
-		
+
 		$productQuantities = [];
 		//Get each ordered item quantity within multidimensional array like array push if repeat same product with multi variant
-        foreach ($orders as $product) 
+        foreach ($orders as $product)
         {
             $product_id = $product['store_product_id'];
-            if (!isset($productQuantities[$product_id])) 
+            if (!isset($productQuantities[$product_id]))
             {
                 $productQuantities[$product_id] = 0;
             }
@@ -1869,18 +1874,18 @@ if(!empty($orders)) {
             $productQuantities[$product_id] += $product['quantity'] * $product['variant_value'];
             }
         }
-        
+
             $outOfStockProducts = [];
-			if (!empty($orders)) 
+			if (!empty($orders))
 			{
 				  foreach ($orders as $product) {
 					  $date = date('Y-m-d');
 					  $productDetails = $this->Ordermodel->get_store_wise_product_by_id($product['store_product_id']);
-	  
+
 					  if (empty($productDetails)) {
 						  continue; // Skip if product details are not found
 					  }
-	  
+
 					  // Check if product is a Combo
 					  if ($productDetails[0]['category_id'] == 23) {
 						  //echo "combo";
@@ -1888,7 +1893,7 @@ if(!empty($orders)) {
 						  $comboItems = $this->Productmodel->getComboItems($store_details_from_token->store_id, $product['store_product_id']);
 						  foreach ($comboItems as $item) {
 							  $availableStock = $this->Productmodel->getCurrentStock($item['item_id'], $date, $store_details_from_token->store_id);
-	  
+
 							  if ($product['quantity'] * $item['quantity'] > $availableStock) {
 								  $outOfStockProducts[] = [
 									  'product_name' => $this->Ordermodel->getProductName($item['item_id']),
@@ -1903,8 +1908,8 @@ if(!empty($orders)) {
 					   {
 					  //echo "here";
 					    $availableStock = $this->Ordermodel->getCurrentStock($product['store_product_id'], $date, $store_id);//exit;
-				      
-					 
+
+
 					  if ($productQuantities[$product['store_product_id']] > $availableStock){
 						  $outOfStockProducts[] = [
 							  'product_name' => $this->Ordermodel->getProductName($product['store_product_id']),
@@ -1916,9 +1921,9 @@ if(!empty($orders)) {
 				  }
 
 				  //print_r($outOfStockProducts);exit;
-	  
+
 				  // Return out-of-stock response
-				  if (!empty($outOfStockProducts)) 
+				  if (!empty($outOfStockProducts))
 				  {
 					  $Response = [
 						  'status' => 'error',
@@ -1930,7 +1935,7 @@ if(!empty($orders)) {
 				  }
 				  else
 				  {
-				        $tax_amount = 0;   
+				        $tax_amount = 0;
             			$total_amount = 0;
             			$this->db->delete('store_stock', array('ttype' => 'SL', 'store_id' => $store_id, 'order_id' => $order_id,'tr_date' => date('Y-m-d')));
             			foreach ($orders as $key => $order) {
@@ -1938,7 +1943,7 @@ if(!empty($orders)) {
             				$total_amount = $order['quantity'] * $order['rate'] + $tax_amount;
             				$order_sl  = $order['id'];
             				$product_id  = $order['store_product_id'];
-            				$this->Ordermodel->CheckOrderApprove($order_sl,$store_id,$order_id,$product_id,$order['quantity'],$order['rate'],$tax_amount,$total_amount,$category_id,$order['variant_value']);	
+            				$this->Ordermodel->CheckOrderApprove($order_sl,$store_id,$order_id,$product_id,$order['quantity'],$order['rate'],$tax_amount,$total_amount,$category_id,$order['variant_value']);
             			}
             			echo json_encode(['status' => 'success']);
 				  }
@@ -1993,7 +1998,7 @@ if(!empty($orders)) {
 		$this->load->model('owner/Ordermodel');
 		$order_id = $this->input->post('orderId');
 		$store_id = $this->session->userdata('logged_in_store_id');
-		$this->Ordermodel->CheckOrderPaid($store_id,$order_id);	
+		$this->Ordermodel->CheckOrderPaid($store_id,$order_id);
 		echo json_encode(['status' => 'success']);
 	}
 	public function dining_order(){
@@ -2001,9 +2006,9 @@ if(!empty($orders)) {
 		$order_id = $this->input->post('orderId');
 		$store_id = $this->session->userdata('logged_in_store_id');
 		$this->Ordermodel->change_to_dining_status($store_id,$order_id);
-		echo json_encode(['status' => 'success']);	
+		echo json_encode(['status' => 'success']);
 	}
-	
+
 	public function SaveOrderWIthExisting(){
 		$this->load->model('owner/Ordermodel');
 		$order_id = $this->input->post('order_id');
@@ -2016,13 +2021,13 @@ if(!empty($orders)) {
 		if($is_combo)
 		{
 			$combo_items = $this->Ordermodel->getComboItems($store_id,$product_id);
-			foreach ($combo_items as $item) 
+			foreach ($combo_items as $item)
 			{
 				$stock = $this->Ordermodel->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
 				if ($stock < ($qty * $item['quantity'])) {
 					echo json_encode(['status' => 'error', 'message' => 'Not enough stock for product: ' . $item['item_id']]);
 					return;
-				}          
+				}
 			}
 					$data = [
 						'orderno' => $order_id,
@@ -2057,9 +2062,9 @@ if(!empty($orders)) {
 								];
 							$this->db->where('orderno', $order_id);
 							$this->db->update('order', $data);
-							
+
 							echo json_encode(['status' => 'success', 'table_id' => $this->Ordermodel->getOrderTableId($order_id)]);
-			
+
 		}
 		else
 		{
@@ -2101,7 +2106,7 @@ if(!empty($orders)) {
 								];
 							$this->db->where('orderno', $order_id);
 							$this->db->update('order', $data);
-							
+
 							echo json_encode(['status' => 'success', 'table_id' => $this->Ordermodel->getOrderTableId($order_id)]);
 				}
 		}
@@ -2135,9 +2140,9 @@ if(!empty($orders)) {
      */
 
 
-	
+
 	public function returnOrderItem(){
-		
+
 		$is_return = 0;
 		$is_replace = 0;
 		$return_quantity = (int) $this->input->post('return_quantity') ?: 0;
@@ -2148,7 +2153,7 @@ if(!empty($orders)) {
 		if ($return_quantity > 0) {
 			$is_return = 1;
 		}
-		
+
 		if ($replace_quantity > 0) {
 			$is_replace = 1;
 		}
@@ -2158,7 +2163,7 @@ if(!empty($orders)) {
 		}else{
 			$return_reason = $return_reason;
 		}
-		
+
 
 		$data = [
 			'is_return' => $is_return,
@@ -2166,7 +2171,7 @@ if(!empty($orders)) {
 			'return_qty' => $return_quantity,
 			'replace_qty' => $replace_quantity,
 			'return_reason' => $return_reason
-		]; 
+		];
 
 		$this->Ordermodel->updateOrderItemReturn($order_item_id, $data);
 		$productId = $this->input->post('return_order_item_product_id');
@@ -2179,12 +2184,12 @@ if(!empty($orders)) {
 		if($is_return == 1){
 			//If variant id != 0 get variant price otherwise getnormal product price
 			$return_amount = $return_quantity * $this->Ordermodel->getItemRate($store_id,$productId , $return_item_variant_id);
-			$this->Ordermodel->updateReturnAmount($return_amount, $order_item_id,$store_id); 
+			$this->Ordermodel->updateReturnAmount($return_amount, $order_item_id,$store_id);
 		}
 		echo "Item returned";
-		         
+
 	}
-	
+
 
     public function getOrderByDate() {
         $this->load->model('owner/Ordermodel');
@@ -2197,8 +2202,8 @@ if(!empty($orders)) {
 
 		$accordionHtml = '';
 
-	
-		
+
+
 		// Build accordion HTML
 		$accordionHtml .= '<div class="accordion"><h5 class="text-center">Completed Orders</h5><hr>';
 
@@ -2212,7 +2217,7 @@ if(!empty($orders)) {
 						</button>
 					</h2>
 					<div id="collapse' . $order['id'] . '" class="accordion-collapse collapse' . $isFirst . '" aria-labelledby="heading' . $order['id'] . '" data-bs-parent="#ordersAccordion">
-						
+
 					<div class="accordion-body">
         <table class="table">
             <thead>
@@ -2255,7 +2260,7 @@ $accordionHtml .= '
 				</div>';
 		}
 		$accordionHtml .= '</div>';
-	
+
 		echo $accordionHtml;
     }
 
@@ -2274,13 +2279,13 @@ $accordionHtml .= '
 
 		$accordionHtml = '';
 
-	
+
 		$total_amount = 0;
-		
+
 		$accordionHtml = '<form method="post" action="' . base_url('owner/order/update') . '">
 		<input type="hidden" name="store_id" value="' . $this->session->userdata('logged_in_store_id') . '">
 		<input type="hidden" name="order_id" value="' . $this->input->post('orderId') . '">
-		<div class="table-responsive">  
+		<div class="table-responsive">
 		<table class="table">
             <thead>
                 <tr>
@@ -2332,7 +2337,7 @@ $accordionHtml .= '
                             <button class="btn btn-secondary" name="approve" width="100px" style="margin-right: 10px;">Approve</button>
                             <button class="btn btn-info" name="pay" width="100px" style="margin-right: 10px;">Paid</button>
 							<button class="btn btn-info" name="pay" width="100px" style="margin-right: 10px;">Delete</button>
-							
+
                         </div>
                     </td>
 					<td colspan="6">
@@ -2344,7 +2349,7 @@ $accordionHtml .= '
             </tfoot>
         </table></form>
 		</div>';
-	
+
 		echo $accordionHtml;
     }
 
@@ -2356,16 +2361,16 @@ $accordionHtml .= '
 	public function getOrdersByType() {
 		$this->load->model('owner/Ordermodel');
 		$orders=$this->Ordermodel->getOrdersByType($this->session->userdata('logged_in_store_id') , $this->input->post('order_type')); //print_r($orders);exit;
-		$deliveryBoys=$this->Ordermodel->getDeliveryBoysByStoreID($this->session->userdata('logged_in_store_id')); 
+		$deliveryBoys=$this->Ordermodel->getDeliveryBoysByStoreID($this->session->userdata('logged_in_store_id'));
 		$kot_enable = $this->Ordermodel->getKotEnabledStatus($this->session->userdata('logged_in_store_id'));
-		
+
 		$accordionHtml = '';
-		
+
 		if (!empty($orders)) {
-		    
+
 			// Build accordion HTML
 			$accordionHtml .= '';
-	
+
 			foreach ($orders as $index => $order) {
 				$isFirst = $index === 0 ? ' ' : ''; // Keep the first accordion open
 				$selectedDeliveryBoy = $order['delivery_boy'];
@@ -2379,7 +2384,7 @@ $accordionHtml .= '
 							</span></button>
 						</h2>
 						<div id="collapse' . $order['orderno'] . '" class="accordion-collapse collapse show' . $isFirst . '" aria-labelledby="heading' . $order['id'] . '" data-bs-parent="#ordersAccordion">
-							
+
 						<div class="accordion-body product-item">
 			<table class="table">
 				<thead>
@@ -2396,21 +2401,21 @@ $accordionHtml .= '
 				</thead>
 				<tbody>';
 				foreach ($order['items'] as $key => $item) {
-		
-		
+
+
 					$total_amount = 0;
 					$backgroundColor = '#ffffff'; // Default color
 					$deleted_entry_button_disable = '';
-					if ($item['is_delete'] == 1) 
+					if ($item['is_delete'] == 1)
 					{
 						$backgroundColor = '#f8d7da'; // Red color Deleted item color
 						$deleted_entry_button_disable = 'disabled'; // If deleted entry buttons should be disable
-					} 
-					elseif ($item['is_reorder'] == 1) 
+					}
+					elseif ($item['is_reorder'] == 1)
 					{
 						$backgroundColor = '#86d7cf'; // Green color Reordered item color
 					}
-			
+
 					$display_none = $order['order_status'] > 2 ? 'd-none' : ''; //If order status till ready can delete after ready cannot delete
 					$disabled = $order['order_status'] > 2 ? 'disabled' : ''; //If order status till ready can change qty after ready cannot change
 					$check_approve_order_exist = $this->Ordermodel->check_approve_order_exist($order['orderno']);
@@ -2423,9 +2428,9 @@ $accordionHtml .= '
 					$accordionHtml .= '
 							<tr id="order-row-' . $item['id'] . '" style="background-color: ' . $backgroundColor . ';">
 								<td>' . $key + 1 . '</td>
-								<td style="width:200px;">' . 
-						$productName . 
-						($variantName != null ? ' (' . $variantName . ')' : '') . 
+								<td style="width:200px;">' .
+						$productName .
+						($variantName != null ? ' (' . $variantName . ')' : '') .
 					'</td>
 								<td style="width:120px;">
 								<input type="hidden" class="form-control variant_value" style="width: 100%;" value="' . $variantValue . '">
@@ -2437,7 +2442,7 @@ $accordionHtml .= '
 						<input type="text" class="form-control text-center quantity" name="quantity" value="'.$item['quantity'].'" min="1" readonly>
 						<button class="btn btn-danger increment" data-variant_value="' . $variantValue . '" data-tax="' . $item['tax'] . '" data-orderstatus="'.$order['order_status'].'" data-orderno="'.$order['orderno'].'" data-rate="' . $item['rate'] . '" data-id="' . $item['id'] . '" data-product-id="' . $item['product_id'] . '" type="button" ' . $disabled . '>+</button>
 					</div>
-			
+
 								</td>
 								<td style="width:80px;"><input type="text" disabled class="form-control rate" style="width: 100%;" value="' . $item['rate'] . '"></td>
 								<td class="amount">' . $item['rate'] * $item['quantity'] . '</td>
@@ -2447,8 +2452,8 @@ $accordionHtml .= '
 								<td><input type="hidden" class="'.$item['product_id'].'total_stock" value="'.$item['quantity'] * $item['variant_value'].'"></td>
 								<td class="d-flex gap-2">
 								<button type="button" '.$deleted_entry_button_disable.' class="btn btn-danger delete-order ' . $display_none . '" data-id="' . $item['id'] . '" data-status="' . $order['order_status'] . '" data-quantity="' . $item['quantity'] . '">Delete</button>
-								<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' . 
-						$productName . 
+								<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' .
+						$productName .
 						($variantName != null ? ' (' . $variantName . ')' : '') . '">Return</button>
 								</td>
 							</tr>';
@@ -2457,41 +2462,41 @@ $accordionHtml .= '
 				}
 				$approveOrderClass = ($order['order_status'] == 0) ? 'btn8-small approve_order' : 'btn6-small approve_order ';
 				$payOrderClass = ($order['order_status'] == 4) ? 'btn8-small pay_order' : 'btn6-small pay_order ';
-				
+
 
 	$accordionHtml .= '</tbody>
 		<tfoot class="table-light">
-				
+
                 <tr>
 					<td colspan="1">';
 
-					
+
 						$accordionHtml .= '<button class="btn btn-success dropdown-toggle" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">';
 						$accordionHtml .= (($order['order_status'] == "0") ? "Pending" : (($order['order_status'] == "1") ? "Approved" : (($order['order_status'] == "2") ? "Cooking" : (($order['order_status'] == "3") ? "Ready" :(($order['order_status'] == "4") ? "Out For Delivery" : "Select Status")))));
 						$accordionHtml .= '</button>';
-					
-					
+
+
 					if ($this->input->post('order_type') == 'DL') {
-						
+
 						if ($order['order_status'] == 3) {
 							$accordionHtml .= '<td colspan="2"><select class="form-select delivery_boy" data-order-id="' . $order['orderno'] . '" id="delivery_boy">';
 							$accordionHtml .= '<option value="">Select Delivery Boy</option>';
-							
+
 							foreach ($deliveryBoys as $item) {
 								$selected = ($item['userid'] == $selectedDeliveryBoy) ? 'selected' : '';
 								$accordionHtml .= '<option value="' . $item['userid'] . '" ' . $selected . '>' . $item['Name'] . '</option>';
 							}
-							
+
 							$accordionHtml .= '</select></td>';
 						}
 					}
-					
-					
+
+
 					$accordionHtml .= '<td colspan="3">
                         <div class="d-flex justify-content-center">
 							<!--<button data-bs-toggle="modal" data-id="2" data-name="fgdfg" data-bs-target="#recipe" class="btn btn-secondary add_order_item" name="approve" width="100px" style="margin-right: 10px;">Add</button>-->
                             <button type="button" class="'.$approveOrderClass.'" data-order-id="' . $order['orderno'] . '" data-kot-enable="'.$kot_enable.'">Approve</button>
-                            
+
 							<button class="'.$payOrderClass.' d-none" data-order-id="' . $order['orderno'] . '" width="100px" style="margin-left: 10px;">Pay</button>
 							<button type="button" data-bs-toggle="modal" data-id="2" data-name="fgdfg" data-bs-target="#printModal" data-order-id="' . $order['orderno'] . '" class="btn6-small pay_order_print" width="100px" style="margin-left: 10px;">Print</button>
 							<a class="btn6-small ' . $display_none_order_delete . ' delete-full-order" data-order-id="' . $order['orderno'] . '" width="100px" style="margin-left: 10px;">Delete</a>
@@ -2514,11 +2519,11 @@ $accordionHtml .= '
 			</table>
 		</div>
 	</div>
-	
+
 						</div>
 
-						
-                    
+
+
                      <div class="modal fade" id="recipe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
@@ -2532,8 +2537,8 @@ $accordionHtml .= '
                               </div>
                             </div>
                     </div>
-                  
-						
+
+
 					</div>';
 			}
 			$accordionHtml .= '</div>';
@@ -2549,19 +2554,19 @@ $accordionHtml .= '
 	}
 
 
-	
+
 
 	public function getPendingOrdersByTableID() {
 		$this->load->model('owner/Ordermodel');
-		$orders=$this->Ordermodel->getPendingOrdersByTableId($this->session->userdata('logged_in_store_id') , $this->input->post('table_id')); 
+		$orders=$this->Ordermodel->getPendingOrdersByTableId($this->session->userdata('logged_in_store_id') , $this->input->post('table_id'));
 		$kot_enable = $this->Ordermodel->getKotEnabledStatus($this->session->userdata('logged_in_store_id'));
 		$accordionHtml = '';
-			
+
 			// Build accordion HTML
 		if(!empty($orders)){
-		
+
 			$accordionHtml .= '';
-	
+
 			foreach ($orders as $index => $order) {
 				$isFirst = $index === 0 ? ' ' : ''; // Keep the first accordion open
 				$accordionHtml .= '<form>
@@ -2572,9 +2577,9 @@ $accordionHtml .= '
 								' . $index + 1 . ' :- Order No: ' . $order['orderno'] . ' - Amount: <span id="order-amount-'.$order['orderno'].'">' . $order['total_amount'] - $order['tax_amount'] .  '</span> - Vat: <span class="tax">' . $order['tax'] . '</span> - Total: <span id="order-amount-include-tax-'.$order['orderno'].'">' . round($order['total_amount'], 2) . '
 							</span></button>
 						</h2>
-					
+
 						<div id="collapse' . $order['orderno'] . '" class="accordion-collapse collapse show' . $isFirst . '" aria-labelledby="heading' . $order['id'] . '" data-bs-parent="#ordersAccordion">
-							
+
 						<div class="accordion-body product-item">
 			<table class="table order_details_table">
 				<thead>
@@ -2591,17 +2596,17 @@ $accordionHtml .= '
 				</thead>
 				<tbody>';
 	foreach ($order['items'] as $key => $item) {
-		
-		
+
+
 		$total_amount = 0;
 		$backgroundColor = '#ffffff'; // Default color
 		$deleted_entry_button_disable = '';
-		if ($item['is_delete'] == 1) 
+		if ($item['is_delete'] == 1)
 		{
 			$backgroundColor = '#f8d7da'; // Red color Deleted item color
 			$deleted_entry_button_disable = 'disabled'; // If deleted entry buttons should be disable
-		} 
-		elseif ($item['is_reorder'] == 1) 
+		}
+		elseif ($item['is_reorder'] == 1)
 		{
 			$backgroundColor = '#86d7cf'; // Green color Reordered item color
 		}
@@ -2617,9 +2622,9 @@ $accordionHtml .= '
 		$accordionHtml .= '
 				<tr id="order-row-' . $item['id'] . '" style="background-color: ' . $backgroundColor . ';">
                     <td>' . $key + 1 . '</td>
-                    <td style="width:200px;">' . 
-            $productName . 
-            ($variantName != null ? ' (' . $variantName . ')' : '') . 
+                    <td style="width:200px;">' .
+            $productName .
+            ($variantName != null ? ' (' . $variantName . ')' : '') .
         '</td>
 					<td style="width:120px;">
 					<input type="hidden" class="form-control variant_value" style="width: 100%;" value="' . $variantValue . '">
@@ -2641,8 +2646,8 @@ $accordionHtml .= '
 					<td><input type="hidden" class="'.$item['product_id'].'total_stock" value="'.$item['quantity'] * $item['variant_value'].'"></td>
 					<td class="d-flex gap-2">
 					<button type="button" '.$deleted_entry_button_disable.' class="btn btn-danger delete-order ' . $display_none . '" data-id="' . $item['id'] . '" data-status="' . $order['order_status'] . '" data-quantity="' . $item['quantity'] . '">Delete</button>
-					<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' . 
-            $productName . 
+					<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' .
+            $productName .
             ($variantName != null ? ' (' . $variantName . ')' : '') . '">Return</button>
 					</td>
                 </tr>';
@@ -2656,7 +2661,7 @@ $accordionHtml .= '
 
 	$accordionHtml .= '</tbody>
 		<tfoot class="table-light order-details_buttons">
-				
+
                 <tr>
 					<td colspan="2">
                         <button class="btn btn-success dropdown-toggle" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -2665,7 +2670,7 @@ $accordionHtml .= '
                     </td>
                     <td colspan="5">
                         <div class="d-flex justify-content-center">
-							<button data-bs-toggle="modal" data-id="2" data-name="fgdfg" data-bs-target="#recipe1" data-order-id="' . $order['orderno'] . '" class="btn6-small add_order_item br-15" name="approve" width="100px" style="margin-right: 10px;">Add</button>
+
                             <button type="button" class="'.$approveOrderClass.'" data-order-id="' . $order['orderno'] . '" data-kot-enable="'.$kot_enable.'">Approve</button>
 							<button type="button" data-order-id="' . $order['orderno'] . '" class="'.$diningOrderClass.' d-none" width="100px" style="margin-left: 10px;">Dining</button>
                             <button class="'.$payOrderClass.' d-none" data-order-id="' . $order['orderno'] . '" width="100px" style="margin-left: 10px;">Pay</button>
@@ -2690,11 +2695,11 @@ $accordionHtml .= '
 			</table>
 		</div>
 	</div>
-	
+
 						</div>
 
-						
-                    
+
+
                      <div class="modal fade" id="recipe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
@@ -2711,7 +2716,7 @@ $accordionHtml .= '
                               </div>
                             </div>
                     </div>
-                    
+
                      <div class="modal fade" id="recipe1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
@@ -2728,8 +2733,8 @@ $accordionHtml .= '
                               </div>
                             </div>
                     </div>
-                  
-						
+
+
 					</div>';
 			}
 			$accordionHtml .= '</div>';
@@ -2745,15 +2750,15 @@ $accordionHtml .= '
 
 		public function getPendingOrdersByRoomID() {
 		$this->load->model('owner/Ordermodel');
-		$orders=$this->Ordermodel->getPendingOrdersByRoomId($this->session->userdata('logged_in_store_id') , $this->input->post('table_id')); 
+		$orders=$this->Ordermodel->getPendingOrdersByRoomId($this->session->userdata('logged_in_store_id') , $this->input->post('table_id'));
 		$kot_enable = $this->Ordermodel->getKotEnabledStatus($this->session->userdata('logged_in_store_id'));
 		$accordionHtml = '';
-			
+
 			// Build accordion HTML
 		if(!empty($orders)){
-		
+
 			$accordionHtml .= '';
-	
+
 			foreach ($orders as $index => $order) {
 				$isFirst = $index === 0 ? ' ' : ''; // Keep the first accordion open
 				$accordionHtml .= '<form>
@@ -2764,9 +2769,9 @@ $accordionHtml .= '
 								' . $index + 1 . ' :- Order No: ' . $order['orderno'] . ' - Amount: <span id="order-amount-'.$order['orderno'].'">' . $order['total_amount'] - $order['tax_amount'] .  '</span> - Vat: <span class="tax">' . $order['tax'] . '</span> - Total: <span id="order-amount-include-tax-'.$order['orderno'].'">' . round($order['total_amount'], 2) . '
 							</span></button>
 						</h2>
-					
+
 						<div id="collapse' . $order['orderno'] . '" class="accordion-collapse collapse show' . $isFirst . '" aria-labelledby="heading' . $order['id'] . '" data-bs-parent="#ordersAccordion">
-							
+
 						<div class="accordion-body product-item">
 			<table class="table order_details_table">
 				<thead>
@@ -2783,17 +2788,17 @@ $accordionHtml .= '
 				</thead>
 				<tbody>';
 	foreach ($order['items'] as $key => $item) {
-		
-		
+
+
 		$total_amount = 0;
 		$backgroundColor = '#ffffff'; // Default color
 		$deleted_entry_button_disable = '';
-		if ($item['is_delete'] == 1) 
+		if ($item['is_delete'] == 1)
 		{
 			$backgroundColor = '#f8d7da'; // Red color Deleted item color
 			$deleted_entry_button_disable = 'disabled'; // If deleted entry buttons should be disable
-		} 
-		elseif ($item['is_reorder'] == 1) 
+		}
+		elseif ($item['is_reorder'] == 1)
 		{
 			$backgroundColor = '#86d7cf'; // Green color Reordered item color
 		}
@@ -2809,9 +2814,9 @@ $accordionHtml .= '
 		$accordionHtml .= '
 				<tr id="order-row-' . $item['id'] . '" style="background-color: ' . $backgroundColor . ';">
                     <td>' . $key + 1 . '</td>
-                    <td style="width:200px;">' . 
-            $productName . 
-            ($variantName != null ? ' (' . $variantName . ')' : '') . 
+                    <td style="width:200px;">' .
+            $productName .
+            ($variantName != null ? ' (' . $variantName . ')' : '') .
         '</td>
 					<td style="width:120px;">
 					<input type="hidden" class="form-control variant_value" style="width: 100%;" value="' . $variantValue . '">
@@ -2833,8 +2838,8 @@ $accordionHtml .= '
 					<td><input type="hidden" class="'.$item['product_id'].'total_stock" value="'.$item['quantity'] * $item['variant_value'].'"></td>
 					<td class="d-flex gap-2">
 					<button type="button" '.$deleted_entry_button_disable.' class="btn btn-danger delete-order ' . $display_none . '" data-id="' . $item['id'] . '" data-status="' . $order['order_status'] . '" data-quantity="' . $item['quantity'] . '">Delete</button>
-					<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' . 
-            $productName . 
+					<button type="button" class="btn btn-secondary return-order" '.$deleted_entry_button_disable.' data-variant-id='.$variant_id.' data-order-id='.$order['orderno'].' data-item-id="' . $item['product_id'] . '" data-qty="' . $item['quantity'] . '" data-order-item-id="' . $item['id'] . '" data-item="' .
+            $productName .
             ($variantName != null ? ' (' . $variantName . ')' : '') . '">Return</button>
 					</td>
                 </tr>';
@@ -2848,7 +2853,7 @@ $accordionHtml .= '
 
 	$accordionHtml .= '</tbody>
 		<tfoot class="table-light order-details_buttons">
-				
+
                 <tr>
 					<td colspan="2">
                         <button class="btn btn-success dropdown-toggle" type="button" id="orderStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -2857,7 +2862,7 @@ $accordionHtml .= '
                     </td>
                     <td colspan="5">
                         <div class="d-flex justify-content-center">
-							<button data-bs-toggle="modal" data-id="2" data-name="fgdfg" data-bs-target="#recipe1" data-order-id="' . $order['orderno'] . '" class="btn6-small add_order_item br-15" name="approve" width="100px" style="margin-right: 10px;">Add</button>
+							
                             <button type="button" class="'.$approveOrderClass.'" data-order-id="' . $order['orderno'] . '" data-kot-enable="'.$kot_enable.'">Approve</button>
 							<button type="button" data-order-id="' . $order['orderno'] . '" class="'.$diningOrderClass.' d-none" width="100px" style="margin-left: 10px;">Dining</button>
                             <button class="'.$payOrderClass.' d-none" data-order-id="' . $order['orderno'] . '" width="100px" style="margin-left: 10px;">Pay</button>
@@ -2882,11 +2887,11 @@ $accordionHtml .= '
 			</table>
 		</div>
 	</div>
-	
+
 						</div>
 
-						
-                    
+
+
                      <div class="modal fade" id="recipe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
@@ -2903,7 +2908,7 @@ $accordionHtml .= '
                               </div>
                             </div>
                     </div>
-                    
+
                      <div class="modal fade" id="recipe1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
@@ -2920,8 +2925,8 @@ $accordionHtml .= '
                               </div>
                             </div>
                     </div>
-                  
-						
+
+
 					</div>';
 			}
 			$accordionHtml .= '</div>';
@@ -2942,12 +2947,12 @@ $accordionHtml .= '
 				echo "<div class='alert alert-danger' role='alert'>No orders!</div>";
 				return;
 			}
-	
+
 			$accordionHtml = '';
-			
+
 			// Build accordion HTML
 			$accordionHtml .= '<div class="accordion"><h5 class="text-center">Completed Orders</h5><hr>';
-	
+
 			foreach ($orders as $index => $order) {
 				$isFirst = $index === 0 ? ' ' : ''; // Keep the first accordion open
 				$accordionHtml .= '
@@ -2958,7 +2963,7 @@ $accordionHtml .= '
 							</button>
 						</h2>
 						<div id="collapse' . $order['id'] . '" class="accordion-collapse collapse' . $isFirst . '" aria-labelledby="heading' . $order['id'] . '" data-bs-parent="#ordersAccordion">
-							
+
 						<div class="accordion-body">
 			<table class="table">
 				<thead>
@@ -2980,10 +2985,10 @@ $accordionHtml .= '
 		$accordionHtml .= '
 					<tr>
 						<td>' . $key + 1 . '</td>
-												  <td>' . $this->Ordermodel->getProductName($item['product_id']) . 
-             (!empty($this->Ordermodel->getVariantName($item['variant_id'])) ? 
+												  <td>' . $this->Ordermodel->getProductName($item['product_id']) .
+             (!empty($this->Ordermodel->getVariantName($item['variant_id'])) ?
              ' (' . $this->Ordermodel->getVariantName($item['variant_id']) . ')' : '') . '</td>
-				 	
+
 						<td>' . $item['quantity'] . '</td>
 						<td>' . $item['rate'] . '</td>
 						<td>' . $item['rate'] * $item['quantity'] . '</td>
@@ -2999,12 +3004,12 @@ $accordionHtml .= '
 			</table>
 		</div>
 	</div>
-	
+
 						</div>
 					</div>';
 			}
 			$accordionHtml .= '</div>';
-		
+
 			echo $accordionHtml;
 		}
 
@@ -3015,7 +3020,7 @@ $accordionHtml .= '
 
 		public function getProductRatesWithIsCustomizeNewDiningOrder(){
 			$is_customise = $this->Ordermodel->checkCustomizable($this->input->post('product_id'));
-		
+
 			$html = '';
 			if($is_customise == 1){
 				$variantsList = $this->Ordermodel->getVariants($this->input->post('product_id'),$this->session->userdata('logged_in_store_id'));
@@ -3031,7 +3036,7 @@ $accordionHtml .= '
 				<input type="hidden" id="totalnew">
 				<input type="hidden" id="qty">
 				<input type="hidden" id="variantnew_id">
-				
+
             <label for="productId" class="form-label">Variant</label>
             <select class="form-select" name="variant_id" id="variant_id">'; // Default placeholder option
 				foreach ($variantsList as $variant1) {
@@ -3064,7 +3069,7 @@ $accordionHtml .= '
 			';
 			}
 			if($is_customise == 0){
-				$html = ' 
+				$html = '
 				<input type="hidden" id="store_id" value="'.$this->session->userdata('logged_in_store_id').'">
 				<input type="hidden" id="tableId" value="'.$this->input->post('table_id').'">
 				<input type="hidden" id="orderType" value="'.$this->input->post('orderType').'">

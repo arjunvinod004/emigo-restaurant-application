@@ -238,6 +238,9 @@ class Store extends My_Controller {
 			        'store_email' => $this->input->post('email'),
 			        'store_phone' => $this->input->post('phone'),
                     'store_address' => $this->input->post('address'),
+					'contact_person_name' => $this->input->post('contact_person_name'),
+                	'contact_person_phone' => $this->input->post('contact_person_phone'),
+                	'contact_person_designation' => $this->input->post('contact_person_designation'),
                     'store_opening_time' => 0,
 					'store_closing_time' =>0,
 					'contract_start_date' => $this->input->post('contract_start_date'),
@@ -250,6 +253,10 @@ class Store extends My_Controller {
 					'gst_or_tax' => $this->input->post('gst_or_tax'),
 					'registration_no' => $bill_no,
 					'store_language' => $this->input->post('language'),
+					'is_table_tab' => $this->input->post('is_table_tab') ?? 0,
+					'is_pickup_tab' => $this->input->post('is_pickup_tab') ?? 0,
+					'is_delivery_tab' => $this->input->post('is_delivery_tab') ?? 0,
+					'is_room_tab' => $this->input->post('is_room_tab') ?? 0,
 					'store_selected_languages' => $checkbox_string,
 					'is_pickup' => 0,
 					'pickup_number' => 0,
@@ -260,7 +267,7 @@ class Store extends My_Controller {
 					'store_logo_image' => $store_logo_image,
 					'whatsapp_enable' => 0,
 			        'is_active' => 1,
-					'is_approve'=>0
+					'is_approve'=> 1
 			        );
 
 				//print_r($data);exit;
@@ -304,7 +311,7 @@ class Store extends My_Controller {
 					$this->Usermodel->insert($data);
 
 					$data = array(
-						'userroleid' => 3,
+						'userroleid' => 2,
 						'store_id' => $last_insert_store_id,
 						'Name' => $this->input->post('name'),
 						'userEmail' => $this->input->post('email'),
@@ -400,6 +407,9 @@ class Store extends My_Controller {
 			        'store_email' => $this->input->post('email'),
 			        'store_phone' => $this->input->post('phone'),
                     'store_address' => $this->input->post('address'),
+					'contact_person_name' => $this->input->post('contact_person_name'),
+                	'contact_person_phone' => $this->input->post('contact_person_phone'),
+                	'contact_person_designation' => $this->input->post('contact_person_designation'),
 					'contract_start_date' => $this->input->post('contract_start_date'),
 					'contract_end_date' => $this->input->post('contract_end_date'),
 					'next_followup_date' => $this->input->post('next_followup_date'),
@@ -427,8 +437,44 @@ class Store extends My_Controller {
 			    );
 
 				$this->Storemodel->update($id,$data);
+
+				$data = array(
+						'userroleid' => 2,
+						'store_id' => $id,
+						'Name' => $this->input->post('name'),
+						'userEmail' => $this->input->post('email'),
+						'userName' => $this->input->post('username'),
+						'userPassword' => md5(trim($this->input->post('password'))),
+						'userPhoneNumber' => $this->input->post('phone'),
+						'userAddress' => $this->input->post('address'),
+						'profileimg' => '',
+						'is_active' => 1,
+			    );
+				$this->Usermodel->insert($data);
+
+				$data = array(
+						'userroleid' => 3,
+						'store_id' => $id,
+						'Name' => $this->input->post('name'),
+						'userEmail' => $this->input->post('email'),
+						'userName' => $this->input->post('user_username'),
+						'userPassword' => md5(trim($this->input->post('user_password'))),
+						'userPhoneNumber' => $this->input->post('phone'),
+						'userAddress' => $this->input->post('address'),
+						'profileimg' => '',
+						'is_active' => 1,
+			        );
+				$this->Usermodel->insert($data);
+
 				$this->session->set_flashdata('success','Store details updated...');
-				redirect('admin/store/all');
+				if($this->input->post('is_active') == 0)
+				{
+					redirect('admin/store/pending');
+				}
+				else
+				{
+					redirect('admin/store/all');
+				}
 			}
 		}
 	}

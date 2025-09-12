@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12">
                 <div class="add-new-dish-list-combo">
-                
+
                 <?php if (!isset($page) || $page != 'support') { ?>
                 <a  href="#" data-bs-toggle="modal" data-bs-original-title="Add Country" data-bs-target="#add-country" class="add-new-dish-btn btn1">
                     <img src="<?php echo base_url('assets/admin/images/add-new-dish-icon.svg'); ?>
@@ -22,7 +22,7 @@
             <!-- end page title -->
 
 
-            <?php 
+            <?php
                 if(isset($countryDet[0]['country_id'])) {
                     $path=base_url().'admin/country/edit';
                     $button_text='Update';
@@ -85,11 +85,11 @@
                                 <?php } ?>
                                 <!-- Show this only support page -->
                                 <td class="pb-0 pt-0 d-flex">
-                                   
+
                                         <input type="hidden" name="id" value="<?php echo $val['country_id']; ?>">
                                         <button class="btn tblEditBtn edit_country pl-0 pr-0" type="submit" id=""
                                             data-id="<?php echo $val['country_id']; ?>" data-bs-toggle="modal"  data-bs-target="#edit-country"><i class="fa fa-edit"></i></button>
-                                   
+
 
                                     <a class="btn tblDelBtn pl-0 pr-0 delete_country" type="button" data-bs-toggle="modal"
                                         data-id="<?php echo $val['country_id']; ?>"
@@ -169,17 +169,17 @@
 
                             </div>
                         </div>
-                        
+
 
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="add_country">Save</button>
+                                <button class="btn btn1 w-md" type="button" id="add_country">Save</button>
                             </div>
                         </div>
                     </form>
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -225,7 +225,7 @@
                             </div>
                         </div>
 
-                      
+
 
 
                         <div class="col-md-4">
@@ -258,13 +258,13 @@
 
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="save_country">Update</button>
+                                <button class="btn btn1 w-md" type="button" id="save_country">Update</button>
                             </div>
                         </div>
                     </form>
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>

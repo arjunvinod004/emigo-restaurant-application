@@ -8,8 +8,7 @@
 
 $(document).ready(function () {
 
-    var base_url = 'http://localhost/emigo-restaurant-application/';
-    //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+    var base_url = $('#base_url').val();
 
     //View pending table orders
     $('.tableOrderPending').click(function () {
@@ -87,11 +86,12 @@ $(document).ready(function () {
 
 
 
-
+    //MARK: 3.Order Count
 
     //Get pending order count on order dashboard
     // This function will be called every 5 seconds
     setInterval(function () {
+        //alert(1);
 
         $.ajax({
             url: base_url + "owner/order/get_Pending_Orders_Count",
@@ -100,9 +100,9 @@ $(document).ready(function () {
             success: function (response) {
 
                 console.log(response);
-                
-               
-               
+
+
+
                 //Ready orders
                 if (Array.isArray(response['ready-orders-db'])) {
                     if(response['ready-orders-db'].length > 0){
@@ -114,12 +114,12 @@ $(document).ready(function () {
                     }
                     let readyHtml = '';
                     response['ready-orders-db'].forEach(function (order) {
-                        
+
                         let orderStatus = '';
                         let orderType = '';
                         let bgColor = '';
                         let btnClass = '';
-                        
+
 
                         if (order.order_status === '1') {
                             orderStatus = 'Approved';
@@ -137,7 +137,7 @@ $(document).ready(function () {
                         } else {
                             orderStatus = 'Pending';
                         }
-                        
+
                         if (order.order_type === 'D') {
                             orderType = order.table_name;
                             bgColor = '#ede1db';
@@ -147,18 +147,18 @@ $(document).ready(function () {
                         } else if (order.order_type === 'DL') {
                             orderType = 'Delivery';
                             bgColor = '#f1b3a1';
-                        } 
+                        }
 
                           else if (order.order_type === 'rom') {
                             orderType = 'Room';
                             bgColor = '#eb191994';
                         }
-                        
-                        
+
+
                         else {
                             orderType = 'Unknown';
                         }
-                        
+
                         readyHtml += `
                             <div class="order-table-list__item">
                             <a data-bs-toggle="modal" data-id="${order.orderno}" data-name="${order.orderno}" data-bs-target="#recipe" class="w-100 ready_order_details" type="button" title="Table Orders">
@@ -177,7 +177,7 @@ $(document).ready(function () {
                     $('#ready-orders-db').html(readyHtml);
                 }
                 //Ready orders
-               
+
                 if (response.dining > 0) {
                     $('#tabs__nav_pending_table_count').removeClass('d-none');
                     $('#tabs__nav_pending_table_count').text(response.dining);
@@ -186,11 +186,11 @@ $(document).ready(function () {
                         $("#order-table-list__item-heading_" + table.table_id).addClass("order-table-list__item-heading_pending-order bounce");
                         $("#order-table-list__unpaid-count_" + table.table_id).text(table.pending_orders);
                     });
-                    
+
                     response.reorder_table_ids.forEach(function (table) {
                         $("#order-table-list__item-heading_" + table.table_id).addClass("bounce");
                     });
-                    
+
                 } else {
                     $('#tabs__nav_pending_table_count').text();
                 }
@@ -225,30 +225,14 @@ if ($heading.length > 0) {
                         // $("#order-table-list__item-heading_" + table.table_id).addClass("order-table-list__item-heading_pending-order bounce");
                         $("#order-table-list__unpaid-count_" + table.table_id).text(table.pending_orders);
                     });
-                    
+
                     response.reorder_table_ids.forEach(function (table) {
                         $("#order-table-list__item-heading_" + table.table_id).addClass("bounce");
                     });
-                    
+
                 } else {
                     $('#tabs__nav_pending_rom_count').text();
                 }
-
-                //  if (response.rom > 0) {
-                //     $('#tabs__nav_pending_rom_count').removeClass('d-none');
-                //     $('#tabs__nav_pending_rom_count').text(response.rom);
-                //     $("#order-rom__unpaid-count").text(response.rom);
-                //     pendingOrderAlert();
-                // } else {
-                //     $('#tabs__nav_pending_rom_count').text();
-                // }
-                // if (response.ready_order > 0) {
-                //     $('#tabs__nav_approved_ready_count').removeClass('d-none');
-                //     $('#tabs__nav_approved_ready_count').text(response.ready_order);
-                //     pendingOrderAlert();
-                // } else {
-                //     $('#tabs__nav_approved_ready_count').text();
-                // }
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching order counts:', error);

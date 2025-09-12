@@ -1,7 +1,7 @@
 
         <!-- Start right Content here -->
         <!-- ============================================================== -->
-        <div class="container">
+        <div class="container p-0">
             <div class="page-content p-2">
                 <div class="container">
                     <div class="row">
@@ -409,7 +409,7 @@
     <!-- Submit -->
     <div class="col-md-12 mt-3">
         <div class="justify-content-center" style="float: right;">
-            <button class="btn btn-primary w-md" type="button" id="save_product">Update</button>
+            <button class="btn btn1 w-md" type="button" id="save_product">Update</button>
         </div>
     </div>
 </form>

@@ -5,18 +5,13 @@
 
 
         <div class="modal-container">
-            <!-- <a class="modal-trigger order-monitor-content__add-new-dish-btn btn1 new_order" data-store-id="41"
-                data-name="SALES">
-                <img src="<?php echo base_url();?>assets/admin/images/add-new-dish-icon.svg" alt="add new dish"
-                    class="add-new-dish__icon" width="23" height="23">
-                Add New Order
-            </a> -->
-            <a href="<?php echo base_url('owner/order/newOrder'); ?>"
+
+            <!-- <a href="<?php echo base_url('owner/order/newOrder'); ?>"
                 class="order-monitor-content__add-new-dish-btn btn1" data-store-id="41" data-name="SALES">
                 <img src="<?php echo base_url();?>assets/admin/images/add-new-dish-icon.svg" alt="add new dish"
                     class="add-new-dish__icon" width="23" height="23">
                 Add New Order
-            </a>
+            </a> -->
             <div class="modal-window">
                 <div class="modal-wrapper">
                     <div class="modal-data">
@@ -99,9 +94,9 @@
 
                         <div class="order-table-list">
                             <?php foreach ($tables as $table) {
-                                $orderCount = $this->Ordermodel->getPendingTableOrderCount($table['table_id']); 
-                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']); 
-                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];          
+                                $orderCount = $this->Ordermodel->getPendingTableOrderCount($table['table_id']);
+                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']);
+                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
                                 $bgClass = '';
                                 if($unpaid_order_count > 0){
                                     $bgClass = 'booked';
@@ -367,27 +362,16 @@
                     <div id="tabs5" class="tabs__pane <?php echo !$activeTabSet ? 'active' : ''; ?> ">
                         <?php $activeTabSet = true; ?>
                         <div class="table-status ">
-                            <!-- <div class="table-status__item">
-                                <div class="table-status__item-color table-status__item-color-available"></div>
-                                <div class="table-status__item-label">Available</div>
-                            </div>
-                            <div class="table-status__item">
-                                <div class="table-status__item-color table-status__item-reserved"></div>
-                                <div class="table-status__item-label">Booked</div>
-                            </div>
-                            <div class="table-status__item">
-                                <div class="table-status__item-color table-status__item-color-booked"></div>
-                                <div class="table-status__item-label">Reserved</div>
-                            </div> -->
+                            
 
                         </div>
 
                         <div class="order-table-list">
                             <?php foreach ($rooms as $table) {
-                                $orderCount = $this->Ordermodel->getPendingRoomOrderCount($table['table_id']); 
+                                $orderCount = $this->Ordermodel->getPendingRoomOrderCount($table['table_id']);
                                 // print_r($orderCount);
-                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']); 
-                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];          
+                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']);
+                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
                                 $bgClass = '';
                                 if($unpaid_order_count > 0){
                                     $bgClass = 'booked';

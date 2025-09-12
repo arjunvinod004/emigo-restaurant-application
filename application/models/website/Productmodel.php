@@ -13,9 +13,19 @@ class Productmodel extends CI_Model {
         $this->db->join('product_translations pt', 'p.id = pt.product_id');
         $this->db->where('p.id', $product_id);
         $this->db->where('pt.language', $language);
-        
+
         $query = $this->db->get();
         return $query->row_array();
+    }
+    //MARK:- Get all products by store id
+    public function getAllProductsByStore($store_id){
+        $this->db->select('s.product_id,s.store_product_id, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,s.image'); // Include necessary columns
+        $this->db->from('store_wise_product_assign s');
+        $this->db->join('product p', 'p.product_id = s.product_id'); // Adjust the join condition based on your table structure
+        $this->db->where('s.store_id', $store_id);
+        $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+        return $query->result_array();
     }
 
     public function get_variant_name($variant_id){
@@ -32,21 +42,21 @@ class Productmodel extends CI_Model {
         $result = $query->result_array();
         return $result;  // Access the sum of total_amount
     }
-    
+
      public function get_variant_code($variant_id){
         $this->db->where('variant_id', $variant_id);
         $query = $this->db->get('variants');
         $row = $query->row_array();
         return $row['code'];
     }
-    
+
     public function get_variant_value($variant_id, $product_id, $store_id) {
     $this->db->where('store_id', $store_id);
     $this->db->where('variant_id', $variant_id);
     $this->db->where('store_product_id', $product_id);
     $query = $this->db->get('store_variants');
     $row = $query->row_array();
-    
+
     return (!empty($row) && $row['variant_value'] != 0) ? $row['variant_value'] : 1;
 }
 
@@ -66,12 +76,12 @@ class Productmodel extends CI_Model {
         $result = $query->result_array();
         return $token_id = $result[0]['token_id'];
     }
-    
+
     public function get_subcategories(){
         $this->db->select('subcategory_id,subcategory_name_ma,subcategory_name_en,subcategory_name_hi,subcategory_name_ar');
         $this->db->from('subcategories');
         $query = $this->db->get();
-        return $query->result_array(); 
+        return $query->result_array();
     }
 
     public function updateOrderNo($order_no){
@@ -94,7 +104,7 @@ class Productmodel extends CI_Model {
         // $this->db->join('product_translations pt', 'p.id = pt.product_id');
         // $this->db->where('p.id', $product_id);
         // $this->db->where('pt.language', $language);
-        
+
         // $query = $this->db->get();
 
         $query = $this->db->get_where('product', array('product_id' => $product_id));
@@ -121,7 +131,7 @@ class Productmodel extends CI_Model {
             return $row1->image;
         }
     }
-    
+
     public function get_store_product_by_id($product_id){
         $this->db->select('product_id');
 	    $this->db->from('store_wise_product_assign');
@@ -139,7 +149,7 @@ class Productmodel extends CI_Model {
 
 
     public function get_products_by_type($type) {
-        
+
         $language = $this->session->userdata('language') ?: 'hi';
 
         // Join the products and product_translations tables to get product details in the selected language
@@ -147,7 +157,7 @@ class Productmodel extends CI_Model {
         // $this->db->from('products p');
         // $this->db->join('product_translations pt', 'p.id = pt.product_id');
         // $this->db->where('pt.language', $language);
-        
+
         $this->db->where('product_veg_nonveg', $type);
         $query = $this->db->get('product');
         //echo $this->db->last_query();exit;
@@ -155,7 +165,7 @@ class Productmodel extends CI_Model {
     }
 
     public function get_products() {
-        
+
         $language = $this->session->userdata('language') ?: 'hi';
 
         // Join the products and product_translations tables to get product details in the selected language
@@ -163,7 +173,7 @@ class Productmodel extends CI_Model {
         // $this->db->from('products p');
         // $this->db->join('product_translations pt', 'p.id = pt.product_id');
         // $this->db->where('pt.language', $language);
-        
+
         // $query = $this->db->get();
         $query = $this->db->get('product');
         //echo $this->db->last_query();exit;
@@ -197,14 +207,14 @@ class Productmodel extends CI_Model {
         //echo $this->db->last_query();exit;
         return $query->result_array();
     }
-    
+
     function getVariantQuantity($variant_id, $cart , $product_id) {
         foreach ($cart as $item) {
             if (isset($item['variant_id']) && $item['variant_id'] == $variant_id && $item['prdParentId'] == $product_id) {
                 return $item['quantity']; // Return the quantity of the matching variant
             }
         }
-        return 0; 
+        return 0;
     }
 
     public function getAddonQuantity($addon_item_id, $cart , $product_id) {
@@ -215,31 +225,23 @@ class Productmodel extends CI_Model {
         }
         return 0;
     }
-    
+
     public function get_customize_product_quantity($cart, $product_id)
     {
         $total_quantity = 0;
         $cart = $cart ?? [];
-        foreach ($cart as $item) 
+        foreach ($cart as $item)
         {
-            if ($item['prdParentId'] == $product_id) 
+            if ($item['prdParentId'] == $product_id)
             {
                 $total_quantity += $item['quantity'];
             }
         }
         return $total_quantity;
     }
-    
-    public function getAllProductsByStore($store_id){
-        $this->db->select('s.product_id,s.store_product_id, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg'); // Include necessary columns
-        $this->db->from('store_wise_product_assign s');
-        $this->db->join('product p', 'p.product_id = s.product_id'); // Adjust the join condition based on your table structure
-        $this->db->where('s.store_id', $store_id);
-        $query = $this->db->get();
-        //echo $this->db->last_query();exit;
-        return $query->result_array();
-    }
-    
+
+
+
     public function getStockoutProducts(){
         $this->db->select('product_id, SUM(pu_qty) - SUM(sl_qty) AS current_stock');
         $this->db->from('store_stock');
@@ -250,46 +252,7 @@ class Productmodel extends CI_Model {
         $result = $query->result_array(); // Fetch the result as an array
     }
 
-
-    // public function getAllProductsByStoreOrderByType($store_id , $category_id ,$isactive , $type){
-    //     $this->db->select(
-    //         's.product_id,
-    //         s.store_product_id,
-    //         s.is_active,
-    //         s.remarks,
-    //         s.image as store_image,
-    //         s.store_product_desc_ma,
-    //         s.store_product_desc_en,
-    //         s.store_product_desc_hi,
-    //         s.store_product_desc_ar,
-    //         s.store_product_name_ma,
-    //         s.store_product_name_en,
-    //         s.store_product_name_hi,
-    //         s.store_product_name_ar,
-    //         p.product_name_en,
-    //         p.product_name_ma,
-    //         p.product_name_hi,
-    //         p.product_name_ar,
-    //         p.product_desc_en,
-    //         p.product_desc_ma,
-    //         p.product_desc_hi,
-    //         p.product_desc_ar,
-    //         s.rate,
-    //         p.is_customizable,
-    //         p.image,
-    //         p.product_veg_nonveg'); 
-    //     $this->db->from('store_wise_product_assign s');
-    //     $this->db->join('product p', 'p.product_id = s.product_id'); // Adjust the join condition based on your table structure
-    //     $this->db->where('s.store_id', $store_id);
-    //     $this->db->where('s.category_id', $category_id);
-    //     $this->db->where('s.is_active', $isactive);
-    //     if($type != ''){
-    //         $this->db->where('p.product_veg_nonveg', $type);
-    //     }
-    //     $query = $this->db->get();
-    //     return $query->result_array();
-    // }
-
+    //MARK:-Load products
     public function getAllProductsByStoreOrderByType($store_id, $category_id , $type) {
         $this->db->select(
             's.product_id,
@@ -316,38 +279,38 @@ class Productmodel extends CI_Model {
              p.product_desc_ar,
              s.rate,
              s.is_customizable,
-             p.image,
-             p.product_veg_nonveg,
+             s.image,
+             s.type,
              p.category_id'
-        ); 
+        );
         $this->db->from('store_wise_product_assign s');
-        $this->db->join('product p', 'p.product_id = s.product_id'); 
+        $this->db->join('product p', 'p.product_id = s.product_id');
         $this->db->where('s.store_id', $store_id);
         $this->db->where('s.category_id', $category_id);
         if ($type != '') {
-            $this->db->where('p.product_veg_nonveg', $type);
+            $this->db->where('s.type', $type);
         }
-    
+
         $query = $this->db->get();
         $products = $query->result_array();
-    
+
         $result = [];
-    
+
         foreach ($products as $product) {
             //print_r($product);exit;
             if ($product['category_id'] == 23) {
                 // Check stock for combo products
                 $combo_items = $this->getComboItems($store_id,$product['store_product_id']);
                 $combo_available = true;
-                
+
                 $availability = $this->getCurrentProductAvailability($product['store_product_id'],$store_id);
-    
+
                 if (empty($combo_items) || $availability == 1) {
                     $combo_available = false;
                 }
                 else
                 {
-                    foreach ($combo_items as $item) 
+                    foreach ($combo_items as $item)
                     {
                         $stock = $this->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
                         $availability = $this->getCurrentProductAvailability($item['item_id'],$store_id);
@@ -358,21 +321,21 @@ class Productmodel extends CI_Model {
                         }
                     }
                 }
-    
-               
-    
+
+
+
                 // $product['status'] = $combo_available ? '0' : '1';
                 $product['status'] = ($combo_available && $product['is_active'] == 0) ? '0' : '1';
             } else {
                 // Check stock for individual products
-                $stock1 = $this->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id); 
+                $stock1 = $this->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id);
                 //$product['status'] = $stock > 0 ? '0' : '1';
                 $product['status'] = ($stock1 > 0 && $product['is_active'] == 0 && $product['availability'] == 0) ? '0' : '1';
             }
-    
+
             $result[] = $product;
         }
-    
+
         return $result;
     }
 
@@ -411,36 +374,36 @@ class Productmodel extends CI_Model {
              p.product_name_ar,
              p.product_desc_ar,
              s.rate,
-             p.is_customizable,
-             p.image,
-             p.product_veg_nonveg,
+             s.is_customizable,
+             s.image,
+             s.type,
              p.category_id'
-        ); 
+        );
         $this->db->from('store_wise_product_assign s');
-        $this->db->join('product p', 'p.product_id = s.product_id'); 
+        $this->db->join('product p', 'p.product_id = s.product_id');
         $this->db->where('s.store_id', $store_id);
         $this->db->where('s.category_id', $category_id);
-    
+
         $query = $this->db->get();
         $products = $query->result_array();
-    
+
         $result = [];
-    
+
         foreach ($products as $product) {
             //print_r($product);exit;
             if ($product['category_id'] == 23) {
                 // Check stock for combo products
                 $combo_items = $this->getComboItems($store_id,$product['store_product_id']);
                 $combo_available = true;
-    
+
                 $availability = $this->getCurrentProductAvailability($product['store_product_id'],$store_id);
-    
+
                 if (empty($combo_items) || $availability == 1) {
                     $combo_available = false;
                 }
                 else
                 {
-                    foreach ($combo_items as $item) 
+                    foreach ($combo_items as $item)
                     {
                         $stock = $this->getCurrentStock($item['item_id'], date('Y-m-d'), $store_id);
                         $availability = $this->getCurrentProductAvailability($item['item_id'],$store_id);
@@ -451,19 +414,19 @@ class Productmodel extends CI_Model {
                         }
                     }
                 }
-    
+
                 // $product['status'] = $combo_available ? '0' : '1';
                 $product['status'] = ($combo_available && $product['is_active'] == 0) ? '0' : '1';
             } else {
                 // Check stock for individual products
-                $stock1 = $this->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id); 
+                $stock1 = $this->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id);
                 //$product['status'] = $stock > 0 ? '0' : '1';
                 $product['status'] = ($stock1 > 0 && $product['is_active'] == 0 && $product['availability'] == 0) ? '0' : '1';
             }
-    
+
             $result[] = $product;
         }
-    
+
         return $result;
     }
 
@@ -474,7 +437,7 @@ class Productmodel extends CI_Model {
         //$this->db->where('tr_date', $date);
         $this->db->where('store_id', $store_id);
         $query = $this->db->get();
-        $result = $query->result_array(); 
+        $result = $query->result_array();
         return $result[0]['bal_qty'];
     }
     public function getProductName($product_id) {
@@ -493,7 +456,7 @@ class Productmodel extends CI_Model {
         return $row[0]['product_name_en'];
     }
 
-    public function getComboItems($store_id,$productId) {      
+    public function getComboItems($store_id,$productId) {
         $this->db->select('*'); // Fetch all columns
         $this->db->from('combo_items'); // Specify the table
         $this->db->where('product_id', $productId); // Filter by product_id
@@ -501,14 +464,14 @@ class Productmodel extends CI_Model {
         $query = $this->db->get(); // Execute the query
        // echo $this->db->last_query();exit;
         return $query->result_array(); // Return the result as an array
-        
+
     }
     public function productIsCombo($product_id){
         $this->db->select('category_id');
         $this->db->from('store_wise_product_assign');
         $this->db->where('store_product_id', $product_id);
         $query = $this->db->get();
-    
+
         if ($query->num_rows() > 0) {
             $result = $query->row();
             return ($result->category_id == 23); // Returns true if category_id is 23, false otherwise
@@ -518,19 +481,19 @@ class Productmodel extends CI_Model {
 
     public function getAllProductsByStoreOrderByFilter($store_id , $category_id ,$isactive , $type){
         //echo $store_id;echo $category_id;echo $isactive;echo $type;exit;
-        $this->db->select('s.product_id,s.store_product_id,s.is_active,s.remarks, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg'); 
+        $this->db->select('s.product_id,s.store_product_id,s.is_active,s.remarks, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg');
         $this->db->from('store_wise_product_assign s');
         $this->db->join('product p', 'p.product_id = s.product_id'); // Adjust the join condition based on your table structure
         $this->db->where('s.store_id', $store_id);
         $this->db->where('s.category_id', $category_id);
         $this->db->where('s.is_active', $isactive);
-        
+
         $query = $this->db->get();
        // echo $this->db->last_query();exit;
         return $query->result_array();
     }
 
-    
+
     public function getAllProductsByStoreOrderBy($store_id , $category_id){
         $this->db->select('s.product_id,s.store_product_id,s.is_active,s.remarks, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg'); // Include necessary columns
         $this->db->from('store_wise_product_assign s');
@@ -547,7 +510,7 @@ class Productmodel extends CI_Model {
         $this->db->from('categories');
         $this->db->order_by('order_index', 'ASC');
         $query = $this->db->get();
-        return $query->result_array(); 
+        return $query->result_array();
     }
     public function getAllProductsByStoreFilter($store_id , $type , $category_id , $category_order ){
         $this->db->select('s.product_id,s.store_product_id,s.category_id,s.is_active,s.remarks, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg'); // Include necessary columns
@@ -576,7 +539,7 @@ class Productmodel extends CI_Model {
         //echo $this->db->last_query();exit;
         return $query->result_array();
     }
-    
+
      public function loadProductssubCategoryFilter($store_id , $category, $subcategory ,$category_order){
         $this->db->select('s.product_id,s.store_product_id,s.subcategory_id,s.is_active,s.remarks, p.product_name_en,p.product_name_ma,p.product_name_hi,p.product_name_ar,p.product_desc_en,p.product_desc_ma,p.product_desc_hi,p.product_desc_ar,s.rate,p.is_customizable,p.image,p.product_veg_nonveg'); // Include necessary columns
         $this->db->from('store_wise_product_assign s');
@@ -612,7 +575,7 @@ class Productmodel extends CI_Model {
     }
 
     public function getAddons($product_id,$store_id) {
-        $this->db->select('p.product_id,p.product_name_en,p.image as prod_image, pa.*,swpa.*');
+        $this->db->select('p.product_id,p.product_name_en,swpa.image as prod_image, pa.*,swpa.*');
         $this->db->from('products_addons pa');
         $this->db->join('store_wise_product_assign swpa', 'pa.addon_item_id = swpa.store_product_id');
         $this->db->join('product p', 'swpa.product_id = p.product_id');
@@ -625,7 +588,7 @@ class Productmodel extends CI_Model {
     }
 
     public function getActiveAndInactiveAddons($product_id,$store_id) {
-        $this->db->select('p.product_id,p.product_name_en,p.image as prod_image, pa.*,swpa.*');
+        $this->db->select('p.product_id,p.product_name_en,swpa.image as prod_image, pa.*,swpa.*');
         $this->db->from('products_addons pa');
         $this->db->join('store_wise_product_assign swpa', 'pa.addon_item_id = swpa.store_product_id');
         $this->db->join('product p', 'swpa.product_id = p.product_id');
@@ -634,6 +597,7 @@ class Productmodel extends CI_Model {
          $this->db->where('pa.is_active', 1);
         $query = $this->db->get();
         $result = $query->result_array();
+        //echo $this->db->last_query();exit;
         $results = [];
         foreach ($result as $row) {
             $stock = $this->getCurrentStock($row['addon_item_id'], date('Y-m-d'), $store_id);
@@ -654,6 +618,6 @@ class Productmodel extends CI_Model {
         //echo $this->db->last_query();exit;
         return $query->result_array();
     }
-    
+
 }
 ?>

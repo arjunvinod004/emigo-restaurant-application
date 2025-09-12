@@ -114,130 +114,55 @@
             <div class="gallery">
                 <?php foreach ($images as $image) { ?>
                 <div class="gallery-item">
-                    <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['default_image']; ?>"
-                        style="border: 4px solid #05ab12;">
-                    <button class="btn set_default" data-image="<?php echo $image['image1']; ?>"
-                        data-id="<?php echo $store_product_id; ?>">Default</button>
+                    <h2>Default Image</h2>
+                    <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['default_image']; ?>">
                 </div>
+
+                <?php if (!empty($image['image1']) && file_exists(FCPATH . 'uploads/product/' . $image['image1'])){ ?>
                 <div class="gallery-item">
                     <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['image1']; ?>">
                     <button class="btn6-small set_default" data-image="<?php echo $image['image1']; ?>"
-                        data-id="<?php echo $store_product_id; ?>">Set Default</button>
+                        data-id="<?php echo $store_product_id; ?>">Set as default image</button>
                 </div>
+                <?php } ?>
+
+                <?php if (!empty($image['image2']) && file_exists(FCPATH . 'uploads/product/' . $image['image2'])){ ?>
                 <div class="gallery-item">
                     <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['image2']; ?>">
                     <button class="btn6-small set_default" data-image="<?php echo $image['image2']; ?>"
-                        data-id="<?php echo $store_product_id; ?>">Set Default</button>
+                        data-id="<?php echo $store_product_id; ?>">Set as default image</button>
                 </div>
+                <?php } ?>
+
+                <?php if (!empty($image['image3']) && file_exists(FCPATH . 'uploads/product/' . $image['image3'])){ ?>
                 <div class="gallery-item">
                     <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['image3']; ?>">
                     <button class="btn6-small set_default" data-image="<?php echo $image['image3']; ?>"
-                        data-id="<?php echo $store_product_id; ?>">Set Default</button>
+                        data-id="<?php echo $store_product_id; ?>">Set as default image</button>
                 </div>
+                <?php } ?>
+
+                <?php if (!empty($image['image4']) && file_exists(FCPATH . 'uploads/product/' . $image['image4'])){ ?>
                 <div class="gallery-item">
                     <img src="<?php echo base_url(); ?>uploads/product/<?php echo $image['image4']; ?>">
                     <button class="btn6-small set_default" data-image="<?php echo $image['image4']; ?>"
-                        data-id="<?php echo $store_product_id; ?>">Set Default</button>
+                        data-id="<?php echo $store_product_id; ?>">Set as default image</button>
                 </div>
+                <?php } ?>
+
                 <?php } ?>
             </div>
 
         </div>
 
     </div>
-
-
-
-
-
-
-
-
-
-
     <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
-
     <!-- JAVASCRIPT -->
     <script src="<?php echo base_url();?>assets/admin/js/metismenu.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/simplebar.min.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/waves.min.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/feather.min.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/app.js"></script>
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js">
+    <script type="module" src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script>
     </script>
 
-    <script>
-    $(document).ready(function() {
-        $('.set_default').click(function() {
-            var image = $(this).data('image');
-            var store_product_id = $(this).data('id'); //alert(image);alert(id);
-            $.ajax({
-                url: '<?= base_url("owner/product/set_default_image") ?>',
-                method: 'POST',
-                data: {
-                    image: image,
-                    store_product_id: store_product_id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        var modalWindow = window.top.document.querySelector(".emigo-modal");
-                        if (modalWindow) {
-                            modalWindow.style.display = "none";
-                            if (window.top !== window.self) {
-                                window.top.location.reload();
-                            } else {
-                                location.reload();
-                            }
-                        }
-                        // $('.message').removeClass('d-none');
-                        // $('.message').removeClass('alert alert-danger');
-                        // $('.message').addClass('alert alert-success');
-                        // $('.message').text('Default product image updated successfully.');
-                    }
-                }
-            });
-        });
-
-        // image upload function
-        $('#imageUpload').on('change', function() {
-            const formData = new FormData();
-            const store_product_id = $('#store_product_id').val();
-            formData.append('image', this.files[0]); // Appending the image file
-            formData.append('id', store_product_id);
-            $.ajax({
-                url: '<?php echo base_url("owner/product/upload_new_image"); ?>', // Adjust the URL to your route
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: 'json',
-                success: function(response) {
-                    //alert(response);
-                    if (response.status === 'success') {
-                        var modalWindow = window.top.document.querySelector(".emigo-modal");
-                        if (modalWindow) {
-                            modalWindow.style.display = "none";
-                            if (window.top !== window.self) {
-                                window.top.location.reload();
-                            } else {
-                                location.reload();
-                            }
-                        }
-                        // $('.message').removeClass('d-none');
-                        // $('.message').removeClass('alert alert-danger');
-                        // $('.message').addClass('alert alert-success');
-                        // $('.message').text('Default product image updated successfully.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('An error occurred: ' + error);
-                }
-            });
-        });
-
-    });
-    </script>

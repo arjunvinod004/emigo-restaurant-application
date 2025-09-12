@@ -10,7 +10,7 @@ class Tablemodel extends CI_Model {
 		//echo $this->db->last_query();exit;
 		return $query->result_array();
 	}
-	
+
 	public function insert($data){
 	    $this->db->insert('store_table',$data);
 	}
@@ -50,11 +50,11 @@ class Tablemodel extends CI_Model {
 		$this->db->where('store_table_assign.user_id', $user_id);
 		$this->db->where('store_table_assign.table_id !=', 0);
 		$this->db->order_by('store_table_assign.table_id', 'asc');
-		
+
 		$query = $this->db->get();
 		return $query->result_array();
 	}
-	
+
 
 	public function getDeliveryOrdersByStoreId($store_id){
 		$this->db->select('*');

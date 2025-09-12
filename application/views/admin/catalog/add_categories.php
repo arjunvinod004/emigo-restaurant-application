@@ -178,7 +178,7 @@
                                                     <div class="errormsg mt-2" role="alert">
                                                         <?php echo form_error('category_desc_ma'); ?></div>
                                                     <?php } ?>
-                                                    
+
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <textarea name="category_desc_en" class="form-control"
@@ -273,7 +273,7 @@
 fffffffffff
   </div> -->
                     </div>
-                    <button class="btn btn-primary pull-right mb-4" type="submit" name="add">Save</button>
+                    <button class="btn btn-1 pull-right mb-4" type="submit" name="add">Save</button>
                 </form>
 
 

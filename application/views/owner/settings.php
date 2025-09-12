@@ -51,29 +51,36 @@
             <a class="settings-content__btn btn1 clearstock"><img class="settings-content__btn-icon"
                     src="<?php echo base_url();?>assets/admin/images/clear-stock-icon.svg" alt="add/list user">Clear
                 Stock</a>
-            <a class="settings-content__btn btn1" id="list-table"><img class="settings-content__btn-icon"
+
+                    <?php if($is_table_tab == 1){ ?>
+                <a class="settings-content__btn btn1" id="list-table"><img class="settings-content__btn-icon"
                     src="<?php echo base_url();?>assets/admin/images/table-icon-settings.svg"
                     alt="add/list user">Tables</a>
+                    <?php } ?>
 
+                    <?php if($is_table_tab == 1){ ?>
                     <a class="settings-content__btn btn1" id="list-qrcode" data-id="<?php echo $store_id ?>"
                      data-bs-target="#qr-code"
                      data-bs-toggle="modal"><img class="settings-content__btn-icon"
-                    src="https://img.icons8.com/office/30/qr-code.png" 
-                    alt="add/list user">Qr Code</a>
+                    src="https://img.icons8.com/office/30/qr-code.png"
+                    alt="add/list user">Dining QR</a>
+                    <?php } ?>
 
                       <a href="<?php echo base_url(); ?>owner/settings/whatsapp" class="settings-content__btn btn1"  data-id="<?php echo $store_id ?>"
                    ><img class="settings-content__btn-icon"
-                    src="https://img.icons8.com/fluency/30/whatsapp.png" 
+                    src="https://img.icons8.com/fluency/30/whatsapp.png"
                     alt="add/list user">Whatsapp Number</a>
 
 
-                       <form action="<?php echo base_url(); ?>admin/rooms/index" method="post">
+                    <?php if($is_room_tab == 1){ ?>
+                        <form action="<?php echo base_url(); ?>admin/rooms/index" method="post">
         <input type="hidden" name="store_id" value="<?php echo $store_id ?>">
         <button type="submit" class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-next-available-btn w-100 d-flex">
             <img class="product-list__item-button-img"
                 src="https://img.icons8.com/dusk/30/room.png"
-                alt="next available button stock" width="23" height="24">Rooms
+                alt="next available button stock" width="23" height="24">Room QR
         </button>
+                    <?php } ?>
     </form>
 
                             <div class="justify-content-center mt-3">
@@ -355,8 +362,8 @@
                     <!-- <form class="row mt-0 mb-0" id="edit_save_country" method="post" enctype="multipart/form-data"> -->
                  <input type="hidden" id="qr_code_id" >
                  <iframe id="table_iframe" height="600px" width="100%">
-                 
-                 
+
+
 
                  </iframe>
 
@@ -366,7 +373,7 @@
                     <!-- </form> -->
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>

@@ -24,6 +24,7 @@
 </head>
 
 <body>
+    <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
     <div class="application-header pt-0 pb-0 ">
         <div class="application-header__container container d-none">
             <div class="application-header__brand">

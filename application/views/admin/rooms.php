@@ -7,7 +7,7 @@
                 <div class="col-12">
                 <div class="add-new-dish-list-combo">
                 <?php if ($role_id == 1) { ?>
-    <a href="<?php echo base_url('admin/store'); ?>" class="add-new-dish-btn btn1">
+    <a href="<?php echo base_url('admin/store/all'); ?>" class="add-new-dish-btn btn1">
         <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png" alt="Back" class="add-new-dish__icon" width="23" height="23">
         Back
     </a>
@@ -18,7 +18,7 @@
     </a>
 <?php } ?>
 
-              
+
                 <!-- <a  href="<?php echo base_url('admin/store'); ?>" class="add-new-dish-btn btn1">
                     <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
 " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
@@ -44,14 +44,14 @@
                 <option value="40">40</option>
                 <option value="50">50</option>
             </select>
-            
+
         </div>
           <span class="error errormsg mt-2" id="roomselect_error"></span>
     </div>
-    
- 
+
+
     <div class="col-md-4">
-        <button class="btn btn-primary w-md mt-4" type="button" id="addrooms">Add</button>
+        <button class="btn btn1 mt-4" type="button" id="addrooms">Add</button>
     </div>
 </form>
 </div>
@@ -59,17 +59,17 @@
 
         </div>
 
-       
- 
-      
-     
+
+
+
+
 
 
  <?php if($this->session->flashdata('success')){ ?>
                     <div class="alert alert-success dark" role="alert">
                         <?php echo $this->session->flashdata('success');$this->session->unset_userdata('success'); ?>
                     </div><?php } ?>
-                    
+
                     <?php if($this->session->flashdata('error')){ ?>
                     <div class="alert alert-danger dark" role="alert">
                         <?php echo $this->session->flashdata('error');$this->session->unset_userdata('error'); ?>
@@ -100,13 +100,13 @@
                                     <td data-field="table_name"><?php echo $val['table_name'];?></td>
                                     <td><input type="text" class="form-control editable_room w-50" value="<?php echo $val['store_table_name'];?>" readonly data-id="<?php echo $val['table_id']; ?>" data-field="store_table_name"></td>
                                     <td class="pb-0 pt-0 d-flex">
-                                       
+
                                             <input type="hidden" name="id" value="<?php echo $val['table_id']; ?>">
                                             <button class="btn tblEditBtn edit_rooms pl-0 pr-0" type="submit"
-                                                 data-id="<?php echo $val['table_id']; ?>" 
+                                                 data-id="<?php echo $val['table_id']; ?>"
                                                 data-bs-original-title="Edit Rooms" ><i
                                                     class="fa fa-edit"></i></button>
-                                     
+
 
                                         <a class="btn tblDelBtn pl-0 pr-0 del_room" type="button"
                                             data-bs-toggle="modal" data-id="<?php echo $val['table_id']; ?>"
@@ -137,7 +137,7 @@
                     </div>
                 </div>
 
-         
+
 
 
 
@@ -191,11 +191,9 @@
                 <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -209,4 +207,3 @@
 
 
 
-      

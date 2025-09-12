@@ -18,11 +18,11 @@
                         class="add-new-dish__icon" width="23" height="23">
                     Add New Dish
                 </a>
-                <a href="<?php echo base_url('owner/combo'); ?>" class="list-combo-btn btn2">
+                <!-- <a href="<?php echo base_url('owner/combo'); ?>" class="list-combo-btn btn2">
                     <img src="<?php echo base_url(); ?>assets/admin/images/list-combo-icon.svg" alt="list combo icon"
                         class="list-combo__icon" width="23" height="23">
                     Combos
-                </a>
+                </a> -->
             </div>
 
         </div>
@@ -39,22 +39,24 @@
  ?>
             <div class="product-list__item">
                 <div class="product-list__item-image-and-details">
-                    <?php
-                        $path = ($val['store_image'] != '') ? site_url() . "uploads/product/" . $val['store_image'] : site_url() . "uploads/product/" . $val['image'];
+                   <?php
+                        $storeImage = !empty($val['store_image']) ? $val['store_image'] : 'default.png';
+                        $path = site_url("uploads/product/" . ($storeImage));
+                        $product_name =  ($val['store_product_name_en'] != '') ? $val['store_product_name_en'] : $val['product_name_en'];
                     ?>
-                    <img src="<?php echo $path; ?>" alt="chapathi" class="product-list__item-img" width="190"
+                    <img src="<?php echo $path; ?>" alt="<?= $product_name ?>" class="product-list__item-img" width="190"
                         height="150">
                     <div class="product-list__item-details">
                         <h3 class="product-list__item-name">
-                            <?php echo ($val['store_product_name_en'] != '') ? $val['store_product_name_en'] : $val['product_name_en']; ?>
+                        <?= $product_name ?>
                         </h3>
                         <p class="product-list__item-price">
-                            ₹<?php 
-                                            if ($val['is_customizable'] == 0) 
+                            ₹<?php
+                                            if ($val['is_customizable'] == 0)
                                             {
                                                 echo $val['rate'];
-                                            } 
-                                            else 
+                                            }
+                                            else
                                             {
                                                 $this->Ordermodel->getCustomizeProductDefaultPrice($val['store_product_id'], $this->session->userdata('logged_in_store_id'));
                                             }
@@ -62,7 +64,7 @@
 
 
 
-                        <?php 
+                        <?php
                         $status = ($stock > 0) && ($val['availability'] == 0) ? 'available' : 'unavailable';
                         ?>
                         <p class="product-list__item-status-<?php echo $status; ?> text-capitalize">
@@ -82,16 +84,16 @@
                             <div class="product-list__item-stock">
                                 <div class="product-list__item-stock-label">Stock</div>
                                 <div class="product-list__item-stock-count">
-                                    <?php 
+                                    <?php
                                      echo ($stock !== null && $stock !== false) ? $stock : 0;
                                 ?>
                                 </div>
 
-                               
+
 
                             </div>
                             <div class="mt-2">
-                                <?php 
+                                <?php
 echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
 ?>
                                 </div>
@@ -102,19 +104,17 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                 <div class="product-list__item-buttons-block">
                     <div class="product-list__item-buttons-block-one">
                         <a href=""
-                            class="product-list__item-buttons-block-btn product-list__item-buttons-block-add-new-stock-btn btn6 open-modal"
+                            class="product-list__item-buttons-block-btn product-list__item-buttons-block-add-new-stock-btn btn6 add_stock"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_product_id']; ?>"
                             data-bs-target="#addstock"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/add-stock-icon.svg" alt="add stock"
-                                width="23" height="24"> Add
-                            Stock</a>
+                                width="23" height="24"> Add Stock</a>
                         <a href=""
-                            class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn remove-modal"
+                            class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn remove_stock"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_product_id']; ?>"
                             data-bs-target="#removestock"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
-                                alt="remove stock" width="23" height="22">Remove
-                            Stock</a>
+                                alt="remove stock" width="23" height="22">Remove Stock</a>
                     </div>
                     <div class="product-list__item-buttons-block-two">
                         <?php if($stock == 0){ ?>
@@ -126,16 +126,16 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                                 alt="next available button stock" width="23" height="24">Next
                             Available Time</a>
                         <?php } ?>
-                        
-                        <?php 
+
+                        <?php
                         $is_customizable =  $this->Productmodel->getCustomisableById($val['store_product_id'],$this->session->userdata('logged_in_store_id'));
                         ?>
-                        
+
                         <?php if ($this->session->userdata('roleid') == 2){ ?>
                         <a data-bs-toggle="modal" data-bs-target="#Edit-dish"
                             data-id="<?php echo $val['store_product_id']; ?>"
                             data-isCustomizable="<?php echo $is_customizable['is_customizable']; ?>" href=""
-                            class="product-list__item-buttons-block-btn btn6 edit-btn product-list__item-buttons-block-edit-btn"><img
+                            class="product-list__item-buttons-block-btn btn6 store_product_details product-list__item-buttons-block-edit-btn"><img
                                 class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
                                 width="23" height="22">Edit Dish</a>
@@ -161,28 +161,22 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
 
 </div>
 
-
-
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel">Change Status</h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to change the status of this product?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancelStatusChange"
-                    data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmStatusChange">Confirm</button>
-            </div>
-        </div>
+<!-- Enable Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <p id="enabledisable_message">Are you sure?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+        <button class="btn btn-danger" id="confirmStatusChange" type="button">Yes</button>
+      </div>
     </div>
+  </div>
 </div>
-<!-- Confirmation Modal -->
+<!-- Enable Confirmation Modal -->
+
 
 
 <!-- vishnu -->
@@ -246,27 +240,21 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
 </div>
 <!-- Modal for remove stock -->
 
-
-
-<!-- Confirmation delete product -->
-<div class="modal fade" id="confirmDeleteProduct" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel">Delete product </h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete product?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmDeleteProduct">Confirm</button>
-            </div>
-        </div>
+<!-- Enable Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteProduct" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <p id="enabledisable_message">Are you sure?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+        <button class="btn btn-danger" id="confirmDeleteProductbtn" type="button">Yes</button>
+      </div>
     </div>
+  </div>
 </div>
-<!-- Confirmation delete product -->
+<!-- Enable Confirmation Modal -->
 
 
 <!-- Change Dish Informations -->
@@ -289,23 +277,47 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                 <input type="hidden" id="isCustomizable" value="">
                 <div class="container">
                     <div class="row mb-5 justify-content-center emigo-modal__header-button-group">
-                        <a class="productDetails btn7-small">Product</a>
+                        <a class="store_product btn7-small">Product</a>
                         <a class="addVariant btn7-small isCustomize">Variants</a>
                         <a class="addAddons btn7-small isCustomize">Addons</a>
-                        <a class="addRecipe btn7-small isCustomize">Recipe</a>
+                        <!-- <a class="addRecipe btn7-small isCustomize">Recipe</a> -->
                         <a class="addPhotos btn7-small ">Photos</a>
                     </div>
                 </div>
                 <div class="row">
                     <iframe id="iframe_body" height="700px" width="100%">rwerwerwer</iframe>
                     <form class="product-details-form" id="productForm" method="post" enctype="multipart/form-data">
-                        <div class="product-details-form__section product-details-form__section--first">
+                        <div class="product-details-form__section">
                             <div class="product-details-form__item">
                                 <input type="hidden" id="product_id_new" name="product_id">
                                 <label class="col-form-label product_rate_label">Rate</label>
                                 <input type="text" class="form-control form__input-text product_rate"
                                     id="store_product_rate" name="store_product_rate" value="">
                             </div>
+                            <div>
+                                <label class="col-form-label">Customisable</label>
+                                <select name="store_is_customisable" class="form-select " id="store_is_customisable">
+                                <option value="0">Not customisable</option>
+                                <option value="1">Customisable</option>
+                                </select>
+                            </div>
+                            <div>
+                            <label class="col-form-label">Type</label>
+                                <select name="type" class="form-select " id="type">
+                                <option value="veg">Veg</option>
+                                <option value="non-veg">Non veg</option>
+                                </select>
+                            </div>
+                            <div>
+                            <label class="col-form-label">Is addon</label>
+                                <select name="is_addon" class="form-select " id="is_addon">
+                                <option value="0">No</option>
+                                <option value="1">yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="product-details-form__section">
                             <div class="product-details-form__item">
                                 <label class="col-form-label">Name (Malayalam)</label>
                                 <input type="text" class="form-control form__input-text" id="store_product_name_ma"
@@ -326,17 +338,9 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                                 <input type="text" class="form-control form__input-text" id="store_product_name_ar"
                                     name="store_product_name_ar" value="">
                             </div>
-                            <div>
-                            <label class="col-form-label">Customisable</label>
-                                <select name="store_is_customisable" class="form-select " id="store_is_customisable">
-                                <option value="0">Not customisable</option>
-                                <option value="1">Customisable</option>
-                                </select>
-                            </div>
                         </div>
 
                         <div class="product-details-form__section">
-
                             <div class="product-details-form__item">
                                 <label class="col-form-label">Description (Malayalam)</label>
                                 <textarea class="form-control product-details-form__textarea"
@@ -363,9 +367,10 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                                 <span class="error errormsg mt-2" id="description_arabic_error"></span>
                             </div>
                         </div>
+
                         <div class="mt-2 text-center m-auto">
-                            <button class="btn1-small" type="button" id="saveProduct">Save</button>
-                            <button class="btn1-small btn-danger delete_product" type="button">Delete</button>
+                            <button class="btn btn1 mt-2" type="button" id="saveProduct">Save</button>
+                            <button class="btn btn7 mt-2 delete_store_product" type="button">Delete</button>
                         </div>
                 </div>
 
@@ -426,24 +431,6 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                 </div>
                 </form>
 
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <!-- Success message placeholder -->
-                <div id="successMessage" class="alert alert-success" style="display: none;">
-
-                </div>
             </div>
         </div>
     </div>

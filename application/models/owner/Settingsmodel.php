@@ -38,7 +38,7 @@ class Settingsmodel extends CI_Model {
             ];
             $this->db->insert('store_stock_history', $history_data);
         }
-    
+
         // Now, clear the stock for the given store
         $this->db->where('store_id', $store_id);
         $this->db->delete('store_stock');
@@ -59,8 +59,8 @@ class Settingsmodel extends CI_Model {
         $this->db->where('user_id', $user_id);
         $this->db->where('store_id', $store_id);
         $this->db->delete('store_table_assign');
-    
-        // Insert new records from the selected table checkboxes 
+
+        // Insert new records from the selected table checkboxes
         if (!empty($selectedTables) && is_array($selectedTables)) {
             $insertData = [];
             foreach ($selectedTables as $table_id) {
@@ -75,7 +75,7 @@ class Settingsmodel extends CI_Model {
                     'created_at' => date('Y-m-d H:i:s')
                 ];
             }
-    
+
             // Batch insert for better performance
             if (!empty($insertData)) {
                 $this->db->insert_batch('store_table_assign', $insertData);
@@ -93,7 +93,7 @@ class Settingsmodel extends CI_Model {
             'status' => 1,
             'created_at' => date('Y-m-d H:i:s')
         );
-        $this->db->insert('store_table_assign', $data); 
+        $this->db->insert('store_table_assign', $data);
     }
     public function getAssignedTables($store_id, $user_id) {
         $this->db->select('table_id');
@@ -101,9 +101,9 @@ class Settingsmodel extends CI_Model {
         $this->db->where('store_id', $store_id);
         $this->db->where('user_id', $user_id);
         $query = $this->db->get();
-    
+
         $result = $query->result_array();
-        
+
         return !empty($result) ? array_column($result, 'table_id') : []; // Return an empty array if no tables are assigned
     }
     public function getEnableTables($store_id,$user_id){
@@ -144,8 +144,8 @@ class Settingsmodel extends CI_Model {
         $result = $query->row_array();
         return isset($result['is_pickup']) ? $result['is_pickup'] : 0;
     }
-    
-    
+
+
 }
 
 ?>

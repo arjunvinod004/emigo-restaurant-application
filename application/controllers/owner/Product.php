@@ -49,16 +49,16 @@ class Product extends CI_Controller {
         $config['last_tag_close'] = '</li>';
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-        $all_products = $this->Productmodel->shopAssignedProductsbyPagination(); //print_r($all_products);
+        $all_products = $this->Commonmodel->shopAssignedProductsbyPagination(); //print_r($all_products);
         $data['products'] = array_slice($all_products, $page, $config['per_page']);
         $data['pagination'] = $this->pagination->create_links();
         $date =date('Y-m-d');
         $data['date'] =$date;
-        $store_details = $this->Homemodel->get_store_details_by_store_id($logged_store_id);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+        $store_details = $this->Commonmodel->get_store_details_by_id($logged_store_id);
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
         $data['store_logo'] = $store_details->store_logo_image;
 		$this->load->view('owner/includes/header',$data);
@@ -72,9 +72,10 @@ class Product extends CI_Controller {
 		$this->session->set_flashdata('error','Category deleted successfully');
 	}
 
+    //MARK: Search product on keyup
     public function searchProductOnKeyUp(){
         $search = $this->input->get('search');
-        $searchproducts=$this->Productmodel->shopAssignedProductsByKeyUpSearch($search);
+        $searchproducts=$this->Commonmodel->shopAssignedProductsByKeyUpSearch($search);
         $html = '';
         if (!empty($searchproducts)) {
             $store_id = $this->session->userdata('logged_in_store_id');
@@ -282,23 +283,22 @@ class Product extends CI_Controller {
         return TRUE;
     }
 
+    //MARK: -Add product
     public function add() {
             $controller = $this->router->fetch_class(); // Gets the current controller name
             $method = $this->router->fetch_method();   // Gets the current method name
             $data['controller'] = $controller;
-            $data['categories']=$this->Productmodel->listcategories();
+            $data['categories']=$this->Commonmodel->listactivecategories();
             $data['subcategories']=$this->Productmodel->sublistcategories();
             $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
             $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
-
-            $store_details = $this->Homemodel->get_store_details_by_store_id($this->session->userdata('logged_in_store_id'));
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
-        $data['store_disp_name'] = $store_details->store_disp_name;
-        $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
-        $data['support_email'] = $support_details->support_email;
-        $data['store_logo'] = $store_details->store_logo_image;
-
+            $store_details = $this->Commonmodel->get_store_details_by_id($this->session->userdata('logged_in_store_id'));
+            $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
+            $data['store_disp_name'] = $store_details->store_disp_name;
+            $data['store_address'] = $store_details->store_address;
+            $data['support_no'] = $support_details->support_number;
+            $data['support_email'] = $support_details->support_email;
+            $data['store_logo'] = $store_details->store_logo_image;
             $this->load->view('owner/includes/header',$data);
             $this->load->view('owner/includes/owner-dashboard',$data);
             $this->load->view('owner/catalog/add-product',$data);
@@ -308,7 +308,7 @@ class Product extends CI_Controller {
         $controller = $this->router->fetch_class(); // Gets the current controller name
         $method = $this->router->fetch_method();   // Gets the current method name
         $data['controller'] = $controller;
-        $data['categories']=$this->Productmodel->listcategories();
+        $data['categories']=$this->Productmodel->listactivecategories();
         $data['subcategories']=$this->Productmodel->sublistcategories();
         $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
         $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
@@ -505,25 +505,106 @@ public function categoryname_exists($country)
 			return TRUE;
 		}
 	}
+    //MARK: Load addons
 	 public function load_addons($store_product_id) {
         //echo $store_product_id;exit;
         $data['store_product_id'] = $store_product_id; //url il pass cheyyunna id through router
-        $data['addons'] = $this->Productmodel->list_all_addons();
-       // print_r($data['addons']);exit;
-        $data['selected_addons'] = $this->Productmodel->already_assigned_addons($this->session->userdata('logged_in_store_id'),$store_product_id);
+        $data['addons'] = $this->Commonmodel->list_all_addons();
+        // Already assigned addon IDs for this product
+        $assigned = $this->db->select('addon_item_id')
+            ->from('products_addons')
+            ->where('store_id', $this->session->userdata('logged_in_store_id'))
+            ->where('store_product_id', $store_product_id)
+            ->get()
+            ->result_array();
+
+        $data['already_assigned_addons_ids'] = array_column($assigned, 'addon_item_id');
         $this->load->view('owner/catalog/assigned_addons',$data);
     }
+    //MARK: Update selected addons
+    public function updateAddons() {
+        $store_product_id = $this->input->post('store_product_id');
+        $addons = $this->input->post('addons');
+        $store_id = $this->session->userdata('logged_in_store_id');
 
+        foreach ($addons as $addon) {
+            $addon_id = $addon['addon_id'];
+            $checked = (int) $addon['checked'];
+
+            if ($checked === 1) {
+                // Insert if not exists
+                $exists = $this->db->get_where('products_addons', [
+                    'store_id' => $store_id,
+                    'store_product_id' => $store_product_id,
+                    'addon_item_id' => $addon_id
+                ])->row();
+
+                if (!$exists) {
+                    $this->db->insert('products_addons', [
+                        'store_id' => $store_id,
+                        'store_product_id' => $store_product_id,
+                        'addon_item_id' => $addon_id,
+                        'is_active' => 1
+                    ]);
+                } else {
+                    // Already exists → update
+                    $this->db->where('addon_id', $exists->addon_id)->update('products_addons', ['is_active' => 1]);
+                }
+
+            } else {
+                // Unchecked → set inactive or delete
+                $this->db->where([
+                    'store_id' => $store_id,
+                    'store_product_id' => $store_product_id,
+                    'addon_item_id' => $addon_id
+                ])->delete('products_addons');
+            }
+        }
+        echo json_encode(['status' => 'success']);
+    }
+
+
+    //MARK: Load image
     public function load_images($store_product_id) {
         $data['store_product_id'] = $store_product_id;
-        $data['images'] = $this->Productmodel->getProductImages($store_product_id);
+        $data['images'] = $this->Commonmodel->getProductImages($store_product_id);
         $this->load->view('owner/catalog/product_images',$data);
     }
+    //MARK: - Set default image
     public function set_default_image(){
         $store_product_id = $this->input->post('store_product_id');
         $image = $this->input->post('image');
         $this->Productmodel->set_default_image($store_product_id , $image);
         echo json_encode(['status' => 'success']);
+    }
+    //MARK: - Upload new image
+    public function upload_new_image(){
+        $product_id = $this->input->post('id');
+        if(!empty($_FILES['image']['name'])){
+            $image_path = './uploads/product/' . $_FILES['image']['name'];
+            $config['upload_path'] = './uploads/product/';
+            $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx';
+            $config['file_name'] = $_FILES['image']['name'];
+
+            $this->load->library('upload',$config);
+            $this->upload->initialize($config);
+
+            if($this->upload->do_upload('image')){
+                $uploadData = $this->upload->data();
+                $image = $uploadData['file_name'];
+                $oldImage = $this->Commonmodel->get_default_image($product_id);
+                if (!empty($oldImage) && file_exists(FCPATH . 'uploads/product/' . $oldImage)) {
+                    unlink(FCPATH . 'uploads/product/' . $oldImage);
+                }
+                $this->Productmodel->set_default_image($product_id,$image);
+                echo json_encode(['status' => 'success', 'message' => 'Product default image updated successfully']);
+            }else{
+                $error =  $this->upload->display_errors(); echo $error;
+                $this->load->view('admin/includes/header');
+                $this->load->view('admin/catalog/add_product',$error);
+                $this->load->view('admin/includes/footer');
+            }
+        }
     }
 
 
@@ -563,125 +644,74 @@ public function categoryname_exists($country)
     }
 
 
-    public function load_variants($store_product_id) {
+    //MARK: Load variants
+    public function load_variants($store_product_id)
+    {
         //echo $store_product_id;exit;
         $data['default_tax_rate']=$this->Productmodel->default_tax($this->session->userdata('logged_in_store_id')); //Find default tax from store session id
         $data['store_taxes']=$this->Productmodel->store_taxes($this->session->userdata('logged_in_store_id'));//print_r($data['store_taxes']);exit;
-            $data['store_product_id'] = $store_product_id;
-
-            //$data['store_variants']=$this->Variantmodel->liststore_variants($store_product_id,$this->session->userdata('logged_in_store_id'));//print_r($data['variants']);exit;
-            $data['variants'] = $this->Variantmodel->ownerVariants($this->session->userdata('logged_in_store_id'),$store_product_id);
-            // print_r($data['variants']);exit;
-            $data['already_assigned_variants_ids'] = $this->Productmodel->already_assigned_variant_ids($this->session->userdata('logged_in_store_id'),$store_product_id); //print_r($data['already_assigned_variants_ids']);
-            $this->load->view('owner/catalog/assigned_variants',$data);
+        $data['store_product_id'] = $store_product_id;
+        $data['variants'] = $this->Variantmodel->ownerVariants($this->session->userdata('logged_in_store_id'),$store_product_id);
+        $data['already_assigned_variants_ids'] = $this->Productmodel->already_assigned_variant_ids($this->session->userdata('logged_in_store_id'),$store_product_id); //print_r($data['already_assigned_variants_ids']);
+        $this->load->view('owner/catalog/assigned_variants',$data);
     }
+    //MARK: Update selected variants
+    public function updateVariants() {
+        $store_product_id = $this->input->post('store_product_id');
+        $taxRate = $this->input->post('taxRate');
+        $variants = $this->input->post('variants');
+        //print_r($variants);exit;
+
+        $store_id = $this->session->userdata('logged_in_store_id');
+
+        foreach ($variants as $variant) {
+            $variant_id = $variant['variant_id'];
+            $rate = $variant['rate'];
+            $is_default = $variant['is_default'];
+            $checked = (int) $variant['checked'];
+
+            if ($checked === 1) {
+                // Insert or Update
+                $exists = $this->db->get_where('store_variants', [
+                    'store_id' => $store_id,
+                    'store_product_id' => $store_product_id,
+                    'variant_id' => $variant_id
+                ])->row();
+
+                $rate = (float) $variant['rate'];
+                $taxRate = (float) $this->input->post('taxRate');
+
+                $data = [
+                    'rate'        => $rate,
+                    'tax'         => $taxRate,
+                    'tax_amount'  => ($rate * $taxRate) / 100,
+                    'total_amount'=> $rate + (($rate * $taxRate) / 100),
+                    'is_default'  => $is_default,
+                    'is_active'   => 1
+                ];
 
 
-    // public function update_selected_variant(){
-    //     $products = $this->input->post('products');
-    //     //print_r($products);exit;
-    //         foreach ($products as $product) {
-    //             // Prepare the data to update
-    //             $updateData = array(
-    //                 'store_product_id' => $product['store_product_id'],
-    //                 'store_id' => $this->session->userdata('logged_in_store_id'),
-    //                 'variant_id' => $product['variant_id'],
-    //                 'variant_value' => $product['variant_value'],
-    //                 'rate' => $product['rate'],
-    //                 'tax' => $product['tax'],
-    //                 'tax_amount' => $product['tax_amount'],
-    //                 'total_amount' => $product['total_amount'],
-    //                 'is_default' => $product['is_default'],
-    //                 'is_active' => $product['is_active']
-    //             );
-    //            //echo json_encode($updateData);exit;
+                if ($exists) {
+                    $this->db->where('store_variant_id', $exists->store_variant_id)->update('store_variants', $data);
+                } else {
+                    $data['store_id'] = $store_id;
+                    $data['store_product_id'] = $store_product_id;
+                    $data['variant_id'] = $variant_id;
+                    $this->db->insert('store_variants', $data);
+                }
 
-    //             // Check if the product already exists in the store_variants table
-    //             $existingVariant = $this->Productmodel->get_variant_by_product_id($product['variant_id'], $this->session->userdata('logged_in_store_id'),$product['store_product_id']);
-    //             //echo json_encode(['variant_id' => $product['variant_id'], 'store_id' => $this->session->userdata('logged_in_store_id') , 'store_product_id' => $product['store_product_id']]);exit;
-
-    //             if ($existingVariant != 0) {
-    //                 // Update the existing record
-    //                 $this->Productmodel->update_selected_variants($product['variant_id'],$this->session->userdata('logged_in_store_id'), $product['store_product_id'], $updateData);
-    //             } else {
-    //                 // Insert a new record if it doesn't exist
-    //                 $this->Productmodel->insert_variant($updateData);
-    //             }
-    //         }
-    //         // Send success response
-    //         echo json_encode(['status' => 'success']);
-    // }
-
-
-    public function update_selected_variant() {
-    $products = $this->input->post('products');
-    $store_id = $this->session->userdata('logged_in_store_id');
-
-    // Step 1: Collect selected variant keys and product IDs
-    $selected_keys = [];
-    $product_ids = [];
-
-    foreach ($products as $product) {
-        $key = $product['variant_id'] . '|' . $product['store_product_id'];
-        $selected_keys[] = $key;
-        $product_ids[] = $product['store_product_id'];
-    }
-
-    // Step 2: Get currently assigned variants for this store and these products only
-    if (!empty($product_ids)) {
-        $this->db->select('variant_id, store_product_id');
-        $this->db->where('store_id', $store_id);
-        $this->db->where_in('store_product_id', $product_ids);
-        $query = $this->db->get('store_variants');
-        $current_variants = $query->result_array();
-
-        foreach ($current_variants as $variant) {
-            $key = $variant['variant_id'] . '|' . $variant['store_product_id'];
-            if (!in_array($key, $selected_keys)) {
-                // Delete only variants not selected in this request
-                $this->db->where('store_id', $store_id);
-                $this->db->where('variant_id', $variant['variant_id']);
-                $this->db->where('store_product_id', $variant['store_product_id']);
-                $this->db->delete('store_variants');
+            } else {
+                // Delete if unchecked
+                $this->db->where([
+                    'store_id' => $store_id,
+                    'store_product_id' => $store_product_id,
+                    'variant_id' => $variant_id
+                ])->delete('store_variants');
             }
         }
+
+        echo json_encode(['status' => 'success']);
     }
-
-    // Step 3: Insert or Update selected variants
-    foreach ($products as $product) {
-        $updateData = array(
-            'store_product_id' => $product['store_product_id'],
-            'store_id'         => $store_id,
-            'variant_id'       => $product['variant_id'],
-            'variant_value'    => $product['variant_value'],
-            'rate'             => $product['rate'],
-            'tax'              => $product['tax'],
-            'tax_amount'       => $product['tax_amount'],
-            'total_amount'     => $product['total_amount'],
-            'is_default'       => $product['is_default'],
-            'is_active'        => 1
-        );
-
-        $existingVariant = $this->Productmodel->get_variant_by_product_id(
-            $product['variant_id'],
-            $store_id,
-            $product['store_product_id']
-        );
-
-        if ($existingVariant != 0) {
-            $this->Productmodel->update_selected_variants(
-                $product['variant_id'],
-                $store_id,
-                $product['store_product_id'],
-                $updateData
-            );
-        } else {
-            $this->Productmodel->insert_variant($updateData);
-        }
-    }
-
-    echo json_encode(['status' => 'success']);
-}
 
 
 
@@ -817,30 +847,7 @@ public function categoryname_exists($country)
 
     }
 
-    public function upload_new_image(){
-        $product_id = $this->input->post('id');
-        if(!empty($_FILES['image']['name'])){
-            $image_path = './uploads/product/' . $_FILES['image']['name'];
-            $config['upload_path'] = './uploads/product/';
-            $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx';
-            $config['file_name'] = $_FILES['image']['name'];
 
-            $this->load->library('upload',$config);
-            $this->upload->initialize($config);
-
-            if($this->upload->do_upload('image')){
-                $uploadData = $this->upload->data();
-                $image = $uploadData['file_name'];
-                $this->Productmodel->set_default_image($product_id,$image);
-                echo json_encode(['status' => 'success', 'message' => 'Product default image updated successfully']);
-            }else{
-                $error =  $this->upload->display_errors(); echo $error;
-                $this->load->view('admin/includes/header');
-                $this->load->view('admin/catalog/add_product',$error);
-                $this->load->view('admin/includes/footer');
-            }
-        }
-    }
 
     public function getDescriptions()
 {
@@ -848,7 +855,7 @@ public function categoryname_exists($country)
     $loggedInStoreId = $this->session->userdata('logged_in_store_id');
 
     // Fetch descriptions
-    $descriptions = $this->Productmodel->getDescriptionsById($id, $loggedInStoreId);
+    $descriptions = $this->Commonmodel->getProductDetailsById($id, $loggedInStoreId);
     $customisable = $this->Productmodel->getCustomisableById($id, $loggedInStoreId);
 
     // Check if descriptions is valid
@@ -862,6 +869,8 @@ public function categoryname_exists($country)
 
     $result = [
         'customisable' => $customisable['is_customizable'],
+        'type' => $descriptions['type'],
+        'is_addon' => $descriptions['is_addon'],
         'rate' => $descriptions['rate'] ?? null,
         'malayalam_name' => !empty($descriptions['store_product_name_ma'])
             ? $descriptions['store_product_name_ma']
@@ -898,10 +907,13 @@ public function categoryname_exists($country)
     ]);
 }
 
-    public function changeDescriptions()
+//MARK: Update store product
+public function changeDescriptions()
     {
             $productId = $this->input->post('product_id');
             $is_customizable = $this->input->post('store_is_customisable');
+            $is_addon = $this->input->post('is_addon');
+            $type = $this->input->post('type');
             $rate = (float) $this->input->post('store_product_rate');
             $tax = 5; // Fixed tax percentage
             $tax_amount = ($rate * $tax) / 100;
@@ -917,6 +929,8 @@ public function categoryname_exists($country)
                 'store_product_desc_hi' => $this->input->post('description_hindi'),
                 'store_product_desc_ar' => $this->input->post('description_arabic'),
                 'is_customizable' => $is_customizable,
+                'is_addon' => $is_addon,
+                'type' => $type,
                 'rate' => $rate,
                 'tax' => $tax,
                 'tax_amount' => $tax_amount,
@@ -926,9 +940,8 @@ public function categoryname_exists($country)
             $response = (['success' => 'success']);
             echo json_encode($response);
     }
-
-    // add stocks
-public function addstocks(){
+//MARK:- Add stock
+public function addstock(){
     $this->load->library('form_validation');
     $this->form_validation->set_rules('pu_qty', 'quanity', 'required');
     if ($this->form_validation->run() == FALSE) {
@@ -982,7 +995,7 @@ public function changeProductAvailability(){
     $result = $this->Productmodel->changeProductAvailability($store_product_id,$store_id,$is_active);
 }
 //remove stocks
-public function removestocks(){
+public function removestock(){
     $this->load->library('form_validation');
     $this->form_validation->set_rules('sl_qty', 'quanity', 'required');
     if ($this->form_validation->run() == FALSE) {

@@ -1,6 +1,6 @@
 <div class="application-content add-new-dish">
     <div class="application-content__container container add-new-dish__container">
-        <h1 class="application-content__page-heading">Edit Store</h1>
+        <h1 class="application-content__page-heading">Restaurant - <?php echo $storeDet[0]['store_name'] ?></h1>
         <div class="add-new-dish-form">
             <?php if(isset($storeDet[0]['store_id'])) {
                 //print_r($storeDet);exit;
@@ -13,12 +13,10 @@
 
                 <div class="add-new-dish-form__section-container">
                     <div class="add-new-dish-form__section">
-                        <h2 class="add-new-dish-form__section-heading">Store Details</h2>
+                        <h2 class="add-new-dish-form__section-heading">Restaurant  Details</h2>
 
 
                         <!-- country -->
-
-
                         <div class="form__field-container-group gc">
                             <div class="form__field-container xs12 lg4">
                                 <label class="form__label">Country</label>
@@ -345,6 +343,132 @@
                             </div>
                         </div>
 
+                                               <!--Enable Order Monitor Tabs -->
+                        <h2 class="add-new-dish-form__section-heading">Required Services</h2>
+                        <div class="form__field-container-group gc table_monitor">
+                            <div class="form__field-container xs12 lg1">
+                                <label class="form__label">Table</label>
+
+                                <input type="checkbox" class="form-check-input" name="is_table_tab" id="is_table_tab"
+                                    value="<?php echo $storeDet[0]['is_table_tab'];?>"
+                                    <?php echo ($storeDet[0]['is_table_tab'] == 1) ? 'checked' : ''; ?>>
+
+
+                            </div>
+                            <div class="form__field-container xs12 lg1">
+                                <label class="form__label">Pickup</label>
+
+                                <input type="checkbox" class="form-check-input" name="is_pickup_tab" id="is_pickup_tab"
+                                    value="<?php echo $storeDet[0]['is_pickup_tab'];?>"
+                                    <?php echo ($storeDet[0]['is_pickup_tab'] == 1) ? 'checked' : ''; ?>>
+
+
+
+
+                            </div>
+                            <div class="form__field-container xs12 lg1">
+                                <label class="form__label">Delivery</label>
+
+                                <input type="checkbox" class="form-check-input" name="is_delivery_tab"
+                                    id="is_delivery_tab" value="<?php echo $storeDet[0]['is_delivery_tab'];?>"
+                                    <?php echo ($storeDet[0]['is_delivery_tab'] == 1) ? 'checked' : ''; ?>>
+
+
+                            </div>
+                            <div class="form__field-container xs12 lg1">
+                                <label class="form__label">Room </label>
+
+                                <input type="checkbox" class="form-check-input" name="is_room_tab" id="is_room_tab"
+                                    value="<?php echo $storeDet[0]['is_room_tab'];?>"
+                                    <?php echo ($storeDet[0]['is_room_tab'] == 1) ? 'checked' : ''; ?>>
+
+
+                            </div>
+
+                        </div>
+                        <!-- Order monitor tabs -->
+
+                        <!--Contact person -->
+<h2 class="add-new-dish-form__section-heading">Contact Person Details</h2>
+<div class="form__field-container-group gc table_monitor">
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Name</label>
+        <input class="form-control" type="text" value="<?php if(set_value('contact_person_name')){
+                            echo set_value('contact_person_name');
+                        } else if(isset($storeDet[0]['contact_person_name'])){
+                            echo $storeDet[0]['contact_person_name'];
+                        }?>" name="contact_person_name" id="contact_person_name">
+        <div class="errormsg mt-2" id="error_contact_person_name"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Contact Number</label>
+         <input class="form-control" type="text" value="<?php if(set_value('contact_person_phone')){
+                            echo set_value('contact_person_phone');
+                        } else if(isset($storeDet[0]['contact_person_phone'])){
+                            echo $storeDet[0]['contact_person_phone'];
+                        }?>" name="contact_person_phone" id="contact_person_phone">
+         <div class="errormsg mt-2" id="error_contact_person_phone"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Designation</label>
+        <select class="form-select" name="contact_person_designation" id="contact_person_designation">
+            <option value="">Select Designation</option>
+            <option value="Owner"     <?php echo (set_value('contact_person_designation') == 'Owner' || (isset($storeDet[0]['contact_person_designation']) && $storeDet[0]['contact_person_designation'] == 'Owner')) ? 'selected' : ''; ?>>Owner</option>
+            <option value="Manager"   <?php echo (set_value('contact_person_designation') == 'Manager' || (isset($storeDet[0]['contact_person_designation']) && $storeDet[0]['contact_person_designation'] == 'Manager')) ? 'selected' : ''; ?>>Manager</option>
+            <option value="Supervisor"<?php echo (set_value('contact_person_designation') == 'Supervisor' || (isset($storeDet[0]['contact_person_designation']) && $storeDet[0]['contact_person_designation'] == 'Supervisor')) ? 'selected' : ''; ?>>Supervisor</option>
+            <option value="Staff"     <?php echo (set_value('contact_person_designation') == 'Staff' || (isset($storeDet[0]['contact_person_designation']) && $storeDet[0]['contact_person_designation'] == 'Staff')) ? 'selected' : ''; ?>>Staff</option>
+            <option value="Other"     <?php echo (set_value('contact_person_designation') == 'Other' || (isset($storeDet[0]['contact_person_designation']) && $storeDet[0]['contact_person_designation'] == 'Other')) ? 'selected' : ''; ?>>Other</option>
+        </select>
+        <div class="errormsg mt-2" id="error_contact_person_designation"></div>
+    </div>
+
+</div>
+<!-- Contact person -->
+
+<!-- username  -->
+
+                        <div class="form__field-container-group gc" id="product_rate_div">
+                            <div class="form__field-container xs12 lg3">
+                                <label class="form__label">Username (Shop owner)</label>
+                                <input class="form-control" type="text" name="username" id="username">
+                                <div class="errormsg mt-2" id="error_username"></div>
+
+                            </div>
+
+                            <!-- password  -->
+
+                            <div class="form__field-container xs12 lg3">
+                                <label class="form__label">password</label>
+                                <input class="form-control" type="password" name="password" id="password">
+                                <div class="errormsg mt-2" id="error_password"></div>
+
+                            </div>
+
+                            <!-- Username (user)  -->
+
+                            <div class="form__field-container xs12 lg3">
+                                <label class="form__label">Username (user)</label>
+                                <input class="form-control" type="text" name="user_username" id="user_username">
+                                <div class="errormsg mt-2" id="error_user_username"></div>
+
+                            </div>
+
+
+                            <!-- Password  -->
+
+                            <div class="form__field-container xs12 lg3">
+                                <label class="form__label">password</label>
+                                <input class="form-control" type="password" name="user_password" id="user_password">
+                                <div class="errormsg mt-2" id="error_user_password"></div>
+
+                            </div>
+
+
+                        </div>
+
 
                         <!--Store Logo -->
 
@@ -364,56 +488,15 @@
 
                         </div>
 
-                        <!--Enable Order Monitor Tabs -->
-
-                        <h2 class="add-new-dish-form__section-heading">Enable Order Monitor Tabs</h2>
-                        <div class="form__field-container-group gc table_monitor">
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Table</label>
-
-                                <input type="checkbox" class="form-check-input" name="is_table_tab" id="is_table_tab"
-                                    value="<?php echo $storeDet[0]['is_table_tab'];?>"
-                                    <?php echo ($storeDet[0]['is_table_tab'] == 1) ? 'checked' : ''; ?>>
-
-
-                            </div>
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Pickup</label>
-
-                                <input type="checkbox" class="form-check-input" name="is_pickup_tab" id="is_pickup_tab"
-                                    value="<?php echo $storeDet[0]['is_pickup_tab'];?>"
-                                    <?php echo ($storeDet[0]['is_pickup_tab'] == 1) ? 'checked' : ''; ?>>
-
-
-
-
-                            </div>
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Delivery</label>
-
-                                <input type="checkbox" class="form-check-input" name="is_delivery_tab"
-                                    id="is_delivery_tab" value="<?php echo $storeDet[0]['is_delivery_tab'];?>"
-                                    <?php echo ($storeDet[0]['is_delivery_tab'] == 1) ? 'checked' : ''; ?>>
-
-
-                            </div>
-                            <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Room </label>
-
-                                <input type="checkbox" class="form-check-input" name="is_room_tab" id="is_room_tab"
-                                    value="<?php echo $storeDet[0]['is_room_tab'];?>"
-                                    <?php echo ($storeDet[0]['is_room_tab'] == 1) ? 'checked' : ''; ?>>
-
-
-                            </div>
-
-                        </div>
                     </div>
                 </div>
         </div>
         <input type="hidden" name="hiddencountry"
             value="<?php if(isset($storeDet[0]['store_country'])){echo $storeDet[0]['store_country'];}?>">
-        <button class="btn btn1 mt-2" type="submit" name="edit">SAVE</button>
+            <button class="btn btn1 mt-2" type="submit" name="edit">Update</button>
+            <?php if($storeDet[0]['is_approve'] == 0){ ?>
+            <a class="btn btn2 mt-2 approve" data-id="<?php echo $storeDet[0]['store_id']; ?>">Approve</a>
+            <?php } ?>
 
     </div>
 

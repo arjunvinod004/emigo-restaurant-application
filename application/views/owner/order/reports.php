@@ -58,7 +58,7 @@
 
             <!-- Room pending bills -->
 
-            <div class="modal-container">
+            <div class="modal-container d-none">
                 <a class="modal-trigger reports-content__item reports_pending" data-store-id="<?php echo $store_id; ?>"
                     data-name="Reports Pending">
                     <img src="https://img.icons8.com/fluency/30/report-file.png" alt="report icon"
@@ -76,7 +76,7 @@
             </div>
 
 
-            <div class="modal-container">
+            <div class="modal-container d-none">
                 <div class="reports-content__item " data-store-id="<?php echo $store_id; ?>"
                     data-name="Reports Pending">
 

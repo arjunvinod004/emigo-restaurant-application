@@ -7,10 +7,9 @@
 //Get pending order count on order dashboard
 
 $(document).ready(function () {
-    
 
-    var base_url = 'http://localhost/emigo-restaurant-application/';
-    //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+
+    var base_url = $('#base_url').val();
 
     //View pending table orders
     $(document).on('click', '.order_details', function () {
@@ -70,8 +69,8 @@ $(document).ready(function () {
             type: 'POST',
             dataType: 'json',
             success: function (response) {
-                
-                
+
+
                 //Approved orders
                 if (Array.isArray(response['approved-orders'])) {
                     if(response['approved-orders'].length > 0){
@@ -83,12 +82,12 @@ $(document).ready(function () {
                     }
                     let approvedHtml = '';
                     response['approved-orders'].forEach(function (order) {
-                        
+
                         let orderStatus = '';
                         let orderType = '';
                         let bgColor = '';
                         let btnClass = '';
-                        
+
 
                         if (order.order_status === '1') {
                             orderStatus = 'Approved';
@@ -106,7 +105,7 @@ $(document).ready(function () {
                         } else {
                             orderStatus = 'Pending';
                         }
-                        
+
                         if (order.order_type === 'D') {
                             orderType = order.table_name;
                             bgColor = '#ede1db';
@@ -116,16 +115,16 @@ $(document).ready(function () {
                         } else if (order.order_type === 'DL') {
                             orderType = 'Delivery';
                             bgColor = '#f1b3a1';
-                        } 
+                        }
                          else if (order.order_type === 'rom') {
                             orderType = 'Room';
                             bgColor = '#eb191994';
                         }
-                        
+
                         else {
                             orderType = 'Unknown';
                         }
-                        
+
                         approvedHtml += `
                             <div class="order-table-list__item">
                             <a data-bs-toggle="modal" data-id="${order.orderno}" data-name="${order.orderno}" data-bs-target="#recipe" class="w-100 order_details" type="button" title="Table Orders">
@@ -146,8 +145,8 @@ $(document).ready(function () {
                     $('#tabs__nav_approved_table_count').addClass('d-none');
                 }
                 // Approved orders
-                
-                
+
+
                 //Ready orders
                 if (Array.isArray(response['ready-orders'])) {
                     if (response.ready_order > 0) {
@@ -158,12 +157,12 @@ $(document).ready(function () {
                     }
                     let readyHtml = '';
                     response['ready-orders'].forEach(function (order) {
-                        
+
                         let orderStatus = '';
                         let orderType = '';
                         let bgColor = '';
                         let btnClass = '';
-                        
+
 
                         if (order.order_status === '1') {
                             orderStatus = 'Approved';
@@ -181,7 +180,7 @@ $(document).ready(function () {
                         } else {
                             orderStatus = 'Pending';
                         }
-                        
+
                         if (order.order_type === 'D') {
                             orderType = order.table_name;
                             bgColor = '#ede1db';
@@ -197,11 +196,11 @@ $(document).ready(function () {
                             orderType = 'Room';
                             bgColor = '#eb191994';
                         }
-                        
+
                         else {
                             orderType = 'Unknown';
                         }
-                        
+
                         readyHtml += `
                             <div class="order-table-list__item">
                             <a data-bs-toggle="modal" data-id="${order.orderno}" data-name="${order.orderno}" data-bs-target="#recipe" class="w-100 order_details" type="button" title="Table Orders">
@@ -220,17 +219,17 @@ $(document).ready(function () {
                     $('#ready-orders').html(readyHtml);
                 }
                 //Ready orders
-                
+
                 //Delivered orders
                 if (Array.isArray(response['delivered-orders'])) {
                     let deliveredHtml = '';
                     response['delivered-orders'].forEach(function (order) {
-                        
+
                         let orderStatus = '';
                         let orderType = '';
                         let bgColor = '';
                         let btnClass = '';
-                        
+
 
                         if (order.order_status === '1') {
                             orderStatus = 'Approved';
@@ -248,7 +247,7 @@ $(document).ready(function () {
                         } else {
                             orderStatus = 'Pending';
                         }
-                        
+
                         if (order.order_type === 'D') {
                             orderType = order.table_name;
                             bgColor = '#ede1db';
@@ -264,11 +263,11 @@ $(document).ready(function () {
                             orderType = 'Room';
                             bgColor = '#eb191994';
                         }
-                        
+
                         else {
                             orderType = 'Unknown';
                         }
-                        
+
                         deliveredHtml += `
                             <div class="order-table-list__item">
                             <a data-bs-toggle="modal" data-id="${order.orderno}" data-name="${order.orderno}" data-bs-target="#recipe" class="w-100 order_details" type="button" title="Table Orders">
@@ -287,8 +286,8 @@ $(document).ready(function () {
                     $('#delivered-orders').html(deliveredHtml);
                 }
                 //Delivered orders
-                
-                
+
+
                 // if (response.dining > 0) {
                 //     // $('#tabs__nav_approved_table_count').removeClass('d-none');
                 //     // $('#tabs__nav_approved_table_count').text(response.dining);
@@ -326,7 +325,7 @@ $(document).ready(function () {
                 console.error('Error fetching order counts:', error);
             }
         });
-        
+
         //alert('hai');
 
     }, 5000); // Interval of 5000ms = 5 seconds

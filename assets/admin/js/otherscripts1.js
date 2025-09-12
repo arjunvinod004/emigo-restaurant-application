@@ -14,7 +14,7 @@
 //13. Delete cookings from admin dashboard
 //..   Crop image when edit product from admin dashboard
 //14. Delete variants from admin dashboard
-//16. Is whatsapp enable in add store 
+//16. Is whatsapp enable in add store
 
 //OWNER SCRIPTS
 //15. Get current date and time in owner dashboard
@@ -22,12 +22,12 @@
 $(document).ready(function () {
     //alert(1);
 
-    var base_url = 'http://localhost/emigo-restaurant-application/';
+    var base_url = $('#base_url').val();
     //var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
 
     //alert(base_url);
 
-  
+
 
     //1.Delete country
     $(".del_country").click(function () {

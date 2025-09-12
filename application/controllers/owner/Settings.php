@@ -1,5 +1,5 @@
 <?php class Settings extends CI_Controller {
-public function __construct() {   
+public function __construct() {
     parent::__construct();
     $this->load->model('admin/Productmodel');
         $this->load->model('admin/Storemodel');
@@ -15,20 +15,22 @@ public function index()
     $method = $this->router->fetch_method();   // Gets the current method name
     $data['controller'] = $controller;
     $store_id = $this->session->userdata('logged_in_store_id');
-        
-        $store_details = $this->Homemodel->get_store_details_by_store_id($store_id);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+
+        $store_details = $this->Commonmodel->get_store_details_by_id($store_id);//print_r($store_details);exit;
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
+        $data['is_table_tab'] = $store_details->is_table_tab;
+        $data['is_room_tab'] = $store_details->is_room_tab;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
         $data['store_logo'] = $store_details->store_logo_image;
         $data['todayDate'] = date('m-d-Y');
         $data['todayTime'] = date('H:i:s');
         $data['store_id'] = $this->session->userdata('logged_in_store_id');
-        
+
         //print_r($store_details);exit;
-        $this->db->select('store_opening_time,store_closing_time,today_opening_time,today_closing_time');
+        $this->db->select('store_opening_time,store_closing_time');
         $this->db->from('store');
         $this->db->where('store_id', $store_id);
         $query = $this->db->get();
@@ -40,7 +42,7 @@ public function index()
             $opening_time = $row->store_opening_time;
             $closing_time = $row->store_closing_time;
         }
-   
+
     $data['openingTime'] = $opening_time;
     $data['closingTime'] = $closing_time;
     $data['is_online_order_status'] = $store_details->is_order_close;
@@ -55,7 +57,7 @@ public function addHoliday(){
     $this->load->library('form_validation');
     $this->form_validation->set_rules('holiday_date', 'date', 'required');
     $this->form_validation->set_rules('holiday_name', ' name', 'required');
-    if ($this->form_validation->run() == FALSE) 
+    if ($this->form_validation->run() == FALSE)
     {
         $response = [
             'success' => false,
@@ -68,7 +70,7 @@ public function addHoliday(){
     }
     else
     {
-        
+
         $store_id = $this->session->userdata('logged_in_store_id');
         $data=array(
         'store_id' => $store_id,
@@ -76,7 +78,7 @@ public function addHoliday(){
         'holiday_name' => $this->input->post('holiday_name'),
         'holiday_description' => $this->input->post('holiday_description'),
         );
-        
+
         $this->load->model('owner/Ordermodel');
         $this->Ordermodel->AddHoliday($data);
         echo json_encode(['success' => 'success', 'message' => 'Holiday added successfully']);
@@ -90,17 +92,17 @@ public function whatsapp(){
     $method = $this->router->fetch_method();   // Gets the current method name
     $data['controller'] = $controller;
     $store_id = $this->session->userdata('logged_in_store_id');
-        
-        $store_details = $this->Homemodel->get_store_details_by_store_id($store_id);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+
+        $store_details = $this->Commonmodel->get_store_details_by_id($store_id);
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
         $data['store_logo'] = $store_details->store_logo_image;
         $data['todayDate'] = date('m-d-Y');
         $data['todayTime'] = date('H:i:s');
-        $data['store_id'] = $this->session->userdata('logged_in_store_id');  
+        $data['store_id'] = $this->session->userdata('logged_in_store_id');
         $data['whatsappno'] = $this->Tablemodel->getwhatsapp($store_id);
         //  print_r($data['whatsapp_no']);
     $this->load->view('owner/includes/header',$data);
@@ -113,18 +115,18 @@ public function whatsapp(){
 public function addwhatsappno(){
   $this->load->library('form_validation');
     $this->form_validation->set_rules('whatsapp_no', 'whatsapp no', 'required');
-  
-    if ($this->form_validation->run() == FALSE) 
+
+    if ($this->form_validation->run() == FALSE)
     {
         $response = [
             'success' => false,
             'errors' => [
                 'whatsapp_no' => form_error('whatsapp_no'),
-                
+
             ]
         ];
         echo json_encode($response);
-    } 
+    }
     else{
      $store_id = $this->session->userdata('logged_in_store_id');
         $data=array(
@@ -133,11 +135,11 @@ public function addwhatsappno(){
         );
         $this->Ordermodel->AddWhatsapp($data);
         echo json_encode(['success' => 'success']);
-    } 
+    }
 }
 
 public function deletewhatsappno(){
-    $id=$this->input->post('id'); 
+    $id=$this->input->post('id');
     // echo $id;
     $this->Productmodel->DeleteWhatsappno($id);
     echo json_encode(['success' => 'success']);
@@ -178,7 +180,7 @@ public function editstoreTime(){
         );
         $this->Ordermodel->EditStoreTime($data, $store_id);
         echo json_encode(['success' => 'success']);
-        
+
 }
 public function listStoreUsers(){
     $store_id= $this->session->userdata('logged_in_store_id');
@@ -193,7 +195,7 @@ public function GetAlreadyAssignedTables(){
     $assignedTables = $this->Settingsmodel->getAssignedTables($store_id, $user_id); // Fetch assigned tables
     $enable_delivery = $this->Settingsmodel->getEnableDelivery($store_id,$user_id); // Fetch enable delivery
     $enable_pickup = $this->Settingsmodel->getEnablePickup($store_id,$user_id);     // Fetch enable pickup
-    
+
     echo json_encode(['status' => true, 'assignedTables' => $assignedTables , 'enable_delivery' => $enable_delivery, 'enable_pickup' => $enable_pickup]);
 }
 public function addUserValidation(){
@@ -205,7 +207,7 @@ public function addUserValidation(){
     $this->form_validation->set_rules('user_username', ' username', 'required');
     $this->form_validation->set_rules('user_password', ' password', 'required');
     $this->form_validation->set_rules('role', ' role', 'required');
-    if ($this->form_validation->run() == FALSE) 
+    if ($this->form_validation->run() == FALSE)
     {
         $response = [
             'success' => false,
@@ -322,9 +324,9 @@ public function kotPrintEnable(){
     $is_kot_print_enable = $this->input->post('is_kot_print_enable');
     $this->Settingsmodel->update_kotprintenable($store_id,$is_kot_print_enable);
     if($is_kot_print_enable == 1){
-        echo json_encode(['success' => 'success', 'message' => 'KOT Print Is Enabled']); 
+        echo json_encode(['success' => 'success', 'message' => 'KOT Print Is Enabled']);
     } else{
-        echo json_encode(['success' => 'success', 'message' => 'KOT Print Is Disabled']); 
+        echo json_encode(['success' => 'success', 'message' => 'KOT Print Is Disabled']);
     }
 }
 

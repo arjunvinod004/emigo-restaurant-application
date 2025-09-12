@@ -373,7 +373,7 @@ public function searchProductOnadminKeyUp(){
     if (!empty($searchproducts)) {
         $count = 1;
         foreach ($searchproducts as $val) {
-            $image = base_url() . 'uploads/product/' . ($val->image ?? '');
+            $image = base_url() . 'uploads/product/' . ($val->image1 ?? '');
 
             $html .= "
 

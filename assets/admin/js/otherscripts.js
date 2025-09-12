@@ -3,8 +3,7 @@ import { showPopupAlert,confirmDelete,enable_disable_confirmation } from './comm
 
 $(document).ready(function () {
 
-   var base_url = 'http://localhost/emigo-restaurant-application/';
-    //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+    var base_url = $('#base_url').val();
 
     $(document).on('click', '.emigo-close-btn , .reload-close-btn, .emigo-btn', function () {
         location.reload();
@@ -340,19 +339,7 @@ $(document).ready(function () {
                 console.log(response);
 
                 if (response.success === 'success') {
-
-                    setTimeout(function () {
-                        $('#successModal .modal-body').text('Tax Updated successfully');
-                        $('#successModal').modal('show');
-                        $('#edit-tax').modal('hide');
-                        setTimeout(function () {
-                            $('#successModal').modal('hide');
-                            location.reload();
-                        }, 1000)
-                    }, 1000)
-
-
-
+                    showPopupAlert('success', 'Tax details updated', true);
                 }
                 else {
 
@@ -803,6 +790,64 @@ $(document).ready(function () {
             }
         });
     });
+
+    //MARK: - Product assign to store
+    $('.product_assign').click(function () {
+    var storeId   = $(this).attr('data-id');
+    var storeName = $(this).attr('data-name');
+    $('#modal_title_table').text(storeName + ' - Product Assign');
+    $.get(base_url + 'admin/Product_assign/load_products_for_assign/' + storeId, function(res) {
+        $('#product_assign').html(res);
+        $('#product_assign').append('<input type="hidden" id="store_id" value="'+storeId+'">');
+        $('#assignModal').modal('show');
+    });
+});
+
+
+    //MARK: - Filter Change
+    $('#product_category_id').change(function() {
+        //alert(1);
+        var cat_id = $(this).val();
+        var store_id = $("#store_id").val();
+
+        $.post(base_url + "admin/Product_assign/filter", {category_id: cat_id, store_id: store_id}, function(res) {
+            $("#product_list").html(res);
+        });
+    });
+
+    //MARK: -Save Assignments
+    $('#saveAssignments').click(function() {
+        alert(2);
+        var store_id = $("#store_id").val();
+        var selected = [];
+        $('#product_list input[name="product_ids[]"]:checked').each(function() {
+            selected.push($(this).val());
+        });
+
+        $.post(base_url + "admin/Product_assign/save", {store_id: store_id, product_ids: selected}, function(res) {
+            var data = JSON.parse(res);
+            alert(data.message);
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // 35. add cooking
@@ -1379,17 +1424,7 @@ $(document).ready(function () {
             success: function (response) {
                 console.log(response);
                 if (response.success === 'success' && response.data) {
-                    setTimeout(function () {
-                        $('#successModal .modal-body').text('User Updated successfully');
-                        $('#successModal').modal('show');
-                        $('#edit-user').modal('hide');
-                        setTimeout(function () {
-                            $('#successModal').modal('hide');
-                            location.reload();
-                        }, 1000)
-                    }, 1000)
-
-
+                    showPopupAlert('success', 'User details updated', true);
                 }
                 else {
 
@@ -1912,51 +1947,56 @@ $(document).on('click', '.edit_product', function () {
 
         // Basic client-side validation
         if ($('#country_id').val() === '') {
-            $('#country_error').text('Please select a country.');
+            $('#country_error').text('Select country.');
             isValid = false;
         }
 
         if ($('#sel_gst_or_tax').val() === '') {
-            $('#gst_or_tax_error').text('Please select value.');
+            $('#gst_or_tax_error').text('Select tax.');
             isValid = false;
         }
 
         if ($('#disp_name').val().trim() === '') {
-            $('#disp_name_error').text('Display Name is required.');
+            $('#disp_name_error').text('Enter display Name');
+            isValid = false;
+        }
+
+        if ($('#location').val().trim() === '') {
+            $('#error_location').text('Enter location');
             isValid = false;
         }
 
         if ($('#reg_name').val().trim() === '') {
-            $('#name_error').text('Registered Name is required.');
+            $('#name_error').text('Enter registered name');
             isValid = false;
         }
 
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test($('#email').val().trim())) {
-            $('#email_error').text('Please enter a valid email address.');
+            $('#email_error').text('Enter valid email address.');
             isValid = false;
         }
 
         const phonePattern = /^\d{10}$/;
         if (!phonePattern.test($('#phone').val().trim())) {
-            $('#phone_error').text('Please enter a valid 10-digit phone number.');
+            $('#phone_error').text('Enter valid 10-digit phone number.');
             isValid = false;
         }
 
 
 
         if ($('input[name="contract_start_date"]').val() === '') {
-            $('#error_contract_start_date').text('Contract start date is required.');
+            $('#error_contract_start_date').text('Enter start date.');
             isValid = false;
         }
 
         if ($('input[name="contract_end_date"]').val() === '') {
-            $('#error_contract_end_date').text('Contract end date is required.');
+            $('#error_contract_end_date').text('Enter end date.');
             isValid = false;
         }
 
         if ($('input[name="next_followup_date"]').val() === '') {
-            $('#error_next_followup_date').text('Followup date is required.');
+            $('#error_next_followup_date').text('Enter followup date');
             isValid = false;
         }
 
@@ -1966,36 +2006,54 @@ $(document).on('click', '.edit_product', function () {
 
         // Validate 'Default Language'
         if ($('#language').val() === '') {
-            $('#error_language').text('Please select a default language.');
+            $('#error_language').text('Select language.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person name'
+        if ($('#contact_person_name').val() === '') {
+            $('#error_contact_person_name').text('Enter name.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person phone'
+        if ($('#contact_person_phone').val() === '') {
+            $('#error_contact_person_phone').text('Enter phone.');
+            isValid = false;
+        }
+
+        // Validate 'Contact person designation'
+        if ($('#contact_person_designation').val() === '') {
+            $('#error_contact_person_designation').text('Select designation.');
             isValid = false;
         }
 
         // Username Validation
         if ($('#username').val().trim() === '') {
-            $('#error_username').text('Username is required.');
+            $('#error_username').text('Enter Username');
             isValid = false;
         }
 
         // Password Validation
         if ($('#password').val().trim() === '') {
-            $('#error_password').text('Password is required.');
+            $('#error_password').text('Enter Password');
             isValid = false;
         }
 
         // Username Validation
         if ($('#user_username').val().trim() === '') {
-            $('#error_user_username').text('Users username is required.');
+            $('#error_user_username').text('Enter username');
             isValid = false;
         }
 
         // Password Validation
         if ($('#user_password').val().trim() === '') {
-            $('#error_user_password').text('Users password is required.');
+            $('#error_user_password').text('Enter password');
             isValid = false;
         }
 
         if ($('#store_logo_image').val().trim() === '') {
-            $('#error_store_logo_image').text('Logo image is required.');
+            $('#error_store_logo_image').text('Choose logo image');
             isValid = false;
         }
 
@@ -2013,7 +2071,7 @@ $(document).on('click', '.edit_product', function () {
                 success: function (response) {
                     console.log(response);
                     location.reload();
-                    window.location.href = base_url + 'admin/store';
+                    window.location.href = base_url + 'admin/store/all';
 
                     // location.reload();
                 },
@@ -2119,7 +2177,7 @@ $(document).on('click', '.edit_product', function () {
 
 
 
-    //5. Datepicker contract start end followup dates
+    //MARK: - Datepicker contract Date
     $('#datepicker').datepicker({
         format: 'yyyy-mm-dd',
         startDate: new Date(), // Set minimum date if needed
@@ -2192,15 +2250,6 @@ $(document).on('click', '.edit_product', function () {
         const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     })
-
-
-    //8. Assigning Products from view stores page
-    $('.product_assign').click(function () {
-        var storeId = $(this).attr('data-id'); //alert(storeId);
-        var storeName = $(this).attr('data-name');
-        document.getElementById('modal_title_table').innerHTML = storeName + ' - Product Assign';
-        document.getElementById('table_iframe_product_assign').src = base_url + 'admin/Product_assign/load_products_for_assign/' + storeId;
-    });
 
     function updateOrderIndex(id, order_index) {
         $.ajax({

@@ -67,7 +67,7 @@
                         type="submit" data-toggle="tooltip" data-placement="bottom" title="Password Change"><i
                             class="fa-solid fa-key" data-bs-target="#passwordchange"
                             data-bs-toggle="modal"></i></button>
-                    <?php if ($users['userroleid'] == 1 || $users['userroleid'] == 2 || $users['userroleid'] == 5): ?>      
+                    <?php if ($users['userroleid'] == 1 || $users['userroleid'] == 2 || $users['userroleid'] == 5): ?>
                     <button data-id="<?=$users['userid'];?>" class="btn tblLogBtn pl-0 pr-0 assign-table" type="submit"
                         data-toggle="tooltip" data-placement="bottom" title="Assign Table"><i
                             class="fa-solid fa-table"></i></button>
@@ -206,8 +206,8 @@
                                         <span class="error errormsg mt-2 mx-2" id="edit_user_name_error"></span>
                                     </div>
                                 </div>
-                                
-                                
+
+
                                 <div class="col-md-4">
                                     <div class="mb-2 ">
                                         <label class="form-label mx-2" for="default-input">UserName</label>
@@ -216,8 +216,8 @@
                                         <span class="error errormsg mt-2 mx-2" id="edit_user_name_error"></span>
                                     </div>
                                 </div>
-                                
-                                
+
+
 
                                 <div class="col-md-4">
                                     <div class="mb-2 focus">
@@ -318,8 +318,8 @@
                     <div class="container">
                         <div class="row g-2">
 
-                            <?php foreach ($tables as $table): 
-                            $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];   
+                            <?php foreach ($tables as $table):
+                            $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
                             ?>
                             <div class="col-12 col-md-6">
                                 <div class="p-3 border bg-light d-flex owner_model_heading justify-content-between">
@@ -390,5 +390,5 @@
 </div>
 </div>
 <script src="<?php echo base_url();?>assets/admin/js/jquery.min.js"></script>
-<script src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script>
+<script type="module" src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/bootstrap.bundle.min.js"></script>

@@ -7,7 +7,7 @@
 
                 <div class="add-new-dish-form__section-container">
                     <div class="add-new-dish-form__section">
-                        <h2 class="add-new-dish-form__section-heading">Product Details</h2>
+                        <h2 class="add-new-dish-form__section-heading">Dish Details</h2>
                         <div class="form__field-container-group gc">
                             <div class="form__field-container xs12 lg4">
                                 <label class="form__label">Category</label>
@@ -29,30 +29,9 @@
                                         class="error errormsg mt-2"><?= form_error('category_id'); ?></span>
                                 </div>
                             </div>
-                            <!-- sub category -->
-                            <!-- <div class="form__field-container xs12 lg4">
-                                <label class="form__label">SubCategory </label>
-                                <select class="form__input-select" name="subcategory_id">
-                                    <option value="">Select Sub Category</option>
-                                    <?php
-                        foreach($subcategories as $category)
-                        {
-                        ?>
-                                    <option value="<?=$category['subcategory_id'];?>"
-                                        <?php echo set_select('subcategory_id', $category['subcategory_id'])?>>
-                                        <?=$category['subcategory_name_en'];?></option>
-                                    <?php
-                        }
-                        ?>
-                                </select>
-                            </div> -->
-                            <!-- <label class="col-sm-1 col-form-label">Photo</label>
-  <div class="col-sm-2">
-  <input type="file" class="form-control-file" name="userfile">
-            </div>
-</div> -->
+
                             <div class="form__field-container xs12 lg4">
-                                <label class="form__label">Veg/Non Veg</label>
+                                <label class="form__label">Dish Type</label>
                                 <select class="form__input-select" name="product_veg_nonveg">
                                     <option value="">Select any</option>
                                     <option value="veg">Veg</option>
@@ -62,26 +41,26 @@
                                     class="error errormsg mt-2"><?= form_error('product_veg_nonveg'); ?></span>
                             </div>
 
-                        </div>
-
-                        <div class="form__field-container-group gc">
                             <div class="form__field-container xs12 lg2">
-                                <div class="form__input-group-checkbox">
+
                                     <label class="form__label">Is Customizable</label>
                                     <input type="hidden" name="iscustomizable_hidden" value="0"
                                         id="iscustomizable_hidden">
                                     <input class="form-check-input" type="checkbox" value=""
                                         id="checkbox_is_customizable">
-                                </div>
+
                             </div>
                             <div class="form__field-container xs12 lg2">
-                                <div class="form__input-group-checkbox">
+
                                     <label class="form__label">Is Addon</label>
                                     <input type="hidden" name="isaddon_hidden" value="0" id="isaddon_hidden">
                                     <input class="form-check-input" type="checkbox" value="" id="checkbox_is_addon">
-                                </div>
+
                             </div>
+
                         </div>
+
+
                         <div class="form__field-container-group gc" id="product_rate_div">
                             <div class="form__field-container xs12 lg3">
                                 <label class="form__label">Rate</label>
@@ -95,8 +74,8 @@
                                     <option value="0"
                                         <?php echo (isset($default_tax_rate) && $default_tax_rate == 0) ? 'selected' : ''; ?>>
                                         0</option>
-                                    <?php 
-                    foreach($store_taxes as $tax) { 
+                                    <?php
+                    foreach($store_taxes as $tax) {
                       if(isset($val['tax'])){
                         $selected = (isset($val['tax']) && $tax['tax_rate'] == $val['tax']) ? 'selected' : '';
                       }else{
@@ -197,7 +176,7 @@
                                     width="100" class="image-to-crop d-none" />
                                 <input type="file" name="images[]" class="form-control" id="preview1" />
                             </div>
-                            <div class="image-item">
+                            <!-- <div class="image-item">
                                 <img id="previewImage2"
                                     src="<?php echo base_url(); ?>uploads/product/<?php if(isset($productDet[0]['image1'])) echo $productDet[0]['image1']; ?>"
                                     width="100" class="image-to-crop d-none" />
@@ -220,7 +199,7 @@
                                     src="<?php echo base_url(); ?>uploads/product/<?php if(isset($productDet[0]['image4'])) echo $productDet[0]['image4']; ?>"
                                     width="100" class="image-to-crop d-none" />
                                 <input type="file" name="images[]" class="form-control" id="preview5" />
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

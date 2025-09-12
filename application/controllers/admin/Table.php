@@ -18,7 +18,7 @@ class Table extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -27,7 +27,7 @@ class Table extends CI_Controller {
         $this->load->model('admin/Tablemodel');
         $this->load->model('admin/Storemodel');
 		$this->load->model('admin/Packagemodel');
-		
+
 		require('Common.php');
 		if (!$this->session->userdata('login_status')) {
 			redirect(login);
@@ -41,10 +41,10 @@ class Table extends CI_Controller {
 		// print_r($data['storeDet']);
         $data['store_name'] = $data['storeDet'][0]['store_name'];
 		$data['packages'] = $this->Packagemodel->listpackages();
-        $data['tables'] = $this->Tablemodel->getTablesByStoreId($store_id);
+        $data['tables'] = $this->Tablemodel->getTablesByStoreId($data['store_id']);//print_r($data['tables']);
 
 		$data['whatsappNo']=$this->Tablemodel->getwhatsapp($store_id);
-		
+
 		// $data['store']
 		$this->load->view('admin/table/qrcode',$data);
         $this->load->view('admin/table/tables',$data);
@@ -58,7 +58,7 @@ class Table extends CI_Controller {
 		$data['packages'] = $this->Packagemodel->listpackages();
         $data['tables'] = $this->Tablemodel->getTablesByStoreId($store_id);
 		// $data['whatsappNo']=$this->Tablemodel->getwhatsapp($store_id);
-		
+
 		// echo $data['whatsappNo'];
 		$this->load->view('admin/table/tables',$data);
 
@@ -74,7 +74,7 @@ class Table extends CI_Controller {
 	$tablename = $this->input->post('tablename');
 	$store_id= $this->input->post('storeid');
 	$tabletype= $this->input->post('tableType');
-	echo json_encode(['checkbox' => $checkbox, 'whatsappno' => $whatsappno, 'tablename' => $tablename, 'storeid' => $store_id, 'tableType' => $tabletype]); 
+	echo json_encode(['checkbox' => $checkbox, 'whatsappno' => $whatsappno, 'tablename' => $tablename, 'storeid' => $store_id, 'tableType' => $tabletype]);
 	if($tabletype == 'delivery'){
 	$this->Tablemodel->updateDeliveryStatus($checkbox , $whatsappno, $store_id );
 	}
@@ -86,14 +86,14 @@ class Table extends CI_Controller {
 	}
 	// echo $whatsappno;
 	// echo $checkbox;
-	
+
 
 
 	}
-	
 
-	
-	
+
+
+
 	public function delete(){
 		//echo "here";exit;
 		$store_id = $this->input->post('store_id');
@@ -108,7 +108,7 @@ class Table extends CI_Controller {
 		$this->session->set_flashdata('error','Table deleted successfully');
 		redirect('admin/table/load_store_tables_iframe/'.$store_id);
 	}
-	
+
 	public function add(){
 		$data['packages'] = $this->Packagemodel->listpackages();
 		$data['tables']=$this->Tablemodel->getTablesByStoreId($this->input->post('current_store_id_hidden'));//print_r($data['tables']);exit();
@@ -120,14 +120,14 @@ class Table extends CI_Controller {
         $data['store_name'] = $data['storeDet'][0]['store_name'];
 	    if(isset($_POST['add']))
 		{
-		    
-		    $this->form_validation->set_error_delimiters('', ''); 
+
+		    $this->form_validation->set_error_delimiters('', '');
 			$this->form_validation->set_rules('package_name', 'Package ', 'required|callback_tablename_exists');
 
-		
-			if($this->form_validation->run() == FALSE) 
+
+			if($this->form_validation->run() == FALSE)
 			{
-			    $this->load->view('admin/table/tables',$data); 
+			    $this->load->view('admin/table/tables',$data);
 			}
 			else
 			{
@@ -137,7 +137,7 @@ class Table extends CI_Controller {
 				if($old_Package_quantity < $current_Package_quantity)
 				{
 					$new_row_count = $current_Package_quantity - $old_Package_quantity; //Retaurn new row inserted (Difference))
-					$table_count = count($data['tables'])+1;//exit; Total number o table count for continue table names using loop 
+					$table_count = count($data['tables'])+1;//exit; Total number o table count for continue table names using loop
 
 					for($i=0;$i<$new_row_count;$i++){
 						$data = array(
@@ -164,26 +164,26 @@ class Table extends CI_Controller {
 		}
 		else
 		{
-			$this->load->view('admin/table/tables',$data); 
+			$this->load->view('admin/table/tables',$data);
 		}
 	}
-	
+
 	public function edit(){
         $data['tables'] = $this->Tablemodel->getTablesByStoreId($store_id);
 	    if(isset($_POST['edit']))
 		{
-            
+
 		    $id=$this->input->post('id'); //echo $id;die();
 			$data['taxDet']=$this->Taxmodel->get($id);
-			$this->form_validation->set_error_delimiters('', ''); 
+			$this->form_validation->set_error_delimiters('', '');
 			$this->form_validation->set_rules('country_id', 'Country name', 'required');
 			$this->form_validation->set_rules('tax_type', 'Tax type', 'required');
 			$this->form_validation->set_rules('tax_rate', 'Tax rate', 'required');
-		
-			if ($this->form_validation->run() == FALSE) 
+
+			if ($this->form_validation->run() == FALSE)
 			{
 				$this->load->view('admin/includes/header');
-			    $this->load->view('admin/tax/taxes',$data); 
+			    $this->load->view('admin/tax/taxes',$data);
 			    $this->load->view('admin/includes/footer');
 			}
 			else
@@ -204,7 +204,7 @@ class Table extends CI_Controller {
 		{
 			$id=$this->input->post('id'); //echo $roleid;die();
 			$data['taxDet']=$this->Tablemodel->get($id);
-			$this->load->view('admin/table/tables',$data); 
+			$this->load->view('admin/table/tables',$data);
 		}
 	}
 

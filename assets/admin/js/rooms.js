@@ -1,14 +1,14 @@
 $(document).ready(function () {
-    //alert(1);
-   var base_url = 'http://localhost/emigo-restaurant-application/';
-//   var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+
+     var base_url = $('#base_url').val();
+     
 //1. add the room
 $('#addrooms').click(function (e) {
     var formData = new FormData($('#addroomsform')[0]);
     $.ajax({
         url: base_url + 'admin/Rooms/add',
         type: 'POST',
-        data: formData, 
+        data: formData,
         dataType: 'json',
         processData: false,
         contentType: false,
@@ -40,7 +40,7 @@ $('#addrooms').click(function (e) {
 
 function show_message_modal(message) {
     console.log(message);
-    
+
      $('#successModal .modal-body').html(message);
     $('#successModal').modal('show');
     setTimeout(function () {
@@ -49,7 +49,7 @@ function show_message_modal(message) {
             window.location.reload();
         }, 500); // small delay to ensure modal finishes hiding
     }, 1000);
- 
+
 }
 
 
@@ -134,10 +134,10 @@ $(document).on('click', '.qr-code', function (e) {
         dataType: 'json',
         success: function (response) {
             console.log(response);
-            
+
             if (response.status === 'success') {
                 show_message_modal(response.message);
-                
+
             } else {
                 // show_message_modal(response.message);
                 console.error('Error updating record');
@@ -148,7 +148,7 @@ $(document).on('click', '.qr-code', function (e) {
         }
     });
 
-  
+
 });
 
 

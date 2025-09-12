@@ -14,6 +14,22 @@ Class Commonmodel extends CI_Model
         $query = $this->db->get();
         return $query->row();
     }
+    //MARK: - Get Product Details by ID
+    public function get_product_details_by_id($id){
+        $this->db->select('*');
+        $this->db->from('product');
+        $this->db->where('product_id', $id);
+        $query = $this->db->get();
+        return $query->row();
+    }
+    //MARK: - Get Store Product Details by ID
+    public function get_store_product_details_by_id($id){
+        $this->db->select('*');
+        $this->db->from('store_wise_product_assign');
+        $this->db->where('store_product_id', $id);
+        $query = $this->db->get();
+        return $query->row();
+    }
     //MARK: - Get Country Details by Country ID
     public function get_country_details_by_country_id($country_id){
         $this->db->select('*');
@@ -152,7 +168,7 @@ Class Commonmodel extends CI_Model
              s.is_active,
              s.availability,
              s.remarks,
-             s.image as store_image,
+             IFNULL(s.image, "default.png") as store_image,
              s.store_product_desc_en,
              s.store_product_name_en,
              s.store_product_desc_ma,
@@ -171,7 +187,6 @@ Class Commonmodel extends CI_Model
              p.product_desc_ar,
              s.rate,
              s.is_customizable,
-             p.product_veg_nonveg,
              p.category_id'
         );
         $this->db->from('store_wise_product_assign s');
@@ -232,6 +247,17 @@ Class Commonmodel extends CI_Model
 
         return $result;
     }
+    //MARK: - Get Current stock
+    public function getCurrentStock($product_id,$date,$store_id) {
+        $this->db->select('(SUM(pu_qty) - SUM(sl_qty)) as bal_qty');
+        $this->db->from('store_stock');
+        $this->db->where('product_id', $product_id);
+        //$this->db->where('tr_date', $date);
+        $this->db->where('store_id', $store_id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result[0]['bal_qty'];
+    }
 
     public function get_store_product_details($store_id,$productId)
     {
@@ -242,6 +268,124 @@ Class Commonmodel extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
+
+    //MARK: Get product images
+    public function getProductImages($product_id) {
+		$this->db->select('product_id,image');
+		$this->db->from('store_wise_product_assign');
+		$this->db->where('store_product_id', $product_id);
+		$query = $this->db->get();
+		$row = $query->result_array();
+		$product_id1 = $row[0]['product_id'];
+		$product_image = $row[0]['image'];
+
+		$this->db->select('image1,image2,image3,image4');
+		$this->db->from('product');
+		$this->db->where('product_id', $product_id1);
+		$query = $this->db->get();
+		$row = $query->row_array();
+		$productImages[] = [
+			'default_image' => $product_image ? $product_image : $row['image'],
+			'image1' => $row['image1'],
+			'image2' => $row['image2'],
+			'image3' => $row['image3'],
+			'image4' => $row['image4']
+		];
+		return $productImages;
+	}
+    //MARK: Get default image
+    public function get_default_image($product_id)
+    {
+        $this->db->select('image');   // column that stores product's main image
+        $this->db->from('store_wise_product_assign');          // change table name if yours is different
+        $this->db->where('store_product_id', $product_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->row()->image;
+        }
+        return null;
+    }
+
+    //MARK: Search product on keyup
+    public function shopAssignedProductsByKeyUpSearch($search = null)
+    {
+        $store_id = $this->session->userdata('logged_in_store_id');
+
+        $this->db->select('
+            store_wise_product_assign.*,
+            product.product_id,
+            product.product_name_en,
+            product.image1 as store_image,
+            categories.category_name_en,
+            categories.category_id,
+            store_stock.pu_qty,
+            store_stock.minqty,
+            (store_stock.pu_qty - store_stock.sl_qty) as balance_stock
+        ');
+        $this->db->from('store_wise_product_assign');
+        $this->db->join('product', 'product.product_id = store_wise_product_assign.product_id', 'left');
+        $this->db->join('categories', 'categories.category_id = store_wise_product_assign.category_id', 'left');
+        $this->db->join('store_stock', 'store_stock.product_id = store_wise_product_assign.store_product_id', 'left');
+
+        $this->db->where('store_wise_product_assign.store_id', $store_id);
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('product.product_name_en', $search);
+            $this->db->or_like('store_wise_product_assign.store_product_name_en', $search);
+            $this->db->group_end();
+        }
+        $this->db->group_by('store_wise_product_assign.store_product_id');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    //MARK:Load all addons
+    public function list_all_addons() {
+		$store_id = $this->session->userdata('logged_in_store_id');
+		$this->db->select('swpa.*,p.*'); // Select all swpa fields and product name
+		$this->db->from('store_wise_product_assign swpa');
+		$this->db->join('product p', 'swpa.product_id = p.product_id'); // Correct join with product table
+		$this->db->where('swpa.store_id', $store_id);
+		$this->db->where('swpa.is_addon', 1);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+    //MARK: Get store product details
+    public function getProductDetailsById($id,$store_id){
+		$this->db->select('
+    swa.store_product_desc_ma,
+    swa.store_product_desc_en,
+    swa.store_product_desc_hi,
+    swa.store_product_desc_ar,
+    swa.store_product_name_ma,
+    swa.store_product_name_en,
+    swa.store_product_name_hi,
+    swa.store_product_name_ar,
+    swa.is_customizable,
+    swa.is_addon,
+    swa.type,
+    swa.rate,
+    p.product_name_ma,
+    p.product_name_en,
+	p.product_name_hi,
+	p.product_name_ar,
+	p.product_desc_ma,
+    p.product_desc_en,
+	p.product_desc_hi,
+	p.product_desc_ar
+');
+$this->db->from('product p');
+$this->db->join('store_wise_product_assign swa', 'swa.product_id = p.product_id', 'left'); // Replace 'product_id' with the actual column name if it's different
+$this->db->where('swa.store_product_id', $id);
+$this->db->where('swa.store_id', $store_id);
+$query = $this->db->get();
+$row = $query->row_array();
+return $row;
+	}
+
+
+
     public function get_base_quantity_product($store_id, $productId) {
         $this->db->select('GREATEST(FLOOR(MIN(variant_value)), 1) AS variant_value'); // Ensure min value is at least 1
         $this->db->from('store_variants');

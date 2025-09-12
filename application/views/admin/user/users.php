@@ -6,7 +6,7 @@
 
 
 
-        <div class="container">
+        <div class="container p-0">
             <div class="row">
                 <div class="col-12">
                     <div class="add-new-dish-list-combo mb-3">
@@ -38,7 +38,7 @@
 
 
             <div class="row">
-                <div class="container">
+                <div class="">
                     <div class="table-responsive-sm">
                         <table id="example" class="table table-striped" style="width:100%">
                             <thead style="background: #e5e5e5;">
@@ -67,7 +67,7 @@
                                     <td><?php if($val['is_active'] == 1){ ?> <span class="badge-success">Active</span>
                                         <?php } else { ?> <span class="badge-danger">Inactive</span> <?php }?></td>
                                     <td class="pb-0 pt-0 d-flex">
-                                        <!-- <form class="m-0" action="<?php echo base_url();?>admin/user/edit" 
+                                        <!-- <form class="m-0" action="<?php echo base_url();?>admin/user/edit"
                                             method="post"> -->
                                         <input type="hidden" name="id" value="<?php echo $val['userid']; ?>">
                                         <button class="btn tblEditBtn edit_user pl-0 pr-0" type="submit"
@@ -214,7 +214,7 @@
 
                                     <div class="col-md-12">
                                         <div class="justify-content-center" style="float: right;">
-                                            <button class="btn btn-primary w-md" type="button"
+                                            <button class="btn btn1 w-md" type="button"
                                                 id="add_user">Save</button>
                                         </div>
                                     </div>
@@ -334,7 +334,7 @@
 
                                 <div class="col-md-12">
                                     <div class="justify-content-center" style="float: right;">
-                                        <button class="btn btn-primary w-md" type="button"
+                                        <button class="btn btn1 w-md" type="button"
                                             id="save_user">Update</button>
                                     </div>
                                 </div>
@@ -379,29 +379,6 @@
         </div>
     </div>
     <!-- delete user -->
-
-
-
-
-    <!-- success modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                    <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary reload-close-btn"
-                        data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- success modal -->
 
 
 

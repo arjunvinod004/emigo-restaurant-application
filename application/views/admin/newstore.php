@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
     <div class="application-header">
         <div class="application-header__container container">
             <div class="application-header__brand">
@@ -37,10 +38,10 @@
                     <p class="application-header__brand-address"></p>
                 </div>
             </div>
-            <div class="application-header__provider">
+            <!-- <div class="application-header__provider">
                 <img src="<?php echo base_url();?>assets/admin/images/choose-my-food.png" alt="choose my food logo"
                     class="application-header__provider-img" width="300" height="37">
-            </div>
+            </div> -->
         </div>
 
     </div>
@@ -55,14 +56,14 @@
 
     <div class="application-content add-new-dish">
         <div class="application-content__container container add-new-dish__container">
-            <h1 class="application-content__page-heading">Add New Store</h1>
+            <h1 class="application-content__page-heading">Registration</h1>
             <div class="add-new-dish-form">
 
                 <form id="storeForm" enctype="multipart/form-data" method="post">
 
                     <div class="add-new-dish-form__section-container">
                         <div class="add-new-dish-form__section">
-                            <h2 class="add-new-dish-form__section-heading">Store Details</h2>
+                            <h2 class="add-new-dish-form__section-heading">Restaurant Details</h2>
 
 
                             <!-- country -->
@@ -165,7 +166,7 @@
                                 <!-- Description -->
 
                                 <div class="form__field-container xs12 lg6">
-                                    <label class="form__label">Description</label>
+                                    <label class="form__label">Tag line</label>
                                     <textarea name="store_desc" class="form-control" id="store_desc"></textarea>
                                     <div class="errormsg mt-2" id="store_desc_error"></div>
                                 </div>
@@ -219,7 +220,7 @@
                                 <!-- Default Language  -->
 
                                 <div class="form__field-container xs12 lg3">
-                                    <label class="form__label">Default Language</label>
+                                    <label class="form__label">Preffered Language</label>
                                     <select class="form-select" name="language" id="language">
                                         <option value="">Select Language</option>
                                         <option value="ma">Malayalam</option>
@@ -244,7 +245,7 @@
 
                             <div class="form__field-container-group gc" id="product_rate_div">
                                 <div class="form__field-container xs12 lg12">
-                                    <label class="form__label">Select Language</label>
+                                    <label class="form__label">Select your Languages</label>
                                     <div class="col-sm-10">
                                         <input type="checkbox" name="checkbox[]" value="ma" checked>
                                         Malayalam<br>
@@ -259,51 +260,112 @@
                                 </div>
                             </div>
 
+                            <!--Enable Order Monitor Tabs -->
+<h2 class="add-new-dish-form__section-heading">Required Services</h2>
+<div class="form__field-container-group gc table_monitor">
+
+   <div class="form__field-container xs12 lg1">
+        <label class="form__label">Table</label>
+        <input type="checkbox" class="form-check-input" name="is_table_tab" id="is_table_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Pickup</label>
+        <input type="checkbox" class="form-check-input" name="is_pickup_tab" id="is_pickup_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Delivery</label>
+        <input type="checkbox" class="form-check-input" name="is_delivery_tab" id="is_delivery_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Room</label>
+        <input type="checkbox" class="form-check-input" name="is_room_tab" id="is_room_tab"
+            value="0">
+    </div>
+
+</div>
+<!-- Order monitor tabs -->
+
+<!--Contact person -->
+<h2 class="add-new-dish-form__section-heading">Contact Person Details</h2>
+<div class="form__field-container-group gc table_monitor">
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Name</label>
+        <input class="form-control" type="text" name="contact_person_name" id="contact_person_name">
+        <div class="errormsg mt-2" id="error_contact_person_name"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Contact Number</label>
+         <input class="form-control" type="text" name="contact_person_phone" id="contact_person_phone">
+         <div class="errormsg mt-2" id="error_contact_person_phone"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Designation</label>
+        <select class="form-select" name="contact_person_designation" id="contact_person_designation">
+            <option value="">Select Designation</option>
+            <option value="Owner">Owner</option>
+            <option value="Manager">Manager</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Staff">Staff</option>
+            <option value="Other">Other</option>
+        </select>
+        <div class="errormsg mt-2" id="error_contact_person_designation"></div>
+    </div>
+
+</div>
+<!-- Contact person -->
+
+
 
                             <!-- username (shop owner)  -->
 
-                            <div class="form__field-container-group gc" id="product_rate_div">
+                            <!-- <div class="form__field-container-group gc" id="product_rate_div">
                                 <div class="form__field-container xs12 lg3">
                                     <label class="form__label">Username (Shop owner)</label>
                                     <input class="form-control" type="text" name="username" id="username">
                                     <div class="errormsg mt-2" id="error_username"></div>
 
-                                </div>
+                                </div> -->
 
                                 <!-- Password  -->
 
-                                <div class="form__field-container xs12 lg3">
+                                <!-- <div class="form__field-container xs12 lg3">
                                     <label class="form__label">password</label>
                                     <input class="form-control" type="password" name="password" id="password">
                                     <div class="errormsg mt-2" id="error_password"></div>
 
-                                </div>
+                                </div> -->
 
                                 <!-- username (user)  -->
 
-                                <div class="form__field-container xs12 lg3">
+                                <!-- <div class="form__field-container xs12 lg3">
                                     <label class="form__label">Username (user)</label>
                                     <input class="form-control" type="text" name="user_username" id="user_username">
                                     <div class="errormsg mt-2" id="error_user_username"></div>
 
-                                </div>
+                                </div> -->
 
 
                                 <!-- Password  -->
 
-                                <div class="form__field-container xs12 lg3">
+                                <!-- <div class="form__field-container xs12 lg3">
                                     <label class="form__label">password</label>
                                     <input class="form-control" type="password" name="user_password" id="user_password">
                                     <div class="errormsg mt-2" id="error_user_password"></div>
 
-                                </div>
-
-
-                            </div>
+                                </div> -->
+                            <!-- </div> -->
 
 
                             <!-- Store Logo  -->
-
                             <div class="form__field-container-group gc" id="product_rate_div">
                                 <div class="form__field-container xs12 lg12">
                                     <label class="form__label">Store Logo</label>
@@ -313,16 +375,8 @@
                                 </div>
 
                             </div>
-
-
-
-
                         </div>
-
-
-
                     </div>
-
                     <button class="btn btn1 mt-2" type="submit">SAVE</button>
 
             </div>
@@ -369,9 +423,9 @@
     <script type="module" src="<?php echo base_url();?>assets/admin/js/newstore.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/scripts.js"></script>
     <script src="<?php echo base_url();?>assets/admin/js/datepicker.js"></script>
+<script>
+$(document).ready(function() {
 
-
-    <script>
     $(function() {
         $("#datepicker").datepicker({
             autoclose: true,
@@ -382,61 +436,20 @@
             autoclose: true,
             todayHighlight: true
         }).datepicker('update', new Date());
-    })
-    </script>
-</body>
-
-</html>
-
-
-
-
-
-
-
-
-<script>
-$(document).ready(function() {
-    $('#checkbox_is_customizable').on('click', function() {
-        if ($(this).is(':checked')) {
-            $('#iscustomizable_hidden').val(1);
-        } else {
-            $('#iscustomizable_hidden').val(0);
-        }
     });
 
-    $('#checkbox_is_addon').on('click', function() {
-        if ($(this).is(':checked')) {
-            $('#isaddon_hidden').val(1);
-        } else {
-            $('#isaddon_hidden').val(0);
-        }
-    });
-})
-</script>
-
-<script>
-$(document).ready(function() {
-    $('#checkbox_is_customizable').on('click', function() {
-        if ($(this).is(':checked')) {
-            $('#iscustomizable_hidden').val(1);
-            $('#product_rate_div').hide();
-        } else {
-            $('#iscustomizable_hidden').val(0);
-            $('#product_rate_div').show();
-        }
-    });
-
-    $('#checkbox_is_addon').on('click', function() {
-        if ($(this).is(':checked')) {
-            $('#isaddon_hidden').val(1);
-        } else {
-            $('#isaddon_hidden').val(0);
-        }
-    });
-
+   //MARK: -  Store Checkbox
+    function bindCheckbox(selector) {
+        $(document).on('change', selector, function() {
+            $(this).val($(this).is(':checked') ? 1 : 0);
+            console.log(selector + " changed → " + $(this).val());
+        });
+    }
+    bindCheckbox('#is_table_tab');
+    bindCheckbox('#is_pickup_tab');
+    bindCheckbox('#is_delivery_tab');
+    bindCheckbox('#is_room_tab');
 })
 </script>
 </body>
-
 </html>

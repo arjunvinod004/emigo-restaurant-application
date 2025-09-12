@@ -1,13 +1,13 @@
 <div class="application-content add-new-dish">
     <div class="application-content__container container add-new-dish__container">
-        <h1 class="application-content__page-heading">Add New Store </h1>
+        <h1 class="application-content__page-heading">Registration </h1>
         <div class="add-new-dish-form">
 
             <form id="storeForm" enctype="multipart/form-data" method="post">
 
                 <div class="add-new-dish-form__section-container">
                     <div class="add-new-dish-form__section">
-                        <h2 class="add-new-dish-form__section-heading">Store Details</h2>
+                        <h2 class="add-new-dish-form__section-heading">Restaurant Details</h2>
 
 
                         <!-- country -->
@@ -178,7 +178,7 @@
                             <!--Default Language  -->
 
                             <div class="form__field-container xs12 lg3">
-                                <label class="form__label">Default Language</label>
+                                <label class="form__label">Preffered Language</label>
                                 <select class="form-select" name="language" id="language">
                                     <option value="">Select Language</option>
                                     <option value="ma">Malayalam</option>
@@ -199,7 +199,7 @@
 
                         <div class="form__field-container-group gc" id="product_rate_div">
                             <div class="form__field-container xs12 lg12">
-                                <label class="form__label">Select Language</label>
+                                <label class="form__label">Select your Languages</label>
                                 <div class="col-sm-10">
                                     <input type="checkbox" name="checkbox[]" value="ma" checked>
                                     Malayalam<br>
@@ -213,6 +213,69 @@
                                 <div class="errormsg mt-2" id="error_language"></div>
                             </div>
                         </div>
+
+                                                    <!--Enable Order Monitor Tabs -->
+<h2 class="add-new-dish-form__section-heading">Required Services</h2>
+<div class="form__field-container-group gc table_monitor">
+
+   <div class="form__field-container xs12 lg1">
+        <label class="form__label">Table</label>
+        <input type="checkbox" class="form-check-input" name="is_table_tab" id="is_table_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Pickup</label>
+        <input type="checkbox" class="form-check-input" name="is_pickup_tab" id="is_pickup_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Delivery</label>
+        <input type="checkbox" class="form-check-input" name="is_delivery_tab" id="is_delivery_tab"
+            value="0">
+    </div>
+
+    <div class="form__field-container xs12 lg1">
+        <label class="form__label">Room</label>
+        <input type="checkbox" class="form-check-input" name="is_room_tab" id="is_room_tab"
+            value="0">
+    </div>
+
+</div>
+<!-- Order monitor tabs -->
+
+<!--Contact person -->
+<h2 class="add-new-dish-form__section-heading">Contact Person Details</h2>
+<div class="form__field-container-group gc table_monitor">
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Name</label>
+        <input class="form-control" type="text" name="contact_person_name" id="contact_person_name">
+        <div class="errormsg mt-2" id="error_contact_person_name"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Contact Number</label>
+         <input class="form-control" type="text" name="contact_person_phone" id="contact_person_phone">
+         <div class="errormsg mt-2" id="error_contact_person_phone"></div>
+    </div>
+
+    <div class="form__field-container xs12 lg4">
+        <label class="form__label">Designation</label>
+        <select class="form-select" name="contact_person_designation" id="contact_person_designation">
+            <option value="">Select Designation</option>
+            <option value="Owner">Owner</option>
+            <option value="Manager">Manager</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Staff">Staff</option>
+            <option value="Other">Other</option>
+        </select>
+        <div class="errormsg mt-2" id="error_contact_person_designation"></div>
+    </div>
+
+</div>
+<!-- Contact person -->
 
 
                         <!-- username  -->

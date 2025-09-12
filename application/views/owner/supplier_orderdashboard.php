@@ -1,16 +1,17 @@
 <div class="application-content order-monitor-content">
     <audio id="alert-audio" src="<?php echo base_url(); ?>uploads/order-siren.mp3" preload="auto"></audio>
     <div class="application-content__container order-monitor-content__container container">
-        <h1 class="application-content__page-heading">Order Monitor - <?php echo $name; ?> (Supplier)</h1>
+        <!--<h1 class="application-content__page-heading">Order Monitor</h1>-->
 
 
         <div class="modal-container">
-            <a href="<?php echo base_url('owner/order/newOrder'); ?>"
+
+            <!-- <a href="<?php echo base_url('owner/order/newOrder'); ?>"
                 class="order-monitor-content__add-new-dish-btn btn1" data-store-id="41" data-name="SALES">
                 <img src="<?php echo base_url();?>assets/admin/images/add-new-dish-icon.svg" alt="add new dish"
                     class="add-new-dish__icon" width="23" height="23">
                 Add New Order
-            </a>
+            </a> -->
             <div class="modal-window">
                 <div class="modal-wrapper">
                     <div class="modal-data">
@@ -21,32 +22,60 @@
             </div>
         </div>
 
+
         <div class="tabs orderdashboard-tab">
             <div class="tabs__row">
                 <ul class="tabs__nav">
+                    <?php $activeTabSet = false;?>
 
-                    <?php if($enable_table > 0){ ?>
-                    <li class="active"><a href="#tabs1">Tables <span id="tabs__nav_pending_table_count"
-                                class="d-none"></span> </a>
+
+                    <?php if ($storeDetails[0]['is_table_tab'] == 1): ?>
+                    <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
+                        <?php $activeTabSet = true; ?>
+                        <a href="#tabs1">
+                            Tables
+                            <span id="tabs__nav_pending_table_count" class="d-none"></span>
+                        </a>
                     </li>
-                    <?php } ?>
-                    <?php if($enable_pickup == 1){ ?>
-                    <li class=""><a href="#tabs2">Pickup Orders <span id="tabs__nav_pending_pickup_count"
-                                class="d-none"></span> </a>
+                    <?php endif; ?>
+
+                    <?php if ($storeDetails[0]['is_pickup_tab'] == 1): ?>
+                    <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
+                        <?php $activeTabSet = true; ?>
+                        <a href="#tabs2">Pickup Orders <span id="tabs__nav_pending_pickup_count" class="d-none"></span>
+                        </a>
                     </li>
-                    <?php }
-                    ?>
-                    <?php if($enable_delivery == 1){ ?>
-                    <li class=""><a href="#tabs3">Delivery Orders<span id="tabs__nav_pending_delivery_count"
+                    <?php endif; ?>
+
+                    <?php if ($storeDetails[0]['is_delivery_tab'] == 1): ?>
+                    <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
+                        <?php $activeTabSet = true; ?>
+                        <a href="#tabs3">Delivery Orders<span id="tabs__nav_pending_delivery_count"
+                                class="d-none"></span>
+
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if ($storeDetails[0]['is_room_tab'] == 1): ?>
+                    <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
+                        <?php $activeTabSet = true; ?>
+                        <a href="#tabs5">Room Orders<span id="tabs__nav_pending_rom_count" class="d-none"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <li class=""><a href="#tabs4">Ready Orders<span id="tabs__nav_approved_ready_count_db"
                                 class="d-none"></span>
                         </a></li>
-                    <?php }
-                    ?>
-                    <li class=""><a href="#tabs4">Ready Orders<span id="tabs__nav_approved_ready_count_db"
-                                class="d-none"></span></a></li>
                 </ul>
                 <div class="tabs__content orderdashboard-tab__content">
-                    <div id="tabs1" class="tabs__pane active">
+
+                    <?php $activeTabSet = false;?>
+
+                    <?php if ($storeDetails[0]['is_table_tab'] == 1): ?>
+                    <div id="tabs1" class="tabs__pane <?php echo !$activeTabSet ? 'active' : ''; ?> ">
+                        <?php $activeTabSet = true; ?>
                         <div class="table-status">
                             <div class="table-status__item">
                                 <div class="table-status__item-color table-status__item-color-available"></div>
@@ -65,9 +94,13 @@
 
                         <div class="order-table-list">
                             <?php foreach ($tables as $table) {
-                                $orderCount = $this->Ordermodel->getPendingTableOrderCount($table['table_id']); 
-                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];          
+                                $orderCount = $this->Ordermodel->getPendingTableOrderCount($table['table_id']);
+                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']);
+                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
                                 $bgClass = '';
+                                if($unpaid_order_count > 0){
+                                    $bgClass = 'booked';
+                                }
                                 if ($table['is_reserved'] == 0 && $orderCount == 0) {
                                     $bgClass = 'available';
                                 }
@@ -95,7 +128,9 @@
                                     <div class="order-table-list__unpaid-cooking">
                                         <div class="order-table-list__unpaid">
                                             <div class="order-table-list__unpaid-label">Unpaid</div>
-                                            <div class="order-table-list__unpaid-count"><?php echo $orderCount; ?></div>
+                                            <div class="order-table-list__unpaid-count"
+                                                id="order-table-list__unpaid-count_<?php echo $table['table_id']; ?>">
+                                                <?php echo $orderCount; ?></div>
                                         </div>
                                         <div class="order-table-list__cooking">
                                             <div class="order-table-list__cooking-label">Cooking</div>
@@ -103,6 +138,7 @@
                                                 <?php echo  $Cooking = $this->Ordermodel->getPendingTableOrderCookingCount($table['table_id']);   ?>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="order-table-list__completed-reserved">
                                         <a data-bs-toggle="modal" data-id="<?php echo $table['table_id']; ?>"
@@ -126,6 +162,7 @@
 
 
 
+
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +171,11 @@
 
 
                     </div>
-                    <div id="tabs2" class="tabs__pane">
+
+                    <?php endif; ?>
+                    <?php if ($storeDetails[0]['is_pickup_tab'] == 1): ?>
+                    <div id="tabs2" class="tabs__pane <?php echo !$activeTabSet ? 'active' : ''; ?> ">
+                        <?php $activeTabSet = true; ?>
                         <div class="orders-data">
                             <div class="orders-data__content">
                                 <div class="orders-data__order-details">
@@ -152,7 +193,8 @@
                                     <div class="orders-data__order-details-item-wrapper">
                                         <div class="orders-data__order-details-item">
                                             <div class="orders-data__order-details-item-label">Count</div>
-                                            <div class="orders-data__order-details-item-value">
+                                            <div class="orders-data__order-details-item-value"
+                                                id="order-pickup__unpaid-count">
                                                 <?php echo $pending_pickup_count; ?></div>
                                         </div>
                                         <div class="orders-data__order-details-item">
@@ -190,7 +232,12 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tabs3" class="tabs__pane">
+
+                    <?php endif; ?>
+
+                    <?php if ($storeDetails[0]['is_delivery_tab'] == 1): ?>
+                    <div id="tabs3" class="tabs__pane <?php echo !$activeTabSet ? 'active' : ''; ?>  ">
+                        <?php $activeTabSet = true; ?>
                         <div class="orders-data">
                             <div class="orders-data__content">
                                 <div class="orders-data__order-details">
@@ -208,7 +255,8 @@
                                     <div class="orders-data__order-details-item-wrapper">
                                         <div class="orders-data__order-details-item">
                                             <div class="orders-data__order-details-item-label">Count</div>
-                                            <div class="orders-data__order-details-item-value">
+                                            <div class="orders-data__order-details-item-value"
+                                                id="order-delivery__unpaid-count">
                                                 <?php echo $pending_delivery_count; ?></div>
                                         </div>
                                         <div class="orders-data__order-details-item">
@@ -250,6 +298,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <?php endif; ?>
                     <div id="tabs4" class="tabs__pane">
                         <div class="order-table-list" id="ready-orders-db">
                             <?php foreach ($ready_orders as $order) {
@@ -304,6 +354,101 @@
                             <?php } ?>
                         </div>
                     </div>
+
+
+                    <!-- room order -->
+
+                    <?php if ($storeDetails[0]['is_room_tab'] == 1): ?>
+                    <div id="tabs5" class="tabs__pane <?php echo !$activeTabSet ? 'active' : ''; ?> ">
+                        <?php $activeTabSet = true; ?>
+                        <div class="table-status ">
+
+
+                        </div>
+
+                        <div class="order-table-list">
+                            <?php foreach ($rooms as $table) {
+                                $orderCount = $this->Ordermodel->getPendingRoomOrderCount($table['table_id']);
+                                // print_r($orderCount);
+                                $unpaid_order_count = $this->Ordermodel->getUnpaidOrderCount($table['table_id']);
+                                $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
+                                $bgClass = '';
+                                if($unpaid_order_count > 0){
+                                    $bgClass = 'booked';
+                                }
+                                if ($table['is_reserved'] == 0 && $orderCount == 0) {
+                                    $bgClass = 'available';
+                                }
+                                if ($table['is_reserved'] == 0 && $orderCount > 0) {
+                                    $bgClass = 'booked';
+                                }
+                                if ($table['is_reserved'] == 1 && $orderCount == 0) {
+                                    $bgClass = 'reserved';
+                                }
+                                if ($table['is_reserved'] == 1 && $orderCount > 0) {
+                                    $bgClass = 'reserved';
+                                }
+                                 ?>
+                            <div class="order-table-list__item">
+                                <a data-bs-toggle="modal" data-id="<?php echo $table['table_id']; ?>"
+                                    data-name="<?php echo $table_name; ?>" data-bs-target="#recipe"
+                                    class="w-100 RoomOrderPending" type="button" title="Table Orders">
+                                    <div id="order-table-list__item-heading_<?php echo $table['table_id']; ?>"
+                                        class="order-table-list__item-heading order-table-list__item-heading-<?php echo $bgClass; ?>">
+                                        <?php echo $table_name; ?>
+                                        <img src="<?php echo base_url();?>assets/admin/images/table-icon.svg"
+                                            alt="table icon" class="order-table-list__item-heading-icon">
+                                    </div>
+                                </a>
+                                <div class="order-table-list__item-content">
+                                    <div class="order-table-list__unpaid-cooking">
+                                        <div class="order-table-list__unpaid">
+                                            <div class="order-table-list__unpaid-label">Unpaid</div>
+                                            <div class="order-table-list__unpaid-count"
+                                                id="order-room-list__unpaid-count_<?php echo $table['table_id']; ?>">
+                                                <?php echo $orderCount; ?></div>
+                                        </div>
+                                        <div class="order-table-list__cooking">
+                                            <div class="order-table-list__cooking-label">Cooking</div>
+                                            <div class="order-table-list__cooking-count">
+                                                <?php echo  $Cooking = $this->Ordermodel->getPendingTableOrderCookingCount($table['table_id']);   ?>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="order-table-list__completed-reserved">
+                                        <a data-bs-toggle="modal" data-id="<?php echo $table['table_id']; ?>"
+                                            data-name="<?php echo $table_name; ?>" data-bs-target="#recipe"
+                                            class="order-table-list__completed-btn tableOrdercompleted">Completed</a>
+
+
+
+
+
+                                        <div class="order-table-list__reserved">
+                                            <div class="order-table-list__reserved-label">Is Reserved</div>
+                                            <div class="order-table-list__reserved-input">
+                                                <input type="checkbox" class="cbIsReserved"
+                                                    data-id="<?php echo $table['table_id']; ?>"
+                                                    <?php if ($table['is_reserved'] == 1) echo 'checked'; ?>>
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
+                        </div>
+
+
+                    </div>
+                    <?php endif; ?>
+                    <!-- room end -->
                 </div>
             </div>
         </div>

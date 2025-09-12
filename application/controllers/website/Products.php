@@ -9,16 +9,16 @@ class Products extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
     }
-    
+
     //MARK:  - Current stock
 
     public function current_stock() {
         $date = date('Y-m-d');
         // $store_token = $this->session->userdata('store_token'); //echo $store_token;exit;
-        // $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token); 
+        // $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
         // $logged_store_id=$store_details_from_token->store_id;
          $logged_store_id=$this->session->userdata('store_id');
-        $product_id = $this->input->post('product_id'); 
+        $product_id = $this->input->post('product_id');
         $current_stock = $this->Ordermodel->getCurrentStock($product_id,$date,$logged_store_id);
         echo json_encode(['success' => true,'current_stock' => $current_stock]);
     }
@@ -28,7 +28,7 @@ class Products extends CI_Controller {
         //echo "hre";exit;
         $cartData = $this->session->userdata('cart');
         $store_token = $this->session->userdata('store_token'); //echo $store_token;exit;
-        $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token); 
+        $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
         $cartData = $this->session->userdata('cart');
         //print_r($product);exit;
         $orderType = 'D'; //Change ordertype here using qrcode
@@ -37,11 +37,11 @@ class Products extends CI_Controller {
         $phoneNumber = ''; //Change phone number here using qrcode
         $location = ''; //Change location here using qrcode
         $order_no = $this->Productmodel->getOrderNo(); //Generate order numbet
-        $day = date("d");   
-        $month = date("m"); 
-        $year = date("y");   
+        $day = date("d");
+        $month = date("m");
+        $year = date("y");
         $total_amount = 0;
-        //$order_no_with_date = $order_no.$day.$month.$year; 
+        //$order_no_with_date = $order_no.$day.$month.$year;
         if($this->session->userdata('order_no') != 0){
             $order_no_with_date = $this->session->userdata('order_no');
             $reorder =1;
@@ -49,11 +49,11 @@ class Products extends CI_Controller {
             $order_no_with_date = $order_no.$day.$month.$year; // Add today date and month year with generated token number(order number)
             $reorder = 0;
         }
-        
+
         $productQuantities = [];  //Find each product order quantity within array
         foreach ($cartData as $product) {
             $product_id = $product['product_id'];
-            if (!isset($productQuantities[$product_id])) 
+            if (!isset($productQuantities[$product_id]))
             {
                 $productQuantities[$product_id] = 0;
             }
@@ -66,11 +66,11 @@ class Products extends CI_Controller {
                 $productQuantities[$product_id] += $product['quantity'] * $product['variant_value'];
             }
         }
-        
-        
+
+
       // Check stock availability
         $outOfStockProducts = [];
-        if (!empty($cartData)) 
+        if (!empty($cartData))
         {
             foreach ($cartData as $product) {
                 $date = date('Y-m-d');
@@ -80,14 +80,14 @@ class Products extends CI_Controller {
                     continue; // Skip if product details are not found
                 }
 
-                if ($productDetails[0]['category_id'] == 23) 
+                if ($productDetails[0]['category_id'] == 23)
                     {
                         //echo "combo";
                         // Get combo components
                         $comboItems = $this->Productmodel->getComboItems($store_details_from_token->store_id, $product['product_id']);
                         foreach ($comboItems as $item) {
                             $availableStock = $this->Productmodel->getCurrentStock($item['item_id'], $date, $store_details_from_token->store_id);
-    
+
                             if ($product['quantity'] * $item['quantity'] > $availableStock) {
                                 $outOfStockProducts[] = [
                                     'product_name' => $this->Ordermodel->getProductName($item['item_id']),
@@ -126,7 +126,7 @@ class Products extends CI_Controller {
                 return;
             }
         }
-    
+
 
         if (!empty($cartData)) {
             foreach ($cartData as $product) {
@@ -135,7 +135,7 @@ class Products extends CI_Controller {
 
                 $tax_amount = $product['quantity'] * $product['price'] * $productDetails[0]['tax'] / 100;
 				$total_amount = $product['quantity'] * $product['price'] + $tax_amount;
-				
+
                 // Prepare data to insert for each product
                 $data = [
                     'orderno' => $order_no_with_date,
@@ -162,7 +162,7 @@ class Products extends CI_Controller {
                 ];
                 $this->db->insert('order_items', $data);
             }
-            
+
                 if($this->session->userdata('order_no') == 0){
                     $updateTotalAmountFromItems = $this->Productmodel->updateTotalAmountFromItems($order_no_with_date);
 
@@ -200,7 +200,7 @@ class Products extends CI_Controller {
                 }
         }
         //print_r($order_data);exit;
-       
+
         //$this->session->unset_userdata('cart');
         $Response = array(
             'orderNo' => $order_no_with_date,
@@ -225,21 +225,21 @@ class Products extends CI_Controller {
         $phoneNumber = $phone; //Change phone number here using qrcode
         $location = $address; //Change location here using qrcode
         $order_no = $this->Productmodel->getOrderNo(); //Generate order numbet
-        $day = date("d");   
-        $month = date("m"); 
-        $year = date("y");  
+        $day = date("d");
+        $month = date("m");
+        $year = date("y");
         $total_amount = 0;
         if($this->session->userdata('order_no') != 0){
             $order_no_with_date = $this->session->userdata('order_no');
         }else{
             $order_no_with_date = $order_no.$day.$month.$year; // Add today date and month year with generated token number(order number)
         }
-        
-        
+
+
         $productQuantities = [];  //Find each product order quantity within array
         foreach ($cartData as $product) {
             $product_id = $product['product_id'];
-            if (!isset($productQuantities[$product_id])) 
+            if (!isset($productQuantities[$product_id]))
             {
                 $productQuantities[$product_id] = 0;
             }
@@ -254,22 +254,22 @@ class Products extends CI_Controller {
         }
 
             $outOfStockProducts = [];
-            if (!empty($cartData)) 
+            if (!empty($cartData))
             {
-                foreach ($cartData as $product) 
+                foreach ($cartData as $product)
                 {
                     $date = date('Y-m-d');
                     $productDetails = $this->Productmodel->get_store_wise_product_by_id($product['product_id']);
                     //print_r($productDetails);exit;
-                    
-                    if ($productDetails[0]['category_id'] == 23) 
+
+                    if ($productDetails[0]['category_id'] == 23)
                     {
                         //echo "combo";
                         // Get combo components
                         $comboItems = $this->Productmodel->getComboItems($store_id, $product['product_id']);
                         foreach ($comboItems as $item) {
                             $availableStock = $this->Productmodel->getCurrentStock($item['item_id'], $date, $store_id);
-    
+
                             if ($product['quantity'] * $item['quantity'] > $availableStock) {
                                 $outOfStockProducts[] = [
                                     'product_name' => $this->Ordermodel->getProductName($item['item_id']),
@@ -288,7 +288,7 @@ class Products extends CI_Controller {
                         if ($productQuantities[$product['product_id']] > $availableStock)
                         {
                            $outOfStockProducts[] = [
-    'product_name' => $this->Ordermodel->getProductName($product['product_id']) 
+    'product_name' => $this->Ordermodel->getProductName($product['product_id'])
                        . (!empty($product['variant_code']) ? ' ' . $product['variant_code'] : ''),
     'requested_quantity' => $productQuantities[$product['product_id']],
     'available_stock' => $availableStock ?? 0
@@ -310,7 +310,7 @@ class Products extends CI_Controller {
                     return; // Stop further execution if there are out-of-stock products
                 }
             }
-    
+
 
         if (!empty($cartData)) {
             foreach ($cartData as $product) {
@@ -320,7 +320,7 @@ class Products extends CI_Controller {
 
                 $tax_amount = $product['quantity'] * $product['price'] * $productDetails[0]['tax'] / 100;
 				$total_amount = $product['quantity'] * $product['price'] + $tax_amount;
-				
+
                 // Prepare data to insert for each product
                 $data = [
                     'orderno' => $order_no_with_date,
@@ -365,7 +365,7 @@ class Products extends CI_Controller {
                     'customer_name	' => $custName,
                     'contact_number' => $phoneNumber,
                     'location' => $location,
-                ];    
+                ];
                     $this->db->insert('order', $order_data);
                     $this->Productmodel->updateOrderNo($order_no);
 
@@ -399,16 +399,16 @@ class Products extends CI_Controller {
         $this->load->model('website/Productmodel');
         $cartData = $this->session->userdata('cart');
         $store_token = $this->session->userdata('store_token'); //echo $store_token;exit;
-        $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token); 
+        $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
 
-    
+
         $cartData = $this->session->userdata('cart');
         $deliverytype= $store_details_from_token->ttype;
-      
-        if ($deliverytype == 'tbl') 
+
+        if ($deliverytype == 'tbl')
         {
             $deliverytype = 'D'; // if the table order is selected then delivery type will be D else it will be rom or DL and PK
-        } 
+        }
         //print_r($cartData);exit;
         $orderType = $deliverytype; //Change ordertype here using qrcode
         $custName = '';
@@ -416,11 +416,11 @@ class Products extends CI_Controller {
         $phoneNumber = ''; //Change phone number here using qrcode
         $location = ''; //Change location here using qrcode
         $order_no = $this->Productmodel->getOrderNo(); //Generate order numbet
-        $day = date("d");   
-        $month = date("m"); 
-        $year = date("y");   
+        $day = date("d");
+        $month = date("m");
+        $year = date("y");
         $total_amount = 0;
-        //$order_no_with_date = $order_no.$day.$month.$year; 
+        //$order_no_with_date = $order_no.$day.$month.$year;
         if($this->session->userdata('order_no') != 0){
             $order_no_with_date = $this->session->userdata('order_no');
             $reorder =1;
@@ -428,26 +428,26 @@ class Products extends CI_Controller {
             $order_no_with_date = $order_no.$day.$month.$year; // Add today date and month year with generated token number(order number)
             $reorder = 0;
         }
-        
-        
+
+
       // Check stock availability
 
       $outOfStockProducts = [];
-      if (!empty($cartData)) 
+      if (!empty($cartData))
       {
-          foreach ($cartData as $product) 
+          foreach ($cartData as $product)
           {
               $date = date('Y-m-d');
-              $productDetails = $this->Productmodel->get_store_wise_product_by_id($product['product_id']); 
+              $productDetails = $this->Productmodel->get_store_wise_product_by_id($product['product_id']);
               //print_r($productDetails);exit;
-              
+
               // Check if the product is a combo
               if($productDetails[0]['category_id'] == 23) {
                   // Get combo components
                   $comboItems = $this->Productmodel->getComboItems($store_details_from_token->store_id,$product['product_id']);
                   foreach ($comboItems as $item) {
                       $availableStock = $this->Productmodel->getCurrentStock($item['item_id'], $date, $store_details_from_token->store_id);
-                      
+
                       // Check if requested quantity of combo item exceeds available stock
                       if ($product['quantity'] * $item['quantity'] > $availableStock) {
                           $outOfStockProducts[] = [
@@ -485,8 +485,8 @@ class Products extends CI_Controller {
       }
 
 
-     
-    
+
+
 
         if (!empty($cartData)) {
             foreach ($cartData as $product) {
@@ -495,7 +495,7 @@ class Products extends CI_Controller {
 
                 $tax_amount = $product['quantity'] * $product['price'] * $productDetails[0]['tax'] / 100;
 				$total_amount = $product['quantity'] * $product['price'] + $tax_amount;
-				
+
                 // Prepare data to insert for each product
                 $data = [
                     'orderno' => $order_no_with_date,
@@ -522,7 +522,7 @@ class Products extends CI_Controller {
                 ];
                 $this->db->insert('order_items', $data);
             }
-            
+
                 if($this->session->userdata('order_no') == 0){
                     $updateTotalAmountFromItems = $this->Productmodel->updateTotalAmountFromItems($order_no_with_date);
 
@@ -559,7 +559,7 @@ class Products extends CI_Controller {
                         $this->db->update('order', $data);
                 }
         }
-        
+
         $Response = array(
             'orderNo' => $order_no_with_date,
             'order_type' => $orderType,
@@ -567,13 +567,13 @@ class Products extends CI_Controller {
         );
         header('Content-Type: application/json');
         echo json_encode($Response);
-        
+
     }
 
     public function orderListing($order_no,$store_id,$store_token) {
         //echo $store_id;echo $order_no;exit;
-        $store_details = $this->Homemodel->get_store_details_by_store_id($store_id); 
-        $data['tax_infr'] = $this->Homemodel->get_store_tax_by_store_id($store_details->gst_or_tax); 
+        $store_details = $this->Homemodel->get_store_details_by_store_id($store_id);
+        $data['tax_infr'] = $this->Homemodel->get_store_tax_by_store_id($store_details->gst_or_tax);
         $data['reorder_link']   = base_url('website/load_orders/'.$store_token.'/'.$order_no); //echo $data['reorder_link'];
         $data['order_number'] = $order_no;
         $data['store_id'] = $store_id;
@@ -581,7 +581,7 @@ class Products extends CI_Controller {
     }
 
     public function load_site($token = NULL , $order_no = NULL) {
-        $store_details_from_token = $this->Homemodel->get_store_details_by_token($token); 
+        $store_details_from_token = $this->Homemodel->get_store_details_by_token($token);
         $store_id = $store_details_from_token->store_id; //echo $store_id;exit; //Get store id
         $secret_code = $store_details_from_token->secret_code; //Table secret code
         $is_whatsapp_enable = $this->Homemodel->isWhatsappEnableCheck($store_id); //echo $is_whatsapp_enable;exit;
@@ -597,6 +597,7 @@ class Products extends CI_Controller {
         }
     }
 
+    //MARK:- Load Products first
     public function load_orders($token = NULL , $order_no = NULL) {
 
         //echo $token;echo $order_no;exit;
@@ -608,24 +609,23 @@ class Products extends CI_Controller {
         $store_id = $store_details_from_token->store_id; //echo $store_id;exit; //Get store id
         $secret_code = $store_details_from_token->secret_code; //Table secret code
         $deliverytype= $store_details_from_token->ttype;
-      
-        if ($deliverytype == 'tbl') 
+
+        if ($deliverytype == 'tbl')
         {
             $deliverytype = 'D'; // if the table order is selected then delivery type will be D else it will be rom or DL and PK
-        } 
+        }
 
         $this->session->set_userdata('delivery_type', $deliverytype);
-        // print_r($deliverytype);
-        $this->isStoreProductAvailable($store_id);
+        //$this->isStoreProductAvailable($store_id);
         $this->session->set_userdata('store_id', $store_id);
-        
+
         $delivery_type_phone = $this->Homemodel->getDeliveryTypePhone($store_id,'D');
         $this->session->set_userdata('delivery_type_phone', $delivery_type_phone);
         $store_details = $this->Homemodel->get_store_details_by_store_id($store_id); //print_r($store_details); //Get store details
         $default_language = $store_details->store_language; //get store default language
         $data['table'] = $store_details_from_token->table_name;
         //echo $default_language;exit;
-        $data['store_informations'] = $store_details; //print_r($data['store_informations']);exit;    
+        $data['store_informations'] = $store_details; //print_r($data['store_informations']);exit;
         $data['store_selected_languages'] = $store_details->store_selected_languages; //Selected languages for displaying website
         $data['store_phone'] = $store_details->store_phone; //Selected languages for displaying website
         $country = $store_details->store_country; //echo $country;exit;
@@ -649,11 +649,12 @@ class Products extends CI_Controller {
         $data['subcategories'] = $this->Productmodel->get_subcategories(); //load all categories
         $cartData = $this->session->userdata('cart');
         $data['cartItems'] = $cartData; //print_r($data['cartItems']);
-    
+        //$data['allproducts'] = $this->Productmodel->getAllProductsByStore($store_id);//print_r($data['allproducts']);exit;
+
         $this->load->view('website/header', $data); //This is category wised data display
         $this->load->view('website/products_all', $data); //This is all products display
     }
-    
+
     public function getCurrency($country){
         $query = $this->db->get_where('countries', ['country_id' => $country]);
         $result = $query->row_array();
@@ -673,14 +674,14 @@ class Products extends CI_Controller {
         $default_language = $store_details->store_language; //get store default language
         //$data['table'] = $store_details_from_token->table_name;
         //echo $default_language;exit;
-        $data['store_informations'] = $store_details; //print_r($data['store_informations']);exit;    
+        $data['store_informations'] = $store_details; //print_r($data['store_informations']);exit;
         $data['store_selected_languages'] = $store_details->store_selected_languages; //Selected languages for displaying website
         $data['store_phone'] = $store_details->store_phone; //Selected languages for displaying website
         //print_r($data['store_selected_languages']);exit;
         $this->load->helper('language');  // Load language helper
-    
-        $this->isStoreProductAvailable($store_id);
-    
+
+        //$this->isStoreProductAvailable($store_id);
+
         if (isset($this->session->userdata['language'])) {
             $language = $this->session->userdata('language');
         } else {
@@ -698,7 +699,7 @@ class Products extends CI_Controller {
         $cartData = $this->session->userdata('cart');
         $data['cartItems'] = $cartData; //print_r($data['cartItems']);
         $data['allproducts'] = $this->Productmodel->getAllProductsByStore($store_id);
-        
+
         $this->load->view('website/header', $data); //This is category wised data display
         $this->load->view('website/shop', $data); //This is all products display
         //$this->load->view('website/products', $data); //This is category wised data display
@@ -716,14 +717,14 @@ class Products extends CI_Controller {
         }else{
             $store_id = $this->session->userdata('store_id');
         }
-        
+
         $products_by_category_active = [];
         $category_ids_order = $this->Productmodel->getAllCategoriesOrderByStore($store_id);
         foreach ($category_ids_order as $cat_order) {
-               $category_id = $cat_order['category_id']; 
+               $category_id = $cat_order['category_id'];
                $allproducts = $this->Productmodel->getAllProductsByStoreOrderByType($store_id, $category_id,$type);
                $products_by_category_active[$category_id] = $allproducts;
-        }  
+        }
         $allproducts = array_merge_recursive($products_by_category_active);
         $inactiveProducts = [];
         $activeProducts = [];
@@ -740,11 +741,11 @@ class Products extends CI_Controller {
         }
 
         // Merge the arrays
-        $mergedProducts = array_merge($inactiveProducts, $activeProducts);         
- 
-        
+        $mergedProducts = array_merge($inactiveProducts, $activeProducts);
+
+
         $cartData = $this->session->userdata('cart');
-        $cartItems = $cartData; 
+        $cartItems = $cartData;
         ?>
 <?php $key = 1; ?>
 
@@ -766,24 +767,24 @@ class Products extends CI_Controller {
                     }
                     ?>
 
-    <?php 
-                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image']; 
+    <?php
+                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image'];
                     $product_name = ($product['store_product_name_' . $language] != '') ? $product['store_product_name_' . $language] : $product['product_name_' . $language];
                     $product_desc = ($product['store_product_desc_' . $language] != '') ? $product['store_product_desc_' . $language] : $product['product_desc_' . $language];
-                    
+
                     if ($product['is_customizable'] == 0) {
                         $productRate =  $product['rate'];
                     } else {
                         $productRate =  $this->Homemodel->getCustomizeProductDefaultPrice($product['store_product_id'], $store_id );
                     }
-    
+
                     ?>
 
 
     <div class="product-grid">
         <!-- Left Column -->
         <div class="left-column">
-            <?php if ($product['product_veg_nonveg'] == 'veg'){ ?>
+            <?php if ($product['type'] == 'veg'){ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/veg.png">
             <?php }else{ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/nonveg.png">
@@ -814,23 +815,23 @@ class Products extends CI_Controller {
 
 
             <?php if($product['is_customizable'] == 1){
-    $css_class = ($product['status'] == 1) ? 'disabled-image' : ''; 
+    $css_class = ($product['status'] == 1) ? 'disabled-image' : '';
     $disabled = ($product['status'] == 1) ? 'disabled' : '';
-    
+
     //If product inactive if remark show else available soon else case quantity > 0 show else ADD
-    if ($product['status'] == 1) 
+    if ($product['status'] == 1)
     {
         $btntext = !empty($product['remarks']) ? $product['remarks'] : 'Available Soon';
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $quantity_show_class = ($customize_product_quantity > 0) ? 'add-button' : 'add-button';
-    } 
-    else 
+    }
+    else
     {
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $btntext = ($customize_product_quantity > 0) ? $customize_product_quantity : 'ADD';
         $quantity_show_class = ($customize_product_quantity > 0) ? 'quantity_visible' : 'quantity_hide';
     }
-    
+
     ?>
             <img src="<?php echo $path; ?>" data-bs-toggle="modal" data-bs-target="#productCustomize"
                 data-prodId="<?php echo $product['store_product_id']; ?>" data-quantity="<?php echo $quantity; ?>"
@@ -847,8 +848,8 @@ class Products extends CI_Controller {
                     <?php echo $disabled; ?>><?php echo $btntext; ?></button>
             </div>
             <?php }else{
-        
-        $css_class = ($product['status'] == 1) ? 'disabled-image' : ''; 
+
+        $css_class = ($product['status'] == 1) ? 'disabled-image' : '';
         $disabled = ($product['status'] == 1) ? 'disabled' : '';
         $btntext = ($product['status'] == 1) ? (!empty($product['remarks']) ? $product['remarks'] : 'Available Soon'): 'ADD'; ?>
             <img src="<?php echo $path; ?>" alt="Product Image" class="product-image <?php echo $css_class; ?>">
@@ -903,12 +904,12 @@ class Products extends CI_Controller {
 
 
 <?php
-                    
-        
+
+
     }
 
     //MARK: Get variants and addons for product
-    
+
     public function getVariantsAndAddons() {
         $product = $this->input->post('prod'); //echo $product;
         $quantity = $this->input->post('quantity'); //echo $store;
@@ -991,9 +992,9 @@ $addon_variant_total = 0;
 $variantIds = array_column($variants, 'variant_id');
 $addonIds = array_column($addons, 'product_id');
 //print_r($variantIds);print_r($addonIds);
-           
+
         }
-        
+
         ?>
 <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
 <div class=" p-3 mb-3 rounded" style="padding:0;margin:0;">
@@ -1058,7 +1059,7 @@ $addonIds = array_column($addons, 'product_id');
 
                     <div class="col-3 text-center mt-3">
                         <span class="variant-total variantName"></span>
-                        <?php 
+                        <?php
     $quantity = (float) $quantity; // Ensure it's a number
     $variant_value = isset($variant1['variant_value']) ? (float) $variant1['variant_value'] : 0; // Ensure it's a number
 
@@ -1090,8 +1091,8 @@ $addonIds = array_column($addons, 'product_id');
             <div class="variants mt-3">
                 <!-- variant loop start -->
                 <?php foreach ($addonsList as $addon){
-                    
-                    $css_class = ($addon['status'] == 1) ? 'disabled-image' : ''; 
+
+                    $css_class = ($addon['status'] == 1) ? 'disabled-image' : '';
                     $disabled = ($addon['status'] == 1) ? 'disabled' : '';
                     $btntext = ($addon['status'] == 1) ? (!empty($addon['remarks']) ? $addon['remarks'] : 'Available Soon'): 'ADD';
                     ?>
@@ -1189,7 +1190,7 @@ $addonIds = array_column($addons, 'product_id');
 <?php
 
     }
-    
+
 
     // Function to display a product in the selected language
     public function view($product_id) {
@@ -1216,7 +1217,7 @@ $addonIds = array_column($addons, 'product_id');
 
 
 
-    
+
 
     public function loadProductsCategoryFilter() { //Filter by veg and non-veg
         //$store_token = $this->session->userdata('store_token');
@@ -1228,8 +1229,8 @@ $addonIds = array_column($addons, 'product_id');
        // echo $type;exit;
 
         $products_by_category_active = [];
-        
-        $category_id = $type; 
+
+        $category_id = $type;
         $allproducts = $this->Productmodel->getAllProductsByStoreOrderByCategory($store_id, $category_id);
         $inactiveProducts = [];
         $activeProducts = [];
@@ -1245,12 +1246,12 @@ $addonIds = array_column($addons, 'product_id');
 
         // Merge the arrays
         $allproducts = array_merge($inactiveProducts, $activeProducts);
-          
+
         $cartData = $this->session->userdata('cart');
-        $cartItems = $cartData; 
-        
+        $cartItems = $cartData;
+
         // if($catname == 'All'){
-            
+
         // }
         ?>
 <input type="hidden" name="category_id" id="hidden_category_id" value="<?php echo $type; ?>">
@@ -1276,24 +1277,24 @@ $addonIds = array_column($addons, 'product_id');
                     }
                     ?>
 
-    <?php 
-                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image']; 
+    <?php
+                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image'];
                     $product_name = ($product['store_product_name_' . $language] != '') ? $product['store_product_name_' . $language] : $product['product_name_' . $language];
                     $product_desc = ($product['store_product_desc_' . $language] != '') ? $product['store_product_desc_' . $language] : $product['product_desc_' . $language];
-                    
+
                     if ($product['is_customizable'] == 0) {
                         $productRate =  $product['rate'];
                     } else {
                         $productRate =  $this->Homemodel->getCustomizeProductDefaultPrice($product['store_product_id'], $store_id );
                     }
-    
+
                     ?>
 
 
     <div class="product-grid">
         <!-- Left Column -->
         <div class="left-column">
-            <?php if ($product['product_veg_nonveg'] == 'veg'){ ?>
+            <?php if ($product['type'] == 'veg'){ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/veg.png">
             <?php }else{ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/nonveg.png">
@@ -1323,16 +1324,16 @@ $addonIds = array_column($addons, 'product_id');
         <div class="right-column">
 
             <?php if($product['is_customizable'] == 1){
-    $css_class = ($product['status'] == 1) ? 'disabled-image' : ''; 
+    $css_class = ($product['status'] == 1) ? 'disabled-image' : '';
     $disabled = ($product['status'] == 1) ? 'disabled' : '';
     //If product inactive if remark show else available soon else case quantity > 0 show else ADD
-    if ($product['status'] == 1) 
+    if ($product['status'] == 1)
     {
         $btntext = !empty($product['remarks']) ? $product['remarks'] : 'Available Soon';
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $quantity_show_class = ($customize_product_quantity > 0) ? 'add-button' : 'add-button';
-    } 
-    else 
+    }
+    else
     {
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $btntext = ($customize_product_quantity > 0) ? $customize_product_quantity : 'ADD';
@@ -1354,8 +1355,8 @@ $addonIds = array_column($addons, 'product_id');
                     <?php echo $disabled; ?>><?php echo $btntext; ?></button>
             </div>
             <?php }else{
-        $css_class = ($product['status'] == 1) ? 'disabled-image' : ''; 
-        $disabled = ($product['status'] == 1) ? 'disabled' : ''; 
+        $css_class = ($product['status'] == 1) ? 'disabled-image' : '';
+        $disabled = ($product['status'] == 1) ? 'disabled' : '';
         ?>
             <img src="<?php echo $path; ?>" alt="Product Image" class="product-image <?php echo $css_class; ?>">
             <!-- Add button -->
@@ -1393,9 +1394,9 @@ $addonIds = array_column($addons, 'product_id');
 
 
 <?php
-        
+
     }
-    
+
     public function loadProductssubCategoryFilter() { //Filter by veg and non-veg
         //$store_token = $this->session->userdata('store_token');
        // $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
@@ -1406,17 +1407,17 @@ $addonIds = array_column($addons, 'product_id');
         $catname = $this->input->post('catname');
         $category_ids_order = $this->Productmodel->getAllCategoriesOrderByStore($store_id);//print_r($category_ids_order);
         $cartData = $this->session->userdata('cart');
-        $cartItems = $cartData; 
-        
+        $cartItems = $cartData;
+
         $products_by_category_active = [];
         $category_ids_order = $this->Productmodel->getAllCategoriesOrderByStore($store_id);
         foreach ($category_ids_order as $cat_order) {
-               $category_id = $cat_order['category_id']; 
+               $category_id = $cat_order['category_id'];
                $allproducts = $this->Productmodel->getAllProductsByStoreOrderByType($store_id, $category_id,$type);
                $products_by_category_active[$category_id] = $allproducts;
-        }  
+        }
         $allproducts = array_merge_recursive($products_by_category_active);
-        $inactiveProducts = [];           
+        $inactiveProducts = [];
         $activeProducts = [];
 
         // Separate products by status
@@ -1458,17 +1459,17 @@ $addonIds = array_column($addons, 'product_id');
                     ?>
 
 
-    <?php 
-                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image']; 
+    <?php
+                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image'];
                     $product_name = ($product['store_product_name_' . $language] != '') ? $product['store_product_name_' . $language] : $product['product_name_' . $language];
                     $product_desc = ($product['store_product_desc_' . $language] != '') ? $product['store_product_desc_' . $language] : $product['product_desc_' . $language];
-                    
+
                     if ($product['is_customizable'] == 0) {
                         $productRate =  $product['rate'];
                     } else {
                         $productRate =  $this->Homemodel->getCustomizeProductDefaultPrice($product['store_product_id'], $store_id );
                     }
-    
+
                     ?>
 
 
@@ -1506,7 +1507,7 @@ $addonIds = array_column($addons, 'product_id');
 
             <?php if($product['is_customizable'] == 1){
         $stock = $this->Ordermodel->getCurrentStock($product['store_product_id'], date('Y-m-d'), $store_id);
-        $css_class = ($product['is_active'] == 1 || $stock <= 0) ? 'disabled-image' : ''; 
+        $css_class = ($product['is_active'] == 1 || $stock <= 0) ? 'disabled-image' : '';
         $disabled = ($product['is_active'] == 1 || $stock <= 0) ? 'disabled' : ''; ?>
             <img src="<?php echo $path; ?>" data-bs-toggle="modal" data-bs-target="#productCustomize"
                 data-prodId="<?php echo $product['store_product_id']; ?>" data-quantity="<?php echo $quantity; ?>"
@@ -1559,11 +1560,11 @@ $addonIds = array_column($addons, 'product_id');
 
 
 <?php
-        
+
     }
 
-    
-        
+
+
     public function loadProductsTypeFilter() { //Filter by veg and non-veg
         //$store_token = $this->session->userdata('store_token');
        // $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
@@ -1575,10 +1576,10 @@ $addonIds = array_column($addons, 'product_id');
         $products_by_category_active = [];
         $category_ids_order = $this->Productmodel->getAllCategoriesOrderByStore($store_id);
         foreach ($category_ids_order as $cat_order) {
-               $category_id = $cat_order['category_id']; 
+               $category_id = $cat_order['category_id'];
                $allproducts = $this->Productmodel->getAllProductsByStoreOrderByType($store_id, $category_id,$type);
                $products_by_category_active[$category_id] = $allproducts;
-        }  
+        }
         $allproducts = array_merge_recursive($products_by_category_active);
         $inactiveProducts = [];
         $activeProducts = [];
@@ -1596,7 +1597,7 @@ $addonIds = array_column($addons, 'product_id');
         $mergedProducts = array_merge($inactiveProducts, $activeProducts);
 
         $cartData = $this->session->userdata('cart');
-        $cartItems = $cartData; 
+        $cartItems = $cartData;
         ?>
 <?php $key = 1; ?>
 
@@ -1621,24 +1622,24 @@ $addonIds = array_column($addons, 'product_id');
                     }
                     ?>
 
-    <?php 
-                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image']; 
+    <?php
+                    $path = ($product['store_image'] != '') ? site_url() . "uploads/product/" . $product['store_image'] : site_url() . "uploads/product/" . $product['image'];
                     $product_name = ($product['store_product_name_' . $language] != '') ? $product['store_product_name_' . $language] : $product['product_name_' . $language];
                     $product_desc = ($product['store_product_desc_' . $language] != '') ? $product['store_product_desc_' . $language] : $product['product_desc_' . $language];
-                    
+
                     if ($product['is_customizable'] == 0) {
                         $productRate =  $product['rate'];
                     } else {
                         $productRate =  $this->Homemodel->getCustomizeProductDefaultPrice($product['store_product_id'], $store_id );
                     }
-    
+
                     ?>
 
 
     <div class="product-grid">
         <!-- Left Column -->
         <div class="left-column">
-            <?php if ($product['product_veg_nonveg'] == 'veg'){ ?>
+            <?php if ($product['type'] == 'veg'){ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/veg.png">
             <?php }else{ ?>
             <img class="veg" width="10px" src="<?php echo base_url(); ?>/assets/website/images/nonveg.png">
@@ -1665,16 +1666,16 @@ $addonIds = array_column($addons, 'product_id');
         <div class="right-column">
 
             <?php if($product['is_customizable'] == 1){
-    $css_class = ($product['status'] == 1 ) ? 'disabled-image' : ''; 
+    $css_class = ($product['status'] == 1 ) ? 'disabled-image' : '';
     $disabled = ($product['status'] == 1) ? 'disabled' : '';
     //If product inactive if remark show else available soon else case quantity > 0 show else ADD
-    if ($product['status'] == 1) 
+    if ($product['status'] == 1)
     {
         $btntext = !empty($product['remarks']) ? $product['remarks'] : 'Available Soon';
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $quantity_show_class = ($customize_product_quantity > 0) ? 'add-button' : 'add-button';
-    } 
-    else 
+    }
+    else
     {
         $customize_product_quantity = $this->Productmodel->get_customize_product_quantity($cartData , $product['store_product_id'] );
         $btntext = ($customize_product_quantity > 0) ? $customize_product_quantity : 'ADD';
@@ -1696,7 +1697,7 @@ $addonIds = array_column($addons, 'product_id');
                     <?php echo $disabled; ?>><?php echo $btntext; ?></button>
             </div>
             <?php }else{
-        $css_class = ($product['status'] == 1 ) ? 'disabled-image' : ''; 
+        $css_class = ($product['status'] == 1 ) ? 'disabled-image' : '';
         $disabled = ($product['status'] == 1 ) ? 'disabled' : '';
         ?>
             <img src="<?php echo $path; ?>" alt="Product Image" class="product-image <?php echo $css_class; ?>">
@@ -1734,13 +1735,13 @@ $addonIds = array_column($addons, 'product_id');
 
 
 <?php
-  
-    }
-    
-    
 
-    
-    
+    }
+
+
+
+
+
      public function clear_session() {
         $this->session->sess_destroy();
     }
@@ -1748,7 +1749,7 @@ $addonIds = array_column($addons, 'product_id');
     public function isStoreProductAvailable($store_id) {
         $today = date('Y-m-d');
         $current_time = date('H:i:s');//exit;
-        $this->db->select('store_opening_time,store_closing_time,today_opening_time,today_closing_time,is_order_close');
+        $this->db->select('store_opening_time,store_closing_time,is_order_close');
         $this->db->from('store');
         $this->db->where('store_id', $store_id);
         $query = $this->db->get();
@@ -1770,21 +1771,21 @@ $addonIds = array_column($addons, 'product_id');
             //echo "nh";exit;
             $this->Homemodel->changeStoreProductStatusInactive($store_id,'0');
         }
-        
-        
-        // if($current_time >= $opening_time && $current_time <= $closing_time ) 
-        if($current_time >= $opening_time && $row->is_order_close == 1) 
+
+
+        // if($current_time >= $opening_time && $current_time <= $closing_time )
+        if($current_time >= $opening_time && $row->is_order_close == 1)
         {
            $this->Homemodel->changeStoreProductStatusInactive($store_id,'0');
-        } 
-        else 
+        }
+        else
         {
             //echo 'Store is closed';
             $this->Homemodel->changeStoreProductStatusInactive($store_id, '1');
         }
 
-        
+
     }
-    
+
 }
 ?>

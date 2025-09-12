@@ -2,11 +2,11 @@
 <!-- ============================================================== -->
 <div class="container">
     <div class="page-content p-2">
-    <div class="container">
+    <div class="container p-0">
             <div class="row">
                 <div class="col-12">
                 <div class="add-new-dish-list-combo">
-              
+
                 <a  href="<?php echo base_url('admin/settings'); ?>" class="add-new-dish-btn btn1">
                     <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
 " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
@@ -25,7 +25,7 @@
                 $count = 1;
                 foreach($pendingstores as $val){
 
-                  
+
  ?>
             <div class="product-list__item">
                 <div class="product-list__item-image-and-details">
@@ -36,22 +36,22 @@
                             <?php echo ($val['store_disp_name'] != '') ? $val['store_disp_name'] : $val['store_disp_name']; ?>
                         </h3>
                         <p class="product-list__item-price">
-                            <?php 
-                                echo $val['store_address']            
+                            <?php
+                                echo $val['store_address']
                             ?></p>
 
 
 
-                       
+
                         <p class="product-list__item-status text-capitalize">
                             <?php echo $val['store_phone']; ?>
                         </p>
                         <div class="product-list__item-details-availability-stock">
-                            
+
                             <div class="product-list__item-stock d-none">
                                 <!-- <div class="product-list__item-stock-label">active</div> -->
                                 <div class="product-list__item-stock-count d-none">
-                               
+
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="product-list__item-buttons-block">
                     <div class="product-list__item-buttons-block-one">
-                    
+
                           <input type="hidden" name="id" value="<?php echo $val['store_id']; ?>">
                         <a href="<?php echo base_url('admin/store/editstore/'.$val['store_id']); ?>"
                             class="product-list__item-buttons-block-btn product-list__item-buttons-block-add-new-stock-btn btn6 open-modal" data-id="<?php echo $val['store_id']; ?>"
@@ -69,29 +69,29 @@
                                 src="<?php echo base_url(); ?>assets/admin/images/edit-dish-icon.svg" alt="add stock"
                                 width="23" height="24"> View Store
                             </a>
-                                
 
 
 
-                        <a href=""
+
+                        <!-- <a href=""
                             class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-remove-stock-btn delete_store"
                             data-bs-toggle="modal" data-id="<?php echo $val['store_id']; ?>"
                             data-bs-target="#removestock"><img class="product-list__item-button-img"
                                 src="<?php echo base_url(); ?>assets/admin/images/remove-stock-icon.svg"
-                                alt="remove stock" width="23" height="22">Remove Store</a>
+                                alt="remove stock" width="23" height="22">Remove Store</a> -->
                     </div>
                     <div class="product-list__item-buttons-block-two">
-                        
-                        <a href="#"
+
+                        <!-- <a href="#"
                             class="product-list__item-buttons-block-btn btn6 product-list__item-buttons-block-next-available-btn approve"
                            data-id="<?php echo $val['store_id']; ?>"
                           ><img class="product-list__item-button-img"
                                 src="https://img.icons8.com/fluency/30/ok--v1.png"
-                                alt="next available button stock" width="23" height="24">Approve Store</a>
+                                alt="next available button stock" width="23" height="24">Approve Store</a> -->
 
-                                
-                       
-                        
+
+
+
                     </div>
 
 
@@ -104,7 +104,7 @@
 
         </div>
 
-           
+
 
 
             <!-- Modal for detailed product assign -->
@@ -141,8 +141,8 @@
                     <!-- <form class="row mt-0 mb-0" id="edit_save_country" method="post" enctype="multipart/form-data"> -->
                  <input type="hidden" id="qr_code_id" >
                  <iframe id="table_iframe" height="600px" width="100%">
-                 
-                 
+
+
 
                  </iframe>
 
@@ -152,7 +152,7 @@
                     <!-- </form> -->
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -172,4 +172,3 @@
 
 
 
-      

@@ -23,10 +23,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-//$config['base_url'] = 'https://qr-experts.com/';
- //$config['base_url'] = 'https://qr-experts.com/emigo/';
-//  $config['base_url'] = 'https://qr-experts.com/emigo-restaurant-application/';
-$config['base_url'] = 'http://localhost/emigo-restaurant-application/';
+
+
+$host = $_SERVER['HTTP_HOST'];
+
+if (in_array($host, ['localhost', '127.0.0.1', '[::1]'])) {
+    $config['base_url'] = 'http://localhost/emigo-restaurant-application/';
+}
+elseif ($host == 'qr-experts.com') {
+    $config['base_url'] = 'https://qr-experts.com/emigo-restaurant-application/';
+}
+
 
 
 /*

@@ -22,6 +22,7 @@
 .errormsg {
   color: red;
   text-align: left;
+  font-size: 13px;
 }
 
 .responsive-h4 {
@@ -433,7 +434,7 @@ td.icon-cell {
   .responsive {
     margin-bottom: 8px;
   }
-  
+
     .auth-logo img {
     width: 200px;
 }
@@ -555,7 +556,7 @@ td.icon-cell {
 }
 
 .order-items_popup{
-      
+
     font-size: 0.960rem;
     border: 1px solid #e5e5e5;
     display: inline-flex;
@@ -565,5 +566,5 @@ td.icon-cell {
     background: #f7f7f7;
     padding-left: 0.781rem;
     padding-right: 0.781rem;
-   
+
 }

@@ -4,7 +4,7 @@
         <div class="">
             <div class="page-content p-2">
 
-                
+
 
 
             <div class="container">
@@ -26,9 +26,9 @@
             </div>
                     <!-- end page title -->
 
-                    
-                    
-                    <!-- <?php 
+
+
+                    <!-- <?php
                 if(isset($taxDet[0]['tax_id'])) {
                     $path=base_url().'admin/tax/edit';
                     $button_text='Update';
@@ -88,26 +88,26 @@
                        </div>
 
 
-                       
+
                        <div class="col-md-3">
                            <div class="mb-4">
                                <label class="form-label" for="default-input">&nbsp;</label><br>
                                <button class="btn btn-success w-md" type="submit" name="<?php echo $button_name; ?>"><?php echo $button_text; ?></button>
                            </div>
                        </div>
-                       
+
 </form> -->
-                   
+
                    <!-- Section 2 -->
-   
-               
-               
-                   
-               
-               
+
+
+
+
+
+
                </div>
 
-                
+
 
 
 
@@ -116,14 +116,14 @@
                     <div class="alert alert-success dark" role="alert">
                         <?php echo $this->session->flashdata('success');$this->session->unset_userdata('success'); ?>
                     </div><?php } ?>
-                    
+
                     <?php if($this->session->flashdata('error')){ ?>
                     <div class="alert alert-danger dark" role="alert">
                         <?php echo $this->session->flashdata('error');$this->session->unset_userdata('error'); ?>
                     </div><?php } ?> -->
 
 
-                    
+
                         <div class="container">
                             <div class="table-responsive-sm">
                             <table id="example" class="table table-bordered mt-3" style="width:100%">
@@ -149,27 +149,27 @@
                 <td><?php echo $val['tax_rate'];?></td>
                 <td class="pb-0 pt-0 d-flex">
                     <!-- <form class="m-0"> -->
-                                      <input type="hidden" name="id" value="<?php echo $val['tax_id']; ?>"> 
+                                      <input type="hidden" name="id" value="<?php echo $val['tax_id']; ?>">
                                         <a class="btn tblEditBtn  pl-0 pr-0 edit_tax" id="" type="submit" data-bs-toggle="tooltip" data-id="<?php echo $val['tax_id']; ?>" data-bs-original-title="Edit Tax"><i class="fa fa-edit"></i></a>
                     <!-- </form> -->
-                    
+
                     <a class="btn tblDelBtn pl-0 pr-0 delete_tax" type="button" data-bs-toggle="modal" data-id="<?php echo $val['tax_id']; ?>" data-bs-original-title="Delete Tax" data-bs-target="#exampleModal"><i class="fa fa-trash"></i></a>
-                    
+
 
                     </td>
             </tr>
             <?php $count++; }}
-            
+
             else{
                 echo '<tr><td colspan="5" class="text-center">No Tax Found</td></tr>';
             }
-            
+
             ?>
 
-           
-            
+
+
         </tbody>
-    </table>    
+    </table>
                             </div>
                         </div>
                     </div>
@@ -256,16 +256,16 @@
 
                             </div>
                         </div>
-                        
+
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="add_tax">Save</button>
+                                <button class="btn btn1 w-md" type="button" id="add_tax">Save</button>
                             </div>
                         </div>
                     </form>
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -294,13 +294,13 @@
                                 <select name="country_name" class="form-select" id="country_name">
                                     <option value="">select country</option>
                                     <?php foreach ($countries as $value) { ?>
-                                <option value="<?php echo $value['country_id']; ?>" 
+                                <option value="<?php echo $value['country_id']; ?>"
                                     <?php if (isset($selected_country_id) && $selected_country_id == $value['country_id']) echo 'selected'; ?>>
                                     <?php echo $value['name']; ?>
                                 </option>
                                     <?php } ?>
                                 </select>
-                              
+
                                 <span class="error errormsg mt-2" id="tax_edit_name_error"></span>
                                 <div id="general_error" class="error errormsg"></div>
                             </div>
@@ -319,7 +319,7 @@
                             </div>
                         </div>
 
-                      
+
 
 
                         <div class="col-md-4">
@@ -331,17 +331,17 @@
 
                             </div>
                         </div>
-                        
+
 
                         <div class="col-md-12">
                             <div class="justify-content-center" style="float: right;">
-                                <button class="btn btn-primary w-md" type="button" id="save_tax">Update</button>
+                                <button class="btn btn1 w-md" type="button" id="save_tax">Update</button>
                             </div>
                         </div>
                     </form>
                 </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -351,30 +351,6 @@
     </div>
 
     <!-- edit country -->
-
-
-
-
-
-
-        <!-- success modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="emigo-modal__heading" id="exampleModalLabel"></h1>
-                <button type="button" class="emigo-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary reload-close-btn" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- success modal -->
 
 
     <!-- delete user -->
@@ -402,7 +378,7 @@
 <!-- delete user -->
 
 
-  
+
 
 
 

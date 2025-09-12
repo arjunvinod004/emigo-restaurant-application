@@ -18,7 +18,7 @@ class Reports extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -38,19 +38,19 @@ class Reports extends CI_Controller {
 		$method = $this->router->fetch_method();   // Gets the current method name
 		$data['controller'] = $controller;
 		$data['store_id'] = $this->session->userdata('logged_in_store_id');
-		
+
 		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
-		
+
 		$this->load->model('website/Homemodel');
-		$store_details = $this->Homemodel->get_store_details_by_store_id($data['store_id']);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+		$store_details = $this->Commonmodel->get_store_details_by_id($data['store_id']);
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
 		$data['store_logo'] = $store_details->store_logo_image;
-		
+
 		if($role_id == 1 || $role_id == 2) { //Admin and Shop owner
 			$this->load->view('owner/includes/header',$data);
 			$this->load->view('owner/includes/owner-dashboard',$data);
@@ -77,10 +77,10 @@ class Reports extends CI_Controller {
 		$method = $this->router->fetch_method();   // Gets the current method name
 		$data['controller'] = $controller;
 		$data['store_id'] = $this->session->userdata('logged_in_store_id');
-		
+
 		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
-		
+
 		$this->load->model('website/Homemodel');
 		$store_details = $this->Homemodel->get_store_details_by_store_id($data['store_id']);
         $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
@@ -89,12 +89,12 @@ class Reports extends CI_Controller {
         $data['support_no'] = $support_details->support_no;
         $data['support_email'] = $support_details->support_email;
 		$data['store_logo'] = $store_details->store_logo_image;
-		
+
 			$this->load->view('owner/includes/header',$data);
 			$this->load->view('owner/includes/supplier-dashboard',$data);
 			$this->load->view('owner/order/supplier-reports');
 			$this->load->view('owner/includes/footer');
-		
+
 	}
 
 }

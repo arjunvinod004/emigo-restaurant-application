@@ -1,36 +1,9 @@
-//1. Get current date and time in owner dashboard
-//2. Change time from settings
-//3. Add holiday from owner dashboard
-//4. Fetch holidays and delete a holiday
-//5. Add user from owner dashboard
-//6.Form submission add user from owner dashboard
-//7. Password change from owner dashboard
-//8. Edit user from owner dashboard
-//9. Delete user from owner dashboard
-//10. Report from owner dashboard
-//11. Add stock from owner dashboard
-//12. Remove stock from owner dashboard
-//13. Product details tab click functions
-//14. Edit dish popup tab.Get default product tab details 
-//15.Edit dish popup tab.Get default product tab details
-//16. Save product tab form data
-//17.Prevent modal close outside click
-//18. Search product on keyup frm owner dashboard
-//19. Next available time updation
-//20. Scroll top jquery
-//21. Change Quck availability from order dashboard
-//22. Change table secret code and list tables from settings
-//23. Clear stock from settings page.
-//24. Close order from settings page
-//25. Enable or Disable KOT print from settings page
-//26. Asigining table to users from settings page
-//27. Report from supplier dashboard
-//28. Delete product from admin dashboard
+//MARK: - Import
+import { showPopupAlert,confirmDelete,enable_disable_confirmation } from './common.js';
 
 $(document).ready(function () {
 
-    var base_url = 'http://localhost/emigo-restaurant-application/';
-    //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+    var base_url = $('#base_url').val();
 
     //new DataTable('#example');
     $(document).on('click', '.emigo-close-btn', function () {
@@ -54,7 +27,82 @@ $(document).ready(function () {
         return false;
     });
 
-    //21. Change Quck availability from order dashboard
+     //MARK: - Add stock
+    $(document).on('click', '.add_stock', function () {
+
+        $('#addstock').on('shown.bs.modal', function () {
+            $('#stocks').val('');
+            $('#stocks').focus();
+        });
+
+        var id = $(this).attr('data-id');
+        $('#product_id').val(id);
+        $('#addStockBtn').click(function () {
+            var id = $(this).attr('data-id');
+            $('#addstocks').val(id);
+            let formData = new FormData($('#productstock')[
+                0]);
+            $.ajax({
+                url: base_url + "owner/Product/addstock",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        showPopupAlert('success', 'Stock updated...', true);
+                    } else if (response.errors.pu_qty) {
+                        $('#addstocks_error').html(response.errors.pu_qty);
+                    }
+                },
+
+            });
+        })
+    })
+
+    //MARK:- Remove Stock
+    $(document).on('click', '.remove_stock', function () {
+
+        $('#removestock').on('shown.bs.modal', function () {
+            $('#remove_stocks').val('');
+            $('#removestocks_error').html('');
+            $('#remove_stocks').focus();
+        });
+
+        var id = $(this).attr('data-id');
+        $('#product_id_remove').val(id);
+        $('#removeStockBtn').click(function () {
+            let formData = new FormData($('#removesstock')[
+                0]);
+            $.ajax({
+                url: base_url + "owner/Product/removestock",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showPopupAlert('success', 'Stock updated...', true);
+                    } else if (response.errors.sl_qty) {
+                        $('#removestocks_error').html(response.errors.sl_qty).show();
+                    }
+                    else if (response.errors.message) {
+                        $('#removestocks_error').html(response.errors.message).show();
+                    } else {
+                        $('#remove_stocks').val('');
+                        $('#removestock').modal('hide');
+                        $('#removestocks_error').html('');
+                    }
+                },
+            })
+        })
+    })
+
+    //MARK: - Change Availability
+    var isAvailable, productID;
     $(document).on('change', '.change_availability', function () {
         isAvailable = $(this).val();
         productID = $(this).data('id');
@@ -62,9 +110,8 @@ $(document).ready(function () {
     });
 
     $('#confirmStatusChange').click(function () {
-        //alert(isAvailable); alert(productID);
         $.ajax({
-            url: base_url + "owner/Product/changeProductAvailability", // Correct endpoint
+            url: base_url + "owner/Product/changeProductAvailability",
             type: 'POST',
             data: {
                 is_active: isAvailable,
@@ -79,6 +126,436 @@ $(document).ready(function () {
     $('#cancelStatusChange').click(function () {
         location.reload();
     });
+
+
+    //MARK: - Store product detail popup
+    $(document).on('click', '.store_product_details', function () {
+        $("#productForm").show();
+        $("#iframe_body").hide();
+        var id = $(this).attr('data-id');
+        var isCustomizable = $(this).attr('data-isCustomizable'); //alert(isCustomizable);
+        if (isCustomizable == 1) {
+            $(".product_rate").addClass("d-none");
+            $(".product_rate_label").addClass("d-none");
+            $(".isCustomize").removeClass("d-none");
+        } else {
+            $(".product_rate").removeClass("d-none");
+            $(".product_rate_label").removeClass("d-none");
+            $(".isCustomize").addClass("d-none");
+
+        }
+        $('#hiddenField').val(id);
+        $('#isCustomizable').val(isCustomizable);
+        $('#product_id_new').val(id);
+        $.ajax({
+            url: base_url + "owner/Product/getDescriptions",
+            type: 'POST',
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                $('#store_is_customisable').val(response.data
+                    .customisable);
+                    $('#is_addon').val(response.data.is_addon);
+                    $('#type').val(response.data.type);
+                $('#store_product_rate').val(response.data
+                    .rate);
+                $('#store_product_name_ma').val(response.data
+                    .malayalam_name);
+                $('#store_product_name_en').val(response.data
+                    .english_name);
+                $('#store_product_name_hi').val(response.data
+                    .hindi_name);
+                $('#store_product_name_ar').val(response.data
+                    .arabic_name);
+                $('#description_malayalam').val(response.data
+                    .malayalam_desc);
+                $('#description_english').val(response.data
+                    .english_desc);
+                $('#description_hindi').val(response.data.hindi_desc);
+                $('#description_arabic').val(response.data.arabic_desc);
+
+            },
+            error: function () {
+                alert('An error occurred while fetching data.');
+            }
+        });
+    });
+
+    //MARK: - Store product Tab click
+    $(document).on('click', '.store_product', function () {
+        $("#productForm").show();
+        $("#iframe_body").hide();
+        var id = $('#hiddenField').val();
+        var isCustomizable = $('#isCustomizable').val();
+        if (isCustomizable == 0) {
+            $(".isCustomize").addClass("d-none");
+        } else {
+            $(".isCustomize").removeClass("d-none");
+        }
+        $('#hiddenField').val(id);
+        $('#product_id_new').val(id);
+        $.ajax({
+            url: base_url + "owner/Product/getDescriptions",
+            type: 'POST',
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            success: function (response) {
+                $('#store_product_rate').val(response.data
+                    .rate);
+                $('#store_product_name_ma').val(response.data
+                    .malayalam_name);
+                $('#store_product_name_en').val(response.data
+                    .english_name);
+                $('#store_product_name_hi').val(response.data
+                    .hindi_name);
+                $('#store_product_name_ar').val(response.data
+                    .arabic_name);
+                $('#description_malayalam').val(response.data
+                    .malayalam_desc);
+                $('#description_english').val(response.data
+                    .english_desc);
+                $('#description_hindi').val(response.data.hindi_desc);
+                $('#description_arabic').val(response.data.arabic_desc);
+
+            },
+            error: function () {
+                alert('An error occurred while fetching data.');
+            }
+        });
+    });
+
+
+    //MARK: - Update product details
+    $('#saveProduct').click(function () {
+        let formData = new FormData($('#productForm')[
+            0]); // Capture the form data, including files
+        //alert(formData);
+        $.ajax({
+            url: base_url + "owner/Product/changeDescriptions", // URL to the controller method
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            processData: false, // Prevent jQuery from processing the data
+            contentType: false, // Prevent jQuery from setting the Content-Type header
+            success: function (response) {
+                console.log(response);
+
+                if (response.errors) {
+                    if (response.errors.description_malayalam) {
+                        $('#description_malayalam_error').html(response.errors
+                            .description_malayalam);
+                    } else if (response.errors.description_english) {
+                        $('#description_english_error').html(response.errors
+                            .description_english);
+                    } else if (response.errors.description_hindi) {
+                        $('#description_hindi_error').html(response.errors
+                            .description_hindi);
+                    } else if (response.errors.description_arabic) {
+                        $('#description_arabic_error').html(response.errors
+                            .description_arabic);
+                    }
+                } else {
+                    showPopupAlert('success', 'Product details updated...', true);
+                }
+            },
+            error: function (xhr) {
+                $('#response').html('<p>An error occurred: ' + xhr
+                    .responseText +
+                    '</p>');
+            }
+        });
+    });
+
+
+    //MARK: Search product on keyup
+    $('#search_product').on('keyup', function () {
+        var search = $(this).val(); //alert(search);
+        $.ajax({
+            url: base_url + "owner/Product/searchProductOnKeyUp",
+            type: 'GET', // HTTP method (can be POST if needed)
+            data: {
+                search: search
+            }, // Data sent to the controller
+            success: function (response) {
+                console.log(response); // Log the response for debugging
+                $('#search_result_container').html(response); // Update the HTML content of a container
+            },
+            error: function (xhr, status, error) {
+                console.error('Error: ' + error);
+            }
+        })
+    })
+
+    $('#product-search__button').on('keyup', function () {
+        var search = $(this).val(); //alert(search);
+        $.ajax({
+            url: base_url + "owner/Product/searchProductOnKeyUp",
+            type: 'GET', // HTTP method (can be POST if needed)
+            data: {
+                search: search
+            }, // Data sent to the controller
+            success: function (response) {
+                console.log(response); // Log the response for debugging
+                $('#search_result_container').html(response); // Update the HTML content of a container
+            },
+            error: function (xhr, status, error) {
+                console.error('Error: ' + error);
+            }
+        })
+    })
+
+    //MARK:- Delete product.
+    $('.delete_store_product').click(function () {
+        $('#Edit-dish').modal('hide');
+        productID = $('#hiddenField').val();
+        $('#confirmDeleteProduct').modal('show');
+    });
+
+    $('#confirmDeleteProductbtn').click(function () {
+        $.ajax({
+            url: base_url + "owner/stock/delete_product", // Correct endpoint
+            data: { product_id: productID },
+            type: 'POST',
+            dataType: 'json',
+            success: function (response) {
+                $('#confirmDeleteProduct').modal('hide');
+                location.reload();
+            }
+        });
+    });
+
+    //MARK: Edit dish and load variants, addons, recipes, photos, combo
+    $('.editProduct').click(function () {
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/product/load_variants/' + product_id;
+    });
+
+    $('.addVariant').click(function () {
+        $("#iframe_body").show();
+        $("#productForm").hide();
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/product/load_variants/' + product_id;
+    });
+
+    $('.addAddons').click(function () {
+        $("#iframe_body").show();
+        $("#productForm").hide();
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/product/load_addons/' + product_id;
+    });
+
+    $('.addRecipe').click(function () {
+        $("#iframe_body").show();
+        $("#productForm").hide();
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/product/load_recipes/' + product_id;
+    });
+
+    $('.addPhotos').click(function () {
+        $("#iframe_body").show();
+        $("#productForm").hide();
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/product/load_images/' + product_id;
+    });
+
+    $('.listCombo').click(function () {
+        $("#iframe_body").show();
+        $("#productForm").hide();
+        var product_id = $('#hiddenField').val();
+        document.getElementById('iframe_body').src = base_url + 'owner/combo/load_combo/' + product_id;
+    });
+
+    //MARK: - Set default image
+    $('.set_default').click(function() {
+        alert(      )
+            var image = $(this).data('image');
+            var store_product_id = $(this).data('id'); //alert(image);alert(id);
+            $.ajax({
+                url: base_url + "owner/Product/set_default_image",
+                method: 'POST',
+                data: {
+                    image: image,
+                    store_product_id: store_product_id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        var modalWindow = window.top.document.querySelector(".emigo-modal");
+                        if (modalWindow) {
+                            modalWindow.style.display = "none";
+                            if (window.top !== window.self) {
+                                window.top.location.reload();
+                            } else {
+                                location.reload();
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        //MARK: - Upload new image
+        $('#imageUpload').on('change', function() {
+            const formData = new FormData();
+            const store_product_id = $('#store_product_id').val();
+            formData.append('image', this.files[0]); // Appending the image file
+            formData.append('id', store_product_id);
+            $.ajax({
+                url: base_url + "owner/Product/upload_new_image",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(response) {
+                    //alert(response);
+                    if (response.status === 'success') {
+                        var modalWindow = window.top.document.querySelector(".emigo-modal");
+                        if (modalWindow) {
+                            modalWindow.style.display = "none";
+                            if (window.top !== window.self) {
+                                window.top.location.reload();
+                            } else {
+                                location.reload();
+                            }
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+
+        //MARK: - Update variants
+        $('#update_variants').on('click', function () {
+        let store_product_id = $('#store_product_id').val();
+        let taxRate = $('#taxRate').val();
+
+        let variants = [];
+        $('.variant_checkbox').each(function () {
+            let variant_id = $(this).data('variant-id');
+            let checked = $(this).is(':checked') ? 1 : 0;
+            let rate = $('.rate[data-variant-id="'+variant_id+'"]').val();
+            let is_default = $('.is_default[data-variant-id="'+variant_id+'"]').is(':checked') ? 1 : 0;
+
+            variants.push({
+                variant_id: variant_id,
+                checked: checked,
+                rate: rate,
+                is_default: is_default
+            });
+        });
+
+
+        $.ajax({
+            url: base_url + "owner/Product/updateVariants",
+            type: "POST",
+            data: {
+                store_product_id: store_product_id,
+                taxRate: taxRate,
+                variants: variants
+            },
+            success: function (res) {
+                showPopupAlert('success', 'Variants updated successfully!', true);
+            }
+        });
+    });
+
+    $(document).on('change', '.is_default', function () {
+        $('.is_default').not(this).prop('checked', false);
+    });
+
+    $(document).on("change", ".variant_checkbox", function () {
+        updateVariantValues();
+    });
+
+    function updateVariantValues() {
+        // Check which variants are selected
+        let hasQuarter = $('.variant_checkbox[data-variant-id="4"]').is(':checked');
+        let hasHalf    = $('.variant_checkbox[data-variant-id="3"]').is(':checked');
+        let hasFull    = $('.variant_checkbox[data-variant-id="2"]').is(':checked');
+
+        let quarterVal = 0, halfVal = 0, fullVal = 0;
+
+        if (hasQuarter && hasHalf && hasFull) {
+            quarterVal = 1;
+            halfVal = 2;
+            fullVal = 4;
+        } else if (hasQuarter && hasHalf) {
+            quarterVal = 1;
+            halfVal = 2;
+            fullVal = 0;
+        } else if (hasHalf && hasFull) {
+            quarterVal = 0;
+            halfVal = 1;
+            fullVal = 2;
+        } else if (hasFull) {
+            quarterVal = 0;
+            halfVal = 0;
+            fullVal = 1;
+        }
+
+        // Update inputs
+        $('.rate[data-variant-id="4"]').closest('tr').find('input[name="variant_value"]').val(quarterVal);
+        $('.rate[data-variant-id="3"]').closest('tr').find('input[name="variant_value"]').val(halfVal);
+        $('.rate[data-variant-id="2"]').closest('tr').find('input[name="variant_value"]').val(fullVal);
+    }
+
+    //MARK: - Update addons
+    $('#update_addons').on('click', function () {
+        //alert('clicked');
+        let store_product_id = $('#store_product_id').val();
+
+        let addons = [];
+        $('.addon_checkbox').each(function () {
+            let addon_id = $(this).data('addon-id');
+            let checked = $(this).is(':checked') ? 1 : 0; // convert to 1/0
+
+            addons.push({
+                addon_id: addon_id,
+                checked: checked
+            });
+        });
+
+        $.ajax({
+            url: base_url + "owner/Product/updateAddons",
+            type: "POST",
+            data: {
+                store_product_id: store_product_id,
+                addons: addons
+            },
+            success: function (res) {
+                showPopupAlert('success', 'Addons updated successfully!', true);
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //1. Get current date and time in owner dashboard
@@ -221,6 +698,7 @@ $(document).ready(function () {
 
     //6.Form submission add user from owner dashboard
     $('#add_user').click(function (e) {
+        //alert(1);
         let formData = new FormData($('#addusers')[0]);
         $.ajax({
             url: base_url + "owner/Settings/addUserValidation",
@@ -419,320 +897,12 @@ $(document).ready(function () {
     //     document.getElementById('table_iframe_delivery').src = base_url + 'owner/order/deliveryReport/' + $(this).attr('data-store-id');
     // });
 
-    //11. Add stock from owner dashboard
-    $(document).on('click', '.open-modal', function () {
-
-        $('#addstock').on('shown.bs.modal', function () {
-            $('#stocks').val('');
-            $('#stocks').focus();
-        });
-
-        var id = $(this).attr('data-id');
-        $('#product_id').val(id);
-        $('#addStockBtn').click(function () {
-            var id = $(this).attr('data-id');
-            $('#addstocks').val(id);
-            let formData = new FormData($('#productstock')[
-                0]);
-            $.ajax({
-                url: base_url + "owner/Product/addstocks",
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    console.log(response);
-                    if (response.success) {
-                        $('#stocks').val('');
-                        $('#addstock').modal('hide');
-                        $('#addstocks_error').html('');
-                        location.reload();
-                    } else if (response.errors.pu_qty) {
-                        $('#addstocks_error').html(response.errors.pu_qty);
-                    }
-                },
-
-            });
-        })
-    })
-
-    //12. Remove stock from order dashboard
-    $(document).on('click', '.remove-modal', function () {
-
-        $('#removestock').on('shown.bs.modal', function () {
-            $('#remove_stocks').val('');
-            $('#removestocks_error').html('');
-            $('#remove_stocks').focus();
-        });
-
-        var id = $(this).attr('data-id');
-        $('#product_id_remove').val(id);
-        $('#removeStockBtn').click(function () {
-            let formData = new FormData($('#removesstock')[
-                0]);
-            $.ajax({
-                url: base_url + "owner/Product/removestocks",
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        $('#remove_stocks').val('');
-                        $('#removestock').modal('hide');
-                        $('#removestocks_error').html('');
-                        location.reload();
-                    } else if (response.errors.sl_qty) {
-                        $('#removestocks_error').html(response.errors.sl_qty).show();
-                    }
-                    else if (response.errors.message) {
-                        $('#removestocks_error').html(response.errors.message).show();
-                    } else {
-                        $('#remove_stocks').val('');
-                        $('#removestock').modal('hide');
-                        $('#removestocks_error').html('');
-                    }
-                },
-            })
-        })
-    })
-
-    //13. Product details tab click functions
-    $('.editProduct').click(function () {
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/product/load_variants/' + product_id;
-    });
-
-    $('.addVariant').click(function () {
-        $("#iframe_body").show();
-        $("#productForm").hide();
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/product/load_variants/' + product_id;
-    });
-
-    $('.addAddons').click(function () {
-        $("#iframe_body").show();
-        $("#productForm").hide();
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/product/load_addons/' + product_id;
-    });
-
-    $('.addRecipe').click(function () {
-        $("#iframe_body").show();
-        $("#productForm").hide();
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/product/load_recipes/' + product_id;
-    });
-
-    $('.addPhotos').click(function () {
-        $("#iframe_body").show();
-        $("#productForm").hide();
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/product/load_images/' + product_id;
-    });
-
-    $('.listCombo').click(function () {
-        $("#iframe_body").show();
-        $("#productForm").hide();
-        var product_id = $('#hiddenField').val();
-        document.getElementById('iframe_body').src = base_url + 'owner/combo/load_combo/' + product_id;
-    });
 
 
-    //14.Edit dish popup tab.Get default product tab details 
-    $(document).on('click', '.edit-btn', function () {
-        $("#productForm").show();
-        $("#iframe_body").hide();
-        var id = $(this).attr('data-id');
-        var isCustomizable = $(this).attr('data-isCustomizable'); //alert(isCustomizable);
-        if (isCustomizable == 1) {
-            $(".product_rate").addClass("d-none");
-            $(".product_rate_label").addClass("d-none");
-            $(".isCustomize").removeClass("d-none");
-        } else {
-            $(".product_rate").removeClass("d-none");
-            $(".product_rate_label").removeClass("d-none");
-            $(".isCustomize").addClass("d-none");
-
-        }
-        $('#hiddenField').val(id);
-        $('#isCustomizable').val(isCustomizable);
-        $('#product_id_new').val(id);
-        $.ajax({
-            url: base_url + "owner/Product/getDescriptions",
-            type: 'POST',
-            data: {
-                id: id
-            },
-            dataType: 'json',
-            success: function (response) {
-                $('#store_is_customisable').val(response.data
-                    .customisable);
-                $('#store_product_rate').val(response.data
-                    .rate);
-                $('#store_product_name_ma').val(response.data
-                    .malayalam_name);
-                $('#store_product_name_en').val(response.data
-                    .english_name);
-                $('#store_product_name_hi').val(response.data
-                    .hindi_name);
-                $('#store_product_name_ar').val(response.data
-                    .arabic_name);
-                $('#description_malayalam').val(response.data
-                    .malayalam_desc);
-                $('#description_english').val(response.data
-                    .english_desc);
-                $('#description_hindi').val(response.data.hindi_desc);
-                $('#description_arabic').val(response.data.arabic_desc);
-
-            },
-            error: function () {
-                alert('An error occurred while fetching data.');
-            }
-        });
-    });
-
-    //15.Edit dish popup tab.Get default product tab details 
-    $(document).on('click', '.productDetails', function () {
-        $("#productForm").show();
-        $("#iframe_body").hide();
-        var id = $('#hiddenField').val();
-        var isCustomizable = $('#isCustomizable').val();
-        if (isCustomizable == 0) {
-            $(".isCustomize").addClass("d-none");
-        } else {
-            $(".isCustomize").removeClass("d-none");
-        }
-        $('#hiddenField').val(id);
-        $('#product_id_new').val(id);
-        $.ajax({
-            url: base_url + "owner/Product/getDescriptions",
-            type: 'POST',
-            data: {
-                id: id
-            },
-            dataType: 'json',
-            success: function (response) {
-                $('#store_product_rate').val(response.data
-                    .rate);
-                $('#store_product_name_ma').val(response.data
-                    .malayalam_name);
-                $('#store_product_name_en').val(response.data
-                    .english_name);
-                $('#store_product_name_hi').val(response.data
-                    .hindi_name);
-                $('#store_product_name_ar').val(response.data
-                    .arabic_name);
-                $('#description_malayalam').val(response.data
-                    .malayalam_desc);
-                $('#description_english').val(response.data
-                    .english_desc);
-                $('#description_hindi').val(response.data.hindi_desc);
-                $('#description_arabic').val(response.data.arabic_desc);
-
-            },
-            error: function () {
-                alert('An error occurred while fetching data.');
-            }
-        });
-    });
 
 
-    //16. Save product tab form data
-    $('#saveProduct').click(function () {
-        let formData = new FormData($('#productForm')[
-            0]); // Capture the form data, including files
-        //alert(formData);
-        $.ajax({
-            url: base_url + "owner/Product/changeDescriptions", // URL to the controller method
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            processData: false, // Prevent jQuery from processing the data
-            contentType: false, // Prevent jQuery from setting the Content-Type header
-            success: function (response) {
-                console.log(response);
-
-                if (response.errors) {
-                    if (response.errors.description_malayalam) {
-                        $('#description_malayalam_error').html(response.errors
-                            .description_malayalam);
-                    } else if (response.errors.description_english) {
-                        $('#description_english_error').html(response.errors
-                            .description_english);
-                    } else if (response.errors.description_hindi) {
-                        $('#description_hindi_error').html(response.errors
-                            .description_hindi);
-                    } else if (response.errors.description_arabic) {
-                        $('#description_arabic_error').html(response.errors
-                            .description_arabic);
-                    }
-                } else {
-                    const customMessage =
-                        "Your product has been Updated successfully!";
-                    $("#successMessage").text(customMessage).show();
-                    $("#successModal").modal("show");
-                    setTimeout(function () {
-                        $("#successModal").modal("hide");
-                        $("#Edit-dish").modal("hide");
-                        location.reload();
-                    }, 3000);
-
-                }
-            },
-            error: function (xhr) {
-                $('#response').html('<p>An error occurred: ' + xhr
-                    .responseText +
-                    '</p>');
-            }
-        });
-    });
-
-    //17.Prevent modal close outside click
-    // var myModal = new bootstrap.Modal(document.getElementById('Edit-dish'), {
-    //     backdrop: 'static',
-    //     keyboard: false
-    // });
 
 
-    //18. Search product on keyup frm owner dashboard
-    $('#search_product').on('keyup', function () {
-        var search = $(this).val(); //alert(search);
-        $.ajax({
-            url: base_url + "owner/Product/searchProductOnKeyUp",
-            type: 'GET', // HTTP method (can be POST if needed)
-            data: {
-                search: search
-            }, // Data sent to the controller
-            success: function (response) {
-                console.log(response); // Log the response for debugging
-                $('#search_result_container').html(response); // Update the HTML content of a container
-            },
-            error: function (xhr, status, error) {
-                console.error('Error: ' + error);
-            }
-        })
-    })
-
-    $('#product-search__button').on('keyup', function () {
-        var search = $(this).val(); //alert(search);
-        $.ajax({
-            url: base_url + "owner/Product/searchProductOnKeyUp",
-            type: 'GET', // HTTP method (can be POST if needed)
-            data: {
-                search: search
-            }, // Data sent to the controller
-            success: function (response) {
-                console.log(response); // Log the response for debugging
-                $('#search_result_container').html(response); // Update the HTML content of a container
-            },
-            error: function (xhr, status, error) {
-                console.error('Error: ' + error);
-            }
-        })
-    })
 
     //19. Next available time updation
     $(document).on('click', '.nextavialable-modal', function () {
@@ -828,27 +998,9 @@ $(document).ready(function () {
         });
 
     });
-    
-    
-     //28. Delete product.
-    $('.delete_product').click(function () {
-        $('#Edit-dish').modal('hide');
-        productID = $('#hiddenField').val();
-        $('#confirmDeleteProduct').modal('show');
-    });
 
-    $('#confirmDeleteProduct').click(function () {
-        $.ajax({
-            url: base_url + "owner/stock/delete_product", // Correct endpoint
-            data: { product_id: productID },
-            type: 'POST',
-            dataType: 'json',
-            success: function (response) {
-                $('#confirmDeleteProduct').modal('hide');
-                location.reload();
-            }
-        });
-    });
+
+
 
 
     //23. Clear stock from settings page.
@@ -1043,7 +1195,7 @@ $(document).ready(function () {
                         setTimeout(function () {
                             $('#successModal').modal('hide');
                             // window.location.href = base_url + 'admin/categories';
-                            location.reload(); 
+                            location.reload();
                         }, 1000);
                     }, 1000);
                 } else {
@@ -1064,7 +1216,7 @@ $(document).ready(function () {
                             $('#whatsapp_no_error').html('');
                         }
 
-                       
+
 
 
                     }

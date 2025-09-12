@@ -61,8 +61,7 @@
                 <thead style="background: #e5e5e5;">
                     <tr>
                         <th>No</th>
-                        <th>Select</th>
-                        <th>Name</th>
+                        <th>Recipe</th>
                         <th>Is Active</th>
                     </tr>
                 </thead>
@@ -78,10 +77,7 @@
                         ?>
                     <tr>
                         <td><?php echo $count;?></td>
-                        <td>
-                            <input type="checkbox" class="check-item" name="recipe_id" value="<?php echo $val['id']; ?>"
-                                <?php echo in_array($val['id'], $already_assigned_recipes_ids) ? 'checked' : ''; ?>>
-                        </td>
+                        
                         <td><?php echo $val['name_en'];?></td>
                         <td>
                             <select name="is_active" class="form-select" id="" style="width: 80%;">
@@ -113,8 +109,7 @@
             </table>
             <!-- Button column -->
             <div class="col-auto">
-                <a class="btn6-small" data-bs-toggle="modal" data-bs-target="#reciepe">Add</a>
-                <a class="btn6-small" id="update_recipe" disabled>Update</a>
+                <a class="btn btn1 mt-2" data-bs-toggle="modal" data-bs-target="#reciepe">Add Recipe</a>
             </div>
 
 

@@ -458,6 +458,7 @@ function initializeProducts() {
 
 <script>
 $(document).ready(function() {
+
     loadCart();
     loadProducts();
 
@@ -560,10 +561,12 @@ $(document).ready(function() {
     }
 
     function loadProducts() {
+        //alert(1);
         $.ajax({
             url: '<?= base_url("website/products/loadProducts") ?>',
             method: 'GET',
             success: function(data) {
+                console.log(data);
                 $('#products-content').html(data);
                 initializeProducts();
             }
@@ -784,9 +787,9 @@ $(document).ready(function() {
 $(document).ready(function() {
 
     /* reusable function for read more/less */
-    function initializeReadMoreLess() 
+    function initializeReadMoreLess()
     {
-        var maxLength = 150; 
+        var maxLength = 150;
         $("#modalBodyContent .product-desc").each(function(){
             var fullText = $(this).text().trim();
 
@@ -923,7 +926,7 @@ $(document).ready(function() {
 //         }
 //     });
 // });
-// 
+//
 </script>
 
 <script>

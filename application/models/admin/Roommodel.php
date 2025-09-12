@@ -56,6 +56,20 @@ class Roommodel extends CI_Model {
     return $query->result_array();
 }
 
+public function getRoomTableIdsWithOrders($store_id) {
+    $this->db->select('store_table.*');
+    $this->db->from('store_table');
+    $this->db->join('`order` AS o', 'o.table_id = store_table.table_id', 'inner');
+    $this->db->where('store_table.store_id', $store_id);
+    $this->db->where('store_table.ttype', 'rom');
+    $this->db->group_by('store_table.table_id');
+    $query = $this->db->get();
+    return $query->result_array();
+}
+
+
+
+
     // 	public function getRoomsByStoreId($store_id){
 	// 	$this->db->select('*');
 	// 	$this->db->from('store_table');

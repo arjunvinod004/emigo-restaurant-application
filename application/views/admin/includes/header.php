@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8" />
-    <title>Dashboard | Emigo</title>
+    <title>Dashboarddd | Emigo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Emigo" name="description" />
     <meta content="CVS" name="author" />
@@ -24,6 +24,8 @@
 </head>
 
 <body>
+
+    <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
 
     <!-- <body data-layout="horizontal"> -->
     <!-- Begin page -->
@@ -257,12 +259,12 @@
                                         </div>
                                     </div>
                                 </a>
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
 
                     </div>
                     <div class="p-2 border-top d-grid">
@@ -462,98 +464,98 @@
                         <!-- <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="users"></i>
-                
+
                                     <span data-key="t-apps">Lead</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">Add User</span>
-                                                
+
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">View Users</span>
-                                                
+
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="users"></i>
-                
+
                                     <span data-key="t-apps">Employee</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">Add Employee</span>
-                                                
+
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">View Employees</span>
-                                               
+
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">Employee Allocation</span>
-                                               
+
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="archive"></i>
-                
+
                                     <span data-key="t-apps">Companyyy</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">Add Branch</span>
-                                              
+
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">View Branches</span>
-                                               
+
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="box"></i>
-                
+
                                     <span data-key="t-apps">Product</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
                                                 <span data-key="t-calendar">Add Product</span>
-                                                
+
                                             </a>
                                         </li>
                                         <li>
@@ -562,17 +564,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="database"></i>
-                
+
                                     <span data-key="t-apps">Project</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
@@ -585,17 +587,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="edit"></i>
-                
+
                                     <span data-key="t-apps">Quotation</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
@@ -603,17 +605,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="users"></i>
-                
+
                                     <span data-key="t-apps">User Management</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
@@ -631,17 +633,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="book"></i>
-                
+
                                     <span data-key="t-apps">Reports</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="#">
@@ -654,17 +656,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="user"></i>
-                
+
                                     <span data-key="t-apps">Client</span>
                                     <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="addclient.html">
@@ -677,17 +679,17 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li>
                             <li class="mm-active">
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="book"></i>
-                
+
                                     <span data-key="t-apps">Master</span>
                                      <i class="fa-solid fa-chevron-right " style="float: right; font-size: 9px;"></i>
                                 </a>
-                
-                
+
+
                                 <ul class="sub-menu" aria-expanded="false" id="main-sub-menu">
                                         <li>
                                             <a href="employeetype.html">
@@ -805,7 +807,7 @@
                                             </a>
                                         </li>
                                 </ul>
-                
+
                             </li> -->
 
 
