@@ -608,14 +608,11 @@ class Productmodel extends CI_Model {
     }
 
     public function getRecipies($product_id,$store_id) {
-        $this->db->select('sr.*, c.*');
+        $this->db->select('*');
         $this->db->from('store_recipe sr');
-        $this->db->join('cookings c', 'sr.recipe_id = c.id');
         $this->db->where('sr.store_id', $store_id);
         $this->db->where('sr.store_product_id', $product_id);
-        $this->db->where('sr.is_active', 1);
         $query = $this->db->get();
-        //echo $this->db->last_query();exit;
         return $query->result_array();
     }
 

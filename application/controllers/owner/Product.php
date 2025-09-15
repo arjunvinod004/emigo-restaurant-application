@@ -607,13 +607,6 @@ public function categoryname_exists($country)
         }
     }
 
-
-    public function load_recipes($store_product_id) {
-        $data['store_product_id'] = $store_product_id;
-        $data['recipes'] = $this->Cookingmodel->listcookings();
-        $data['already_assigned_recipes_ids'] = $this->Productmodel->already_assigned_recipe_ids($this->session->userdata('logged_in_store_id'),$store_product_id);
-        $this->load->view('owner/catalog/assigned_recipes',$data);
-    }
     public function update_selected_recipe(){
         $products = $this->input->post('products');
         //print_r($products);exit;
@@ -668,6 +661,7 @@ public function categoryname_exists($country)
             $variant_id = $variant['variant_id'];
             $rate = $variant['rate'];
             $is_default = $variant['is_default'];
+            $variant_value = $variant['variant_value'];
             $checked = (int) $variant['checked'];
 
             if ($checked === 1) {
@@ -682,6 +676,7 @@ public function categoryname_exists($country)
                 $taxRate = (float) $this->input->post('taxRate');
 
                 $data = [
+                    'variant_value' => $variant_value,
                     'rate'        => $rate,
                     'tax'         => $taxRate,
                     'tax_amount'  => ($rate * $taxRate) / 100,
@@ -1030,23 +1025,42 @@ public function removestock(){
         }
     }
 }
+//MARK: Load recipes
+    public function load_recipes($store_product_id) {
+        $data['store_product_id'] = $store_product_id;
+        $data['recipes'] = $this->Commonmodel->StoreRecipes($data['store_product_id'],$this->session->userdata('logged_in_store_id'));
+        //$data['already_assigned_recipes_ids'] = $this->Productmodel->already_assigned_recipe_ids($this->session->userdata('logged_in_store_id'),$store_product_id);
+        $this->load->view('owner/catalog/assigned_recipes',$data);
+    }
+//MARK: Save recipe
 public function saveReciepe(){
     $store_id=$this->session->userdata('logged_in_store_id');
     $data=array(
         'store_id' => $store_id,
+        'store_product_id' => $this->input->post('store_product_id'),
         'name_ma' => $this->input->post('reciepe_name_ma'),
         'name_en' => $this->input->post('reciepe_name_en'),
         'name_hi' => $this->input->post('reciepe_name_hi'),
-        'name_ar'  => $this->input->post('reciepe_name_ar'),
-        'is_active'  => 1,
+        'name_ar'  => $this->input->post('reciepe_name_ar')
     );
     if($this->input->post('reciepe_name_ma')=='' || $this->input->post('reciepe_name_en')=='' || $this->input->post('reciepe_name_hi')=='' || $this->input->post('reciepe_name_ar')==''){
         echo json_encode(array('success' => false));
     }
     else
     {
-        $this->Ordermodel->SaveReciepe($data);
+        $this->Commonmodel->SaveReciepe($data);
         echo json_encode(array('success' => true));
+    }
+}
+//MARK: Delete recipe
+public function deleteReciepe()
+{
+    $id = $this->input->post('id');
+    if($id) {
+        $this->db->where('store_recipe_id', $id)->delete('store_recipe');
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
     }
 }
 public function avialabletime(){

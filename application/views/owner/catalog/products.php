@@ -280,7 +280,7 @@ echo ($val['is_customizable'] == 1) ? 'Customisable' : '';
                         <a class="store_product btn7-small">Product</a>
                         <a class="addVariant btn7-small isCustomize">Variants</a>
                         <a class="addAddons btn7-small isCustomize">Addons</a>
-                        <!-- <a class="addRecipe btn7-small isCustomize">Recipe</a> -->
+                        <a class="addRecipe btn7-small isCustomize">Recipe</a>
                         <a class="addPhotos btn7-small ">Photos</a>
                     </div>
                 </div>

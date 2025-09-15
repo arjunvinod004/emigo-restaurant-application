@@ -27,6 +27,7 @@ class Products extends CI_Controller {
     public function checkout() {
         //echo "hre";exit;
         $cartData = $this->session->userdata('cart');
+        //print_r($cartData);exit;
         $store_token = $this->session->userdata('store_token'); //echo $store_token;exit;
         $store_details_from_token = $this->Homemodel->get_store_details_by_token($store_token);
         $cartData = $this->session->userdata('cart');

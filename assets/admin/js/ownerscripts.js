@@ -442,15 +442,19 @@ $(document).ready(function () {
             let variant_id = $(this).data('variant-id');
             let checked = $(this).is(':checked') ? 1 : 0;
             let rate = $('.rate[data-variant-id="'+variant_id+'"]').val();
+            let variant_value = $('.variant_value[data-variant-id="'+variant_id+'"]').val();
             let is_default = $('.is_default[data-variant-id="'+variant_id+'"]').is(':checked') ? 1 : 0;
 
             variants.push({
                 variant_id: variant_id,
+                variant_value: variant_value,
                 checked: checked,
                 rate: rate,
                 is_default: is_default
             });
         });
+
+        console.log(variants); // For debugging
 
 
         $.ajax({
@@ -537,7 +541,43 @@ $(document).ready(function () {
     });
 
 
+    // MARK: RECIPES
+    $('#saveReciepe').click(function() {
+    let formData = new FormData($('#addreciepe')[0]);
+    formData.append('store_product_id', $('#store_product_id').val());
+    $.ajax({
+        url: base_url + "owner/product/saveReciepe",
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: 'JSON',
+        success: function(response) {
+            showPopupAlert('success', 'Recipe updated successfully!', true);
+        }
+    })
+})
 
+//MARK: Delete recipe
+$(document).on('click', '.delete-recipe', function() {
+    let recipeId = $(this).data('id');
+
+    if(confirm("Are you sure you want to delete this recipe?")) {
+        $.ajax({
+            url: base_url + "owner/product/deleteReciepe",
+            type: 'POST',
+            data: { id: recipeId },
+            dataType: 'JSON',
+            success: function(response) {
+                if(response.success) {
+                    showPopupAlert('success', 'Recipe Deleted successfully!', true);
+                } else {
+                    alert("Failed to delete recipe");
+                }
+            }
+        });
+    }
+});
 
 
 

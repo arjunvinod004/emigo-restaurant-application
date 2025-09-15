@@ -153,21 +153,11 @@
            data-variant-id="<?php echo $val['variant_id'];?>"
            <?php echo $is_default ? 'checked' : ''; ?>>
     </td>
-                        <td><input type="text" class="form-control"
+                        <td><input type="text" class="form-control variant_value" data-variant-id="<?php echo $val['variant_id'];?>"
                                 value="<?php echo $variant_value; ?>"
                                 name="variant_value" readonly style="width: 50%;"></td>
                        <td>
 
-                        <!-- <select name="is_active" class="form-select" style="width: 80%;">
-                            <option value="1"
-                                <?php echo in_array($val['variant_id'], $already_assigned_variants_ids) ? 'selected' : ''; ?>>
-                                Active
-                            </option>
-                            <option value="0"
-                                <?php echo !in_array($val['variant_id'], $already_assigned_variants_ids) ? 'selected' : ''; ?>>
-                                Inactive
-                            </option>
-                        </select> -->
                     </td>
 
                     </tr>

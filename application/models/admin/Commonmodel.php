@@ -384,6 +384,20 @@ $row = $query->row_array();
 return $row;
 	}
 
+    //MARK: Load recipes assigned to store
+    public function StoreRecipes($product_id,$store_id) {
+        $this->db->select('*');
+        $this->db->from('store_recipe sr');
+        $this->db->where('sr.store_product_id', $product_id);
+        $this->db->where('sr.store_id', $store_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function SaveReciepe($data) {
+            $this->db->insert('store_recipe', $data);
+            return $this->db->insert_id();
+    }
+
 
 
     public function get_base_quantity_product($store_id, $productId) {

@@ -23,20 +23,15 @@
 <div class="row">
 
 
-    <!-- if response within jquery -->
-    <div class="message d-none" role="alert"></div>
-    <!-- if response within jquery -->
-
-
-    <?php if($this->session->flashdata('success')){ ?>
-    <div class="alert alert-success dark" role="alert">
-        <?php echo $this->session->flashdata('success');$this->session->unset_userdata('success'); ?>
-    </div><?php } ?>
-
-    <?php if($this->session->flashdata('error')){ ?>
-    <div class="alert alert-danger dark" role="alert">
-        <?php echo $this->session->flashdata('error');$this->session->unset_userdata('error'); ?>
-    </div><?php } ?>
+   <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body text-success fw-bold"></div>
+    </div>
+  </div>
+</div>
+<!-- success modal -->
 
 
 
@@ -62,7 +57,7 @@
                     <tr>
                         <th>No</th>
                         <th>Recipe</th>
-                        <th>Is Active</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
 
@@ -72,22 +67,13 @@
                        if(!empty($recipes)){
                        $count = 1;
                        foreach($recipes as $val){
-                        $query = $this->db->query("SELECT * FROM store_recipe WHERE recipe_id = ".$val['id']." AND store_id = ".$this->session->userdata('logged_in_store_id')." AND store_product_id = ".$store_product_id."");
-                        $recipeDet = $query->result_array();
                         ?>
                     <tr>
                         <td><?php echo $count;?></td>
-                        
+
                         <td><?php echo $val['name_en'];?></td>
                         <td>
-                            <select name="is_active" class="form-select" id="" style="width: 80%;">
-                                <option value="1"
-                                    <?php echo (isset($recipeDet[0]['is_active']) && $recipeDet[0]['is_active'] == 1) ? 'selected' : ''; ?>>
-                                    Active</option>
-                                <option value="0"
-                                    <?php echo (isset($recipeDet[0]['is_active']) && $recipeDet[0]['is_active'] == 0) ? 'selected' : ''; ?>>
-                                    Inactive</option>
-                            </select>
+                        <button type="button" class="btn btn-danger btn-sm delete-recipe" data-id="<?php echo $val['store_recipe_id']; ?>">Delete</button>
                         </td>
 
                     </tr>
@@ -116,7 +102,7 @@
 
 
             <div class="modal fade " id="reciepe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Recipe</h1>
@@ -141,7 +127,7 @@
                                 </form>
 
                                 <div class="mt-2 text-center m-auto">
-                                    <button class="btn btn-primary " type="button" id="saveReciepe">Save</button>
+                                    <button class="btn btn1" type="button" id="saveReciepe">Save</button>
                                 </div>
                             </div>
                             </form>
@@ -196,91 +182,9 @@
 </div>
 
 <script src="<?php echo base_url();?>assets/admin/js/modules/store.js"></script>
-
-<!-- JAVASCRIPT -->
 <script src="<?php echo base_url();?>assets/admin/js/metismenu.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/simplebar.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/waves.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/feather.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/app.js"></script>
-<!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<!-- DataTables JS -->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js">
-</script>
-
-<script>
-$(document).ready(function() {
-    new DataTable('#example');
-});
-</script>
-<script>
-$('#update_recipe').click(function() {
-    const selectedProducts = [];
-
-    $('#examplee tbody tr').each(function() {
-        if ($(this).find('input[type="checkbox"]').is(':checked')) {
-            const row = $(this);
-            const productData = {
-                store_product_id: $('#store_product_id').val(),
-                recipe_id: row.find('input[type="checkbox"]').val(),
-                is_active: parseFloat(row.find('select[name="is_active"]').val()) || 0,
-            };
-            selectedProducts.push(productData);
-            console.log(selectedProducts);
-        }
-    });
-
-    // Send selectedProducts to CodeIgniter controller via AJAX
-    $.ajax({
-        url: '<?= base_url("owner/product/update_selected_recipe"); ?>', // Controller method URL
-        type: 'POST',
-        data: {
-            products: selectedProducts
-        },
-        dataType: 'json',
-        success: function(response) {
-            console.log(response);
-
-            if (response.status === 'success') {
-                $('.message').removeClass('d-none');
-                $('.message').removeClass('alert alert-danger');
-                $('.message').addClass('alert alert-success');
-                $('.message').text('Product recipe updated successfully.');
-                setTimeout(function() {
-                    location.reload();
-                }, 1000); // 3000 ms = 3 seconds
-                // Reload the page if necessary
-            } else {
-                $('.message').removeClass('d-none');
-                $('.message').addClass('alert alert-danger');
-                $('.message').text('Please select at least one checkbox for update.');
-            }
-        },
-        error: function() {
-            $('.message').removeClass('d-none');
-            $('.message').addClass('alert alert-danger');
-            $('.message').text('Please select at least one checkbox for update.');
-        }
-    });
-});
-</script>
-<script>
-$('#saveReciepe').click(function() {
-    let formData = new FormData($('#addreciepe')[
-        0]);
-    $.ajax({
-        url: '<?= base_url("owner/product/saveReciepe") ?>',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'JSON',
-        success: function(response) {
-            $('#reciepe').modal('hide');
-            location.reload();
-
-        }
-    })
-})
-</script>
+<script type="module" src="<?php echo base_url();?>assets/admin/js/ownerscripts.js"></script>
