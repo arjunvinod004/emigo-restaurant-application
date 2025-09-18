@@ -269,7 +269,7 @@
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body out_of_stock_msg">
                     This is a simple Bootstrap modal popup.
                 </div>
             </div>

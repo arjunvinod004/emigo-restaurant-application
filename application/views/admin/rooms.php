@@ -2,7 +2,7 @@
 <!-- ============================================================== -->
 <div class="container">
     <div class="page-content p-2">
-    <div class="container">
+    <div class="">
             <div class="row">
                 <div class="col-12">
                 <div class="add-new-dish-list-combo">
@@ -18,17 +18,11 @@
     </a>
 <?php } ?>
 
-
-                <!-- <a  href="<?php echo base_url('admin/store'); ?>" class="add-new-dish-btn btn1">
-                    <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
-" alt="add new dish" class="add-new-dish__icon" width="23" height="23">
-                 Back
-                </a> -->
             </div>
                 </div>
             </div>
 
-             <div class="row bg-light rounded shadow-sm mb-3 p-3 border mt-3">
+             <div class="bg-light rounded shadow-sm mb-3 p-3 border mt-3">
                 <form class="row mt-0 mb-0" action="" id="addroomsform" method="post">
     <div class="col-md-4">
         <label  class="form-label fw-bold">Select Room</label>
@@ -76,7 +70,7 @@
                     </div><?php } ?>
 
 
-                <div class="container">
+                <div class="">
                     <div class="table-responsive-sm">
                         <table id="example" class="table table-striped" >
                             <thead style="background: #e5e5e5;">

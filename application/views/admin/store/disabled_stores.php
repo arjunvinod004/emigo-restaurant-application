@@ -12,7 +12,7 @@
                             Add Store
                         </a>
 
-                        <a href="<?php echo base_url('admin/store'); ?>" class="add-new-dish-btn btn1">
+                        <a href="<?php echo base_url('admin/store/all'); ?>" class="add-new-dish-btn btn1">
                             <img src="https://img.icons8.com/ios-filled/30/FFFFFF/circled-left-2.png
 " alt="add new dish" class="add-new-dish__icon" width="23" height="23">
                             Back

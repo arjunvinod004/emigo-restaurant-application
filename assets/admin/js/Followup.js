@@ -4,13 +4,12 @@ $(document).ready(function () {
 
 
 
- var base_url = 'http://localhost/emigo-restaurant-application/';
-    //  var base_url = 'https://qr-experts.com/emigo-restaurant-application/';
+    var base_url = $('#base_url').val();
     $(document).on('click', '.emigo-close-btn , .reload-close-btn, .emigo-btn', function () {
         location.reload();
     });
 
-//MARK: - Add Followup 
+//MARK: - Add Followup
 $('#add_followup').click(function (e) {
     let formData = new FormData($('#add-new-followup')[0]);
     let storeId = $('#store_id').val();
@@ -21,7 +20,7 @@ $('#add_followup').click(function (e) {
             data: formData,
             dataType: 'json',
             processData: false,
-            contentType: false,  
+            contentType: false,
                 success: function (response) {
                 if (response.success === 'success') {
                     showPopupAlert('success', 'Followup details saved...', true);
@@ -33,15 +32,15 @@ $('#add_followup').click(function (e) {
                         if (response.errors.followup_user) {
                             $('#followup_user_error').html(response.errors.followup_user);
                         }
-                        
+
                         if (response.errors.followup_date) {
                             $('#followup_date_error').html(response.errors.followup_date);
-                        } 
-                        
+                        }
+
                         if (response.errors.followup_remarks) {
                             $('#followup_remarks_error').html(response.errors.followup_remarks);
                         }
-                       
+
 
                 }
             },
@@ -55,7 +54,7 @@ $('#add_followup').click(function (e) {
 
 // MARK: - Edit Followup
 
-$(".edit_followup").click(function (e) 
+$(".edit_followup").click(function (e)
 {
         var id = $(this).attr('data-id');
         $('#hidden_followup_id').val(id);
@@ -82,7 +81,7 @@ $(".edit_followup").click(function (e)
 
 // MARK: - Save Followup
 
-$('#save_followup').click(function (e) 
+$('#save_followup').click(function (e)
 {
         var save_followup = $('#hidden_followup_id').val();
         let formData = new FormData($('#edit_save_followup')[0]);
@@ -92,8 +91,8 @@ $('#save_followup').click(function (e)
             type: 'POST',
             data: formData,
             dataType: 'json',
-            processData: false, 
-            contentType: false, 
+            processData: false,
+            contentType: false,
             success: function (response) {
                 console.log(response);
                 if (response.success === 'success') {
@@ -132,7 +131,7 @@ $('#save_followup').click(function (e)
 
 //MARK: - Delete Followup
 
-$("#delete_followup").click(function (e) 
+$("#delete_followup").click(function (e)
 {
         var id = $(this).attr('data-id');
         confirmDelete(

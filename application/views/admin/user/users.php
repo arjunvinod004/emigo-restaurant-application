@@ -48,6 +48,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
+                                    <th>Role</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -64,6 +65,24 @@
                                     <td><?php echo $val['Name'];?></td>
                                     <td><?php echo $val['userEmail'];?></td>
                                     <td><?php echo $val['UserPhoneNumber'];?></td>
+                                    <td>
+                                            <?php
+                                                if ($val['userroleid'] == 1) {
+                                                    echo "Admin";
+                                                } elseif ($val['userroleid'] == 2) {
+                                                    echo "Shop Owner";
+                                                } elseif ($val['userroleid'] == 3) {
+                                                    echo "Employee";
+                                                }
+                                                elseif ($val['userroleid'] == 4) {
+                                                    echo "Delivery Boy";
+                                                }elseif ($val['userroleid'] == 5) {
+                                                    echo "Supplier";
+                                                }elseif ($val['userroleid'] == 6) {
+                                                    echo "Kitchen";
+                                                }
+                                            ?>
+                                    </td>
                                     <td><?php if($val['is_active'] == 1){ ?> <span class="badge-success">Active</span>
                                         <?php } else { ?> <span class="badge-danger">Inactive</span> <?php }?></td>
                                     <td class="pb-0 pt-0 d-flex">
@@ -190,7 +209,10 @@
                                             <select class="form-control" name="add_user_role">
                                                 <option value="">Select role</option>
                                                 <option value="2" <?= set_select('role', '2') ?>>Shop Owner</option>
-                                                <option value="3" <?= set_select('role', '3') ?>>Employee</option>
+                                                <!-- <option value="3" <?= set_select('role', '3') ?>>Employee</option> -->
+                                                <option value="4" <?= set_select('role', '4') ?>>Delivery Boy</option>
+                                                <option value="5" <?= set_select('role', '5') ?>>Supplier</option>
+                                                <option value="6" <?= set_select('role', '6') ?>>Kitchen</option>
                                             </select>
                                             <span class="error errormsg mt-2" id="add_user_role_error"></span>
                                         </div>
@@ -201,7 +223,6 @@
                                             <label class="form-label" for="default-input">Shop</label>
                                             <select class="form-control" name="add_user_shop">
                                                 <option value="">Select shop</option>
-                                                <option value="0">Main Admin</option>
                                                 <?php foreach($stores as $key => $store): ?>
                                                 <option value="<?= $store['store_id']; ?>">
                                                     <?= $store['store_name']; ?>
@@ -312,6 +333,9 @@
                                         <select class="form-control" name="add_user_role" id="add_user_role">
                                             <option value="">Select role</option>
                                             <option value="2" <?= set_select('role', '2') ?>>Shop Owner</option>
+                                            <option value="4" <?= set_select('role', '4') ?>>Delivery Boy</option>
+                                            <option value="5" <?= set_select('role', '5') ?>>Supplier</option>
+                                            <option value="6" <?= set_select('role', '6') ?>>Kitchen</option>
                                         </select>
                                         <span class="error errormsg mt-2" id="add_edit_user_role_error"></span>
                                     </div>

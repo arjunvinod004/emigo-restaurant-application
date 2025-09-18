@@ -114,9 +114,10 @@ class Order extends CI_Controller {
 			$this->load->view('owner/includes/footer');
 		}
 		if($role_id == 5) { // Supplier boy
+			/* echo $logged_in_store_id;echo $role_id;echo $user_id;exit; */
 			$data['tables']=$this->Tablemodel->getTablesAssignedByStoreId($logged_in_store_id,$user_id); //get orders assigned to loged in supplier user
 			$data['rooms']=$this->Roommodel->getRoomTableIdsWithOrders($logged_in_store_id);
-			$data['ready_orders']=$this->Ordermodel->getReadyOrders($logged_in_store_id,$role_id,$user_id); //ready orders display except
+			$data['ready_orders']=$this->Ordermodel->getReadyOrders($logged_in_store_id,$role_id,$user_id); //print_r($data['ready_orders']); //ready orders display except
 			$data['enable_table'] = $this->Settingsmodel->getEnableTables($logged_in_store_id,$user_id); // Fetch enable delivery
 			$data['enable_delivery'] = $this->Settingsmodel->getEnableDelivery($logged_in_store_id,$user_id); // Fetch enable delivery
     		$data['enable_pickup'] = $this->Settingsmodel->getEnablePickup($logged_in_store_id,$user_id);     // Fetch enable pickup
@@ -2862,7 +2863,7 @@ $accordionHtml .= '
                     </td>
                     <td colspan="5">
                         <div class="d-flex justify-content-center">
-							
+
                             <button type="button" class="'.$approveOrderClass.'" data-order-id="' . $order['orderno'] . '" data-kot-enable="'.$kot_enable.'">Approve</button>
 							<button type="button" data-order-id="' . $order['orderno'] . '" class="'.$diningOrderClass.' d-none" width="100px" style="margin-left: 10px;">Dining</button>
                             <button class="'.$payOrderClass.' d-none" data-order-id="' . $order['orderno'] . '" width="100px" style="margin-left: 10px;">Pay</button>

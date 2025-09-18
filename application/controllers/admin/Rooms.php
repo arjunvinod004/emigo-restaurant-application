@@ -1,5 +1,5 @@
 <?php
-class Rooms extends CI_Controller {
+class Rooms extends MY_Controller {
  public function __construct() {
         parent::__construct();
         $this->load->model('admin/Roommodel');
@@ -25,13 +25,13 @@ class Rooms extends CI_Controller {
 
 		$role_id = $this->session->userdata('roleid'); // Role id of logged in user
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
+
          $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
 
 		//   print_r($store_details);exit;
         //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
         $data['Name'] = $store_details->Name;
-		 
+
 		// print_r($data['Name']);exit;
         $data['userAddress'] = $store_details->userAddress;
         $data['support_no'] = $store_details->UserPhoneNumber;
@@ -42,7 +42,7 @@ class Rooms extends CI_Controller {
 		$data['role_id'] = $role_id;
 		// print_r($role_id);
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
-        
+
          $store_details = $this->Commonmodel->get_admin_details_by_store_id($logged_in_store_id);
 		//   print_r($store_details);exit;
         //  $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
@@ -62,17 +62,9 @@ class Rooms extends CI_Controller {
         $data['categories']=$this->Productmodel->listcategories();
         $data['order_index']=$this->Productmodel->getNextOrderIndex();
 		$data['rooms']=$this->Roommodel->listrooms($data['store_id']);
-		
 
-		// print_r($data['rooms']);
-      
-        // $data['store_id'] = $this->input->post('id');
-        // print_r($data['store_id']);
-        // print_r($data['order_index']);
-		$this->load->view('admin/header',$data);
-        // $this->load->view('admin/menudashboard',$data);
-		$this->load->view('admin/rooms',$data);
-		$this->load->view('admin/footer',$data);
+
+		$this->render_admin_header('admin/rooms', $data);
 }
 
 
@@ -83,22 +75,22 @@ public function add(){
 
 
 //  print_r($store_id);
-  $this->form_validation->set_error_delimiters('', ''); 
+  $this->form_validation->set_error_delimiters('', '');
   $this->form_validation->set_rules('roomselect', 'Room Count', 'required');
 
-            	if($this->form_validation->run() == FALSE) 
+            	if($this->form_validation->run() == FALSE)
 			{
 				$response = [
 					'success' => false,
 					'errors' => [
-						'roomselect' => form_error('roomselect'),	
+						'roomselect' => form_error('roomselect'),
 					]
 				];
-			
+
 				echo json_encode($response);
 			}
 			else
-			{ 
+			{
 
 				$count_by_rooms= $this->Roommodel->count_rooms($store_id);
                 // $end = $count_by_rooms + $selected_room_count;
@@ -119,21 +111,21 @@ public function add(){
 					'is_whatsapp' => 0,
 					'whatsapp_no' => 0
 					);
-					$this->Roommodel->insert($data);	
+					$this->Roommodel->insert($data);
 				}
 				echo json_encode(['success' => 'success']);
 			}
 }
 
 public function DeleteRoom(){
- $id=$this->input->post('id'); 
+ $id=$this->input->post('id');
  $this->Roommodel->DeleteRoom($id);
 }
 
 public function UpdateRoom(){
- $tableid=$this->input->post('tableid'); 
+ $tableid=$this->input->post('tableid');
  $table_name = $this->input->post('tablename');
- $store_table_name=$this->input->post('store_table_name'); 
+ $store_table_name=$this->input->post('store_table_name');
  $this->Roommodel->UpdateRoom($tableid,$store_table_name);
  echo json_encode(['status' => 'success','message' =>   $table_name . ' changed to ' . $store_table_name
 ]);

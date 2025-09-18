@@ -140,7 +140,7 @@ class Product extends CI_Controller {
                 $html .= '<a data-bs-toggle="modal" data-bs-target="#Edit-dish"
                         data-id="' . $product->store_product_id . '"
                         data-isCustomizable="' . $product->is_customizable . '" href=""
-                        class="product-list__item-buttons-block-btn btn6 edit-btn"><img
+                        class="product-list__item-buttons-block-btn btn6 store_product_details"><img
                             class="product-list__item-button-img"
                             src="'.base_url().'assets/admin/images/edit-dish-icon.svg" alt="add stock"
                             width="23" height="22">Edit Dish</a>';
