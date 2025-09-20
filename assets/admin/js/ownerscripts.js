@@ -1106,7 +1106,7 @@ $(document).on('click', '.delete-recipe', function() {
         });
     });
 
-    //26. Asigining table to users from settings page
+    //MARK: Asigining table
     $(document).on('click', '.assign-table', function () {
         $('#user_id_for_assigning').val($(this).data('id')); // User id from data attribute
         var user_id = $(this).data('id');
@@ -1144,7 +1144,7 @@ $(document).on('click', '.delete-recipe', function() {
     });
 
     function toggleTableAssignButton() {
-        if ($("input[name='options[]']:checked").length > 0) {
+        if ($("input[name='table-options[]']:checked").length > 0) {
             $("#assign_table_btn").prop("disabled", false);
         } else {
             $("#assign_table_btn").prop("disabled", false);
@@ -1154,7 +1154,7 @@ $(document).on('click', '.delete-recipe', function() {
     toggleTableAssignButton();// Check initially on page load
 
 
-    $("input[name='options[]']").on("change", function () {  // Listen for changes in checkbox selection
+    $("input[name='table-options[]']").on("change", function () {  // Listen for changes in checkbox selection
         toggleTableAssignButton();
     });
 
@@ -1166,7 +1166,7 @@ $(document).on('click', '.delete-recipe', function() {
         let isDelivery = false;
 
         // Loop through all checked checkboxes
-        $("input[name='options[]']:checked").each(function () {
+        $("input[name='table-options[]']:checked").each(function () {
             let value = $(this).val();
             if (value === "PK") {
                 isPickup = true;  // Takeaway selected
@@ -1194,6 +1194,90 @@ $(document).on('click', '.delete-recipe', function() {
             }
         });
     });
+
+     //MARK: ROOM ASSIGNING
+    $(document).on('click', '.assign-room', function () {
+        $('#user_id_for_assigning').val($(this).data('id')); // User id from data attribute
+        var user_id = $(this).data('id');
+        $.ajax({
+            url: base_url + "owner/Settings/GetAlreadyAssignedRooms", //Return already assigned tables and checcked tables assigned when modal display
+            type: "POST",
+            data: { user_id: user_id }, // Send only user_id to fetch assigned tables
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                //Uncheck all checkboxes first
+                $('.room-checkbox').prop('checked', false);
+
+                // Loop through the response and check the assigned tables
+                if (response.assignedTables) {
+                    response.assignedTables.forEach(function (table_id) {
+                        $('.room-checkbox[value="' + table_id + '"]').prop('checked', true);
+                    });
+                }
+
+                // Show the modal after updating checkboxes
+                $('#roomassign').modal('show');
+            }
+        });
+    });
+
+    function toggleRoomAssignButton() {
+        if ($("input[name='room-options[]']:checked").length > 0) {
+            $("#assign_room_btn").prop("disabled", false);
+        } else {
+            $("#assign_room_btn").prop("disabled", false);
+        }
+    }
+
+    toggleRoomAssignButton();// Check initially on page load
+
+
+    $("input[name='room-options[]']").on("change", function () {  // Listen for changes in checkbox selection
+        toggleRoomAssignButton();
+    });
+
+    $("#room_assign_form").on("submit", function (e) {
+        e.preventDefault(); // Prevent form submission
+
+        let selectedRooms = [];
+        let isPickup = false;
+        let isDelivery = false;
+
+        // Loop through all checked checkboxes
+        $("input[name='room-options[]']:checked").each(function () {
+            let value = $(this).val();
+            if (value === "PK") {
+                isPickup = true;  // Takeaway selected
+            } else if (value === "DL") {
+                isDelivery = true; // Delivery selected
+            } else {
+                selectedRooms.push(value); // Store selected tables
+            }
+        });
+
+        let formData = {
+            user_id: $("#user_id_for_assigning").val(),
+            selectedRooms: selectedRooms,
+            isPickup: isPickup,
+            isDelivery: isDelivery
+        };
+
+        console.log(selectedRooms);
+
+
+        $.ajax({
+            url: base_url + "owner/Settings/RoomAssign",
+            type: "POST",
+            data: JSON.stringify(formData),
+            contentType: "application/json",
+            success: function (response) {
+                $('#roomassign').modal('hide');
+            }
+        });
+    });
+
+
 
     // qrcode window in owner side
 

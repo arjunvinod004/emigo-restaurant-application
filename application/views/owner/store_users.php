@@ -67,10 +67,15 @@
                         type="submit" data-toggle="tooltip" data-placement="bottom" title="Password Change"><i
                             class="fa-solid fa-key" data-bs-target="#passwordchange"
                             data-bs-toggle="modal"></i></button>
-                    <?php if ($users['userroleid'] == 1 || $users['userroleid'] == 2 || $users['userroleid'] == 5): ?>
+                    <?php if ($users['userroleid'] == 5): ?>
                     <button data-id="<?=$users['userid'];?>" class="btn tblLogBtn pl-0 pr-0 assign-table" type="submit"
                         data-toggle="tooltip" data-placement="bottom" title="Assign Table"><i
                             class="fa-solid fa-table"></i></button>
+                    <?php endif; ?>
+                    <?php if ($users['userroleid'] == 5): ?>
+                    <button data-id="<?=$users['userid'];?>" class="btn tblLogBtn pl-0 pr-0 assign-room" type="submit"
+                        data-toggle="tooltip" data-placement="bottom" title="Assign Room"><i
+                            class="fa-solid fa-hotel"></i></button>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -326,7 +331,7 @@
                                     <p class="owner_model_heading_name mb-0"><i
                                             class="fa-solid fa-table mx-2"></i><?= $table_name; ?></p>
                                     <span class=""><input class="form-check-input table-checkbox" type="checkbox"
-                                            name="options[]" value="<?= $table['table_id']; ?>"
+                                            name="table-options[]" value="<?= $table['table_id']; ?>"
                                             id="table<?= $table['table_id']; ?>"></span>
                                 </div>
                             </div>
@@ -336,7 +341,7 @@
                                     <p class="owner_model_heading_name mb-0">
                                         <i class="fa-solid fa-user mx-2"></i>Pickup
                                     </p>
-                                    <span class=""><input class="form-check-input" type="checkbox" name="options[]"
+                                    <span class=""><input class="form-check-input" type="checkbox" name="table-options[]"
                                             value="PK" id="tableTakeaway"></span>
                                 </div>
                             </div>
@@ -345,7 +350,7 @@
                                     <p class="owner_model_heading_name mb-0">
                                         <i class="fa-solid fa-truck mx-2"></i>Delivery
                                     </p>
-                                    <span class=""><input class="form-check-input" type="checkbox" name="options[]"
+                                    <span class=""><input class="form-check-input" type="checkbox" name="table-options[]"
                                             value="DL" id="tableDelivery"></span>
                                 </div>
                             </div>
@@ -364,6 +369,52 @@
 </div>
 </div>
 <!-- Assigning table -->
+
+
+<!-- Assigning Room -->
+<div class="modal fade " id="roomassign" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"> Room Assigning</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+                <form id="room_assign_form">
+
+                    <div class="container">
+                        <div class="row g-2">
+
+                            <?php foreach ($rooms as $table):
+                            $table_name = $table['store_table_name'] ? $table['store_table_name'] : $table['table_name'];
+                            ?>
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 border bg-light d-flex owner_model_heading justify-content-between">
+                                    <p class="owner_model_heading_name mb-0"><i
+                                            class="fa-solid fa-table mx-2"></i><?= $table_name; ?></p>
+                                    <span class=""><input class="form-check-input room-checkbox" type="checkbox"
+                                            name="room-options[]" value="<?= $table['table_id']; ?>"
+                                            id="table<?= $table['table_id']; ?>"></span>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class=" text-center mb-3">
+                            <button type="submit" id="assign_room_btn" class="btn btn-primary">Assign</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Assigning Room -->
 
 
 <!-- delete user -->

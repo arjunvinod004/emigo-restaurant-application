@@ -36,6 +36,7 @@ class Tablemodel extends CI_Model {
 		$this->db->from('store_table');
 		$this->db->where('store_id',$store_id );
 		$this->db->where('ttype', 'tbl');
+		$this->db->where('store_table_token !=', 0);
 		$this->db->order_by("table_id", "asc");
 		$query = $this->db->get();
 		//echo $this->db->last_query();exit;
@@ -49,8 +50,8 @@ class Tablemodel extends CI_Model {
 		$this->db->where('store_table_assign.store_id', $store_id);
 		$this->db->where('store_table_assign.user_id', $user_id);
 		$this->db->where('store_table_assign.table_id !=', 0);
+		$this->db->where('store_table_assign.type', 'tbl');
 		$this->db->order_by('store_table_assign.table_id', 'asc');
-
 		$query = $this->db->get();
 		return $query->result_array();
 	}

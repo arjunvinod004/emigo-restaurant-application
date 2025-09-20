@@ -1743,7 +1743,7 @@ $addonIds = array_column($addons, 'product_id');
 
 
 
-     public function clear_session() {
+    public function clear_session() {
         $this->session->sess_destroy();
     }
 

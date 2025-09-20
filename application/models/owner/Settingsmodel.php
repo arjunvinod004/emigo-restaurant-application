@@ -54,10 +54,11 @@ class Settingsmodel extends CI_Model {
         $this->db->where('store_id', $storeid);
         $this->db->update('store');
     }
-    public function TableAssign($store_id,$user_id,$selectedTables,$isPickup,$isDelivery){
+    public function TableAssign($type,$store_id,$user_id,$selectedTables,$isPickup,$isDelivery){
         // Delete existing records for the given store_id and user_id
         $this->db->where('user_id', $user_id);
         $this->db->where('store_id', $store_id);
+        $this->db->where('type', $type);
         $this->db->delete('store_table_assign');
 
         // Insert new records from the selected table checkboxes
@@ -66,6 +67,7 @@ class Settingsmodel extends CI_Model {
             foreach ($selectedTables as $table_id) {
                 $insertData[] = [
                     'table_id' => $table_id,
+                    'type' => $type,
                     'user_id' => $user_id,
                     'store_id' => $store_id,
                     'is_pickup' => 0,
@@ -85,6 +87,7 @@ class Settingsmodel extends CI_Model {
         // Insert pickup and delivery records separately
         $data = array(
             'table_id' => 0,
+            'type' => 'pickup_delivery',
             'user_id' => $user_id,
             'store_id' => $store_id,
             'is_pickup' => $isPickup,
@@ -93,8 +96,13 @@ class Settingsmodel extends CI_Model {
             'status' => 1,
             'created_at' => date('Y-m-d H:i:s')
         );
+        $this->db->where('user_id', $user_id)
+             ->where('store_id', $store_id)
+             ->where('type', 'pickup_delivery');
+        $this->db->delete('store_table_assign');
         $this->db->insert('store_table_assign', $data);
     }
+
     public function getAssignedTables($store_id, $user_id) {
         $this->db->select('table_id');
         $this->db->from('store_table_assign');

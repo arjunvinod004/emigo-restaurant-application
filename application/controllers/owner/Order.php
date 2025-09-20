@@ -116,7 +116,7 @@ class Order extends CI_Controller {
 		if($role_id == 5) { // Supplier boy
 			/* echo $logged_in_store_id;echo $role_id;echo $user_id;exit; */
 			$data['tables']=$this->Tablemodel->getTablesAssignedByStoreId($logged_in_store_id,$user_id); //get orders assigned to loged in supplier user
-			$data['rooms']=$this->Roommodel->getRoomTableIdsWithOrders($logged_in_store_id);
+			$data['rooms']=$this->Roommodel->getRoomsAssignedByStoreId($logged_in_store_id,$user_id);/* print_r($data['rooms']); */
 			$data['ready_orders']=$this->Ordermodel->getReadyOrders($logged_in_store_id,$role_id,$user_id); //print_r($data['ready_orders']); //ready orders display except
 			$data['enable_table'] = $this->Settingsmodel->getEnableTables($logged_in_store_id,$user_id); // Fetch enable delivery
 			$data['enable_delivery'] = $this->Settingsmodel->getEnableDelivery($logged_in_store_id,$user_id); // Fetch enable delivery
@@ -175,7 +175,7 @@ class Order extends CI_Controller {
 		//echo "here";exit;
         $pickup_count = $this->Ordermodel->get_Pending_Orders_Count_db('PK',$logged_in_store_id,$role_id,$user_id);
         $delivery_count = $this->Ordermodel->get_Pending_Orders_Count_db('DL',$logged_in_store_id,$role_id,$user_id);
-		$room_count = $this->Ordermodel->get_Pending_room_Orders_Count_db('rom',$logged_in_store_id);
+		$room_count = $this->Ordermodel->get_Pending_room_Orders_Count_db('rom',$logged_in_store_id,$role_id,$user_id);
 
 		$ready_order_count = $this->Ordermodel->get_Ready_Orders_Count_user_assigned($logged_in_store_id,$role_id,$user_id);
         $pending_order_table_ids = $this->Ordermodel->get_pending_order_table_ids();

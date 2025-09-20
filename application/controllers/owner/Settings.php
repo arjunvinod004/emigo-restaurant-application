@@ -182,13 +182,25 @@ public function editstoreTime(){
         echo json_encode(['success' => 'success']);
 
 }
+//MARK: Store Users
 public function listStoreUsers(){
     $store_id= $this->session->userdata('logged_in_store_id');
     $data['listusers']=$this->Combomodel->listStoreUsers($store_id);
     $data['tables'] = $this->Tablemodel->getTablesByStoreId($store_id);
+    $data['rooms'] = $this->Commonmodel->getActiveRoomsByStoreId($store_id);
     $this->load->view('owner/store_users',$data);
 }
 public function GetAlreadyAssignedTables(){
+    $store_id= $this->session->userdata('logged_in_store_id');
+    $user_id= $this->input->post('user_id');
+    //echo $store_id;echo $user_id;exit;
+    $assignedTables = $this->Settingsmodel->getAssignedTables($store_id, $user_id); // Fetch assigned tables
+    $enable_delivery = $this->Settingsmodel->getEnableDelivery($store_id,$user_id); // Fetch enable delivery
+    $enable_pickup = $this->Settingsmodel->getEnablePickup($store_id,$user_id);     // Fetch enable pickup
+
+    echo json_encode(['status' => true, 'assignedTables' => $assignedTables , 'enable_delivery' => $enable_delivery, 'enable_pickup' => $enable_pickup]);
+}
+public function GetAlreadyAssignedRooms(){
     $store_id= $this->session->userdata('logged_in_store_id');
     $user_id= $this->input->post('user_id');
     //echo $store_id;echo $user_id;exit;
@@ -362,7 +374,17 @@ public function TableAssign(){
     $selectedTables = $data['selectedTables'];
     $isPickup = $data['isPickup'];
     $isDelivery = $data['isDelivery'];
-    $this->Settingsmodel->TableAssign($store_id,$user_id,$selectedTables,$isPickup,$isDelivery);
+    $this->Settingsmodel->TableAssign('tbl',$store_id,$user_id,$selectedTables,$isPickup,$isDelivery);
+}
+public function RoomAssign(){
+    $store_id = $this->session->userdata('logged_in_store_id');
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $user_id = $data['user_id'];
+    $selectedRooms = $data['selectedRooms'];
+    $isPickup = $data['isPickup'];
+    $isDelivery = $data['isDelivery'];
+    $this->Settingsmodel->TableAssign('rom',$store_id,$user_id,$selectedRooms,$isPickup,$isDelivery);
 }
 
 

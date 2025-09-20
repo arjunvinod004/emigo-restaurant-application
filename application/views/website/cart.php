@@ -156,10 +156,10 @@ else if ($delivery_type == 'D' && isset($whatsapp_enable_table['is_whatsapp'])) 
 
         <input type="hidden" id="subtotal_previous" value="
         <?php if(isset($order_summary))
-        { echo $order_summary['amount']; 
+        { echo $order_summary['amount'];
         }
         else
-        { 
+        {
             echo 0 ;
         }; ?>">
 
@@ -226,9 +226,9 @@ else if ($delivery_type == 'D' && isset($whatsapp_enable_table['is_whatsapp'])) 
             <!-- Cart Buttons -->
 
 
-            <?php 
+            <?php
   $cart = $this->session->userdata('cart');
-  
+
   if(!empty($cart) && $this->session->userdata('delivery_type') == 'D' || $this->session->userdata('delivery_type') == 'rom'){ ?>
             <div class="d-flex justify-content-between cart-total-place-holder ">
                 <?php
@@ -326,7 +326,7 @@ else if ($delivery_type == 'D' && isset($whatsapp_enable_table['is_whatsapp'])) 
 <!-- header style two End -->
 <script>
 $(document).ready(function() {
-    
+
 
 
     $('.table_order').on('click', function() {
@@ -338,15 +338,15 @@ $(document).ready(function() {
             orderListingcheckoutDining();
         }
     });
-    
-    
+
+
     validateInputs();
-    function validateInputs() 
+    function validateInputs()
     {
         const name = $('#name').val().trim();
         const phone = $('#phone').val().trim();
         const address = $('#address').val().trim();
-    
+
         if (name && phone && address) {
             $('.type_order').prop("disabled", false);
         } else {
@@ -356,8 +356,8 @@ $(document).ready(function() {
     $('#name, #phone, #address').on('keyup change', function() {
         validateInputs();
     });
-    
-    
+
+
     $('.type_order').on('click', function() {
         $('.type_order').prop("disabled", true);
         const name = $('#name').val().trim();
@@ -370,7 +370,7 @@ $(document).ready(function() {
             $('#validationModal .modal-body').html('Enter Name , Phone , Email');
             return; // Stop execution if any field is empty
         }
-        
+
        sendToWhatsAppOrderWithDetails(); // Call the function if validation passes
     });
 });
@@ -400,15 +400,15 @@ function orderListingcheckoutDining() {
                     outOfStockList.append(productList); // Add the list to the div
                     $('#out-of-stock-products').html(outOfStockList).show();
                    if ($("#out-of-stock-products").is(":visible")) {
-        $(".place-order-button-new").prop("disabled", false); 
+        $(".place-order-button-new").prop("disabled", false);
     }
-                    
+
                 }
             } else {
                 $('#out-of-stock-products').hide();
                 window.location.href = '<?= base_url("website/products/orderListing/") ?>' + response
                     .orderNo + '/' + response.store_id + '/' + $('#store_token').val();
-                    //clearsession();
+                    clearsession();
             }
         }
     });
@@ -779,7 +779,7 @@ $(document).ready(function() {
         <button class="btn-sm btn-outline-secondary increment-btn user-cart-page__qty-increase" data-variant_code="${variant_code}" data-variant_id="${variant_id}">+</button>
       </div>
     </div>
-    
+
     <div class="col-1 text-end">
       <p class="mb-0">${itemTotal}</p>
       <input type="hidden" class="${item.product_id}total_stock" value="${item.quantity * item.variant_value}">
@@ -849,7 +849,7 @@ $(document).ready(function() {
     }
 
     $(document).on('click', '.increment-btn', function() {
-       
+
         const $row = $(this).closest('.cart-item');
         const product = $(this).closest('.product');
 
@@ -914,13 +914,13 @@ $(document).ready(function() {
             deleteCartItem(productId, 0);
         }
     });
-    
+
         $(".place-order-button-new").click(function(){
         $(this).prop("disabled", true);
     });
 
-    
-    
+
+
 });
 </script>
 

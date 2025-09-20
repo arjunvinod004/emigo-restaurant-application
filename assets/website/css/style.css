@@ -464,7 +464,7 @@ var {
 }
 
 /*---------------------------
-	List Style 
+	List Style
 ---------------------------*/
 ul,
 ol {
@@ -694,7 +694,7 @@ ol ul {
 }
 
 /*=========================
-    Section Separation 
+    Section Separation
 ==========================*/
 .rts-section-gap {
   padding: 60px 0;
@@ -9980,7 +9980,7 @@ iframe {
 }
 
 /*===============================
-    Background Color 
+    Background Color
 =================================*/
 .bg-color-primary {
   background: var(--color-primary);
@@ -10011,7 +10011,7 @@ iframe {
 }
 
 /*===========================
-Background Image 
+Background Image
 =============================*/
 .bg_image {
   background-repeat: no-repeat;
@@ -10696,7 +10696,7 @@ textarea:-ms-input-placeholder {
 }
 
 /*=============================
-	Overlay styles 
+	Overlay styles
 ==============================*/
 [data-overlay],
 [data-black-overlay],
@@ -14596,9 +14596,9 @@ Copyright (c) 2015 Daniel Eden
   opacity: 1;
 }
 
-/* -------------------------------- 
+/* --------------------------------
 
-xclip 
+xclip
 
 -------------------------------- */
 .cd-headline.clip span {
@@ -21042,8 +21042,8 @@ li.with-megamenu:hover .rts-megamenu {
   /* most of the rest of this is opinion */
   font-family: Helvetica, sans-serif;
   text-align: center;
-  /* 
-  Let the content set the size of the titles 
+  /*
+  Let the content set the size of the titles
   but this will also keep them from being obnoxious
   */
   min-width: 3em;
@@ -29127,4 +29127,9 @@ button:disabled {
 .add-to-cart-popup{
   border-radius: 15px;
 }
-
+.out_of_stock_msg{
+  color: red;
+  font-size: 15px;
+  text-align: center;
+  margin-top: 5px;
+}

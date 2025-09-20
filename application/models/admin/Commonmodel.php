@@ -398,6 +398,19 @@ return $row;
             return $this->db->insert_id();
     }
 
+    //MARK: Get Active Rooms
+    public function getActiveRoomsByStoreId($store_id)
+	{
+		$this->db->select('*');
+		$this->db->from('store_table');
+		$this->db->where('store_id',$store_id );
+		$this->db->where('ttype', 'rom');
+        $this->db->where('store_table_token !=', 0);
+		$this->db->order_by("table_id", "asc");
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 
 
     public function get_base_quantity_product($store_id, $productId) {

@@ -117,11 +117,31 @@ class Ordermodel extends CI_Model {
             return $this->db->count_all_results('order'); // Replace 'orders' with your actual table name
         }
 
-        public function get_Pending_room_Orders_Count_db($type,$store_id) {
+        //MARK:Get Order count
+        public function get_Pending_room_Orders_Count_db($type,$store_id,$role_id,$user_id) {
+            // echo $role_id;
+            $this->db->select('table_id');
+            $this->db->where('store_id', $store_id);
+            $this->db->where('user_id', $user_id);
+            $query = $this->db->get('store_table_assign');
+            // echo $this->db->last_query();
+
+
+            $tables = $query->result_array();
+            // print_r($tables);
+            $table_ids = array();
+            foreach ($tables as $table) {
+                $table_ids[] = $table['table_id']; //Already assigned table ids
+            }
+
+            //echo $type;exit;
             $this->db->where('order_type', $type);
             $this->db->where('store_id',$this->session->userdata('logged_in_store_id'));
             $this->db->where('order_status', 0); // Assuming '0' is the status for pending orders
-            return $this->db->count_all_results('order');
+            if ($role_id != 1 && $role_id != 2 && !empty($table_ids)) {
+                $this->db->where_in('table_id', $table_ids);
+            }
+            return $this->db->count_all_results('order'); // Replace 'orders' with your actual table name
         }
 
         public function get_Approved_Orders_Count($type) {

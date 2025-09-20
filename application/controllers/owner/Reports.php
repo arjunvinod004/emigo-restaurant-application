@@ -82,11 +82,11 @@ class Reports extends CI_Controller {
 		$user_id = $this->session->userdata('loginid'); // Loged in user id
 
 		$this->load->model('website/Homemodel');
-		$store_details = $this->Homemodel->get_store_details_by_store_id($data['store_id']);
-        $support_details = $this->Homemodel->get_support_details_by_country_id($store_details->store_country);
+		$store_details = $this->Commonmodel->get_store_details_by_id($data['store_id']);
+        $support_details = $this->Commonmodel->get_country_details_by_country_id($store_details->store_country);
         $data['store_disp_name'] = $store_details->store_disp_name;
         $data['store_address'] = $store_details->store_address;
-        $data['support_no'] = $support_details->support_no;
+        $data['support_no'] = $support_details->support_number;
         $data['support_email'] = $support_details->support_email;
 		$data['store_logo'] = $store_details->store_logo_image;
 

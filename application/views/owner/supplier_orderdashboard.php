@@ -39,7 +39,7 @@
                     </li>
                     <?php endif; ?>
 
-                    <?php if ($storeDetails[0]['is_pickup_tab'] == 1): ?>
+                    <?php if ($storeDetails[0]['is_pickup_tab'] == 1 && $enable_pickup == 1): ?>
                     <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
                         <?php $activeTabSet = true; ?>
                         <a href="#tabs2">Pickup Orders <span id="tabs__nav_pending_pickup_count" class="d-none"></span>
@@ -47,7 +47,7 @@
                     </li>
                     <?php endif; ?>
 
-                    <?php if ($storeDetails[0]['is_delivery_tab'] == 1): ?>
+                    <?php if ($storeDetails[0]['is_delivery_tab'] == 1 && $enable_delivery == 1): ?>
                     <li class="<?php echo !$activeTabSet ? 'active' : ''; ?>">
                         <?php $activeTabSet = true; ?>
                         <a href="#tabs3">Delivery Orders<span id="tabs__nav_pending_delivery_count"

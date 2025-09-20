@@ -67,6 +67,22 @@ public function getRoomTableIdsWithOrders($store_id) {
     return $query->result_array();
 }
 
+public function getRoomsAssignedByStoreId($store_id, $user_id) {
+
+		$this->db->select('store_table_assign.*, store_table.table_name,store_table.store_table_name,store_table.table_id,store_table.is_reserved');
+		$this->db->from('store_table_assign');
+		$this->db->join('store_table', 'store_table_assign.table_id = store_table.table_id', 'left');
+        $this->db->join('order', 'order.table_id = store_table.table_id', 'inner');
+		$this->db->where('store_table_assign.store_id', $store_id);
+		$this->db->where('store_table_assign.user_id', $user_id);
+		$this->db->where('store_table_assign.table_id !=', 0);
+        $this->db->where('store_table_assign.type', 'rom');
+        $this->db->group_by('store_table_assign.table_id');
+		$this->db->order_by('store_table_assign.table_id', 'asc');
+		$query = $this->db->get();
+		//echo $this->db->last_query(); exit;
+		return $query->result_array();
+	}
 
 
 
