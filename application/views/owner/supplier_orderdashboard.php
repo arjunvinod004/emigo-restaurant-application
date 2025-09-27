@@ -335,6 +335,11 @@
                                     $order_type = 'Delivery'; //Display table name if order type dining
                                     $bgClass = '#f1b3a1';
                                 }
+                                 if($order['order_type'] == 'rom'){
+                                    $type = 'Room';
+                                    $order_type = 'Room';
+                                    $bgClass = '#f37a7a';
+                                }
                                ?>
                             <div class="order-table-list__item">
                                 <a data-bs-toggle="modal" data-id="<?php echo $order['orderno']; ?>"

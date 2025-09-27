@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8" />
-    <title>Dashboarddd | Emigo</title>
+    <title>Dashboard | Emigo b</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Emigo" name="description" />
     <meta content="CVS" name="author" />
